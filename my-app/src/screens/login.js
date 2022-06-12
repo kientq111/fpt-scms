@@ -16,7 +16,6 @@ const LoginScreen = () => {
             <Col span={8}>
 
                 <h1 style={{
-                    margin: 30,
                     fontSize: 30
                 }}>Login</h1>
                 <Form

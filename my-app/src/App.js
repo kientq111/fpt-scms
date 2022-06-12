@@ -1,16 +1,100 @@
-import logo from './logo.svg';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
+import {
+  DesktopOutlined,
+  FileOutlined,
+  PieChartOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
+import { Breadcrumb, Layout, Menu } from 'antd';
+import React, { useState } from 'react';
 import LoginScreen from './screens/login';
-import Register from './screens/register';
-import { Layout, Menu } from 'antd';
-import 'bootstrap/dist/css/bootstrap.min.css';
-const { Header, Footer, Content } = Layout;
+import RegisterScreen from './screens/register';
+import ErrorScreen from './screens/404';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+const { Header, Content, Footer, Sider } = Layout;
 
 
-function App() {
-  return (
-    <div className="App">
+function getItem(label, key, icon, children) {
+  return {
+    key,
+    icon,
+    children,
+    label,
+  };
+}
+
+const items1 = ['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((key) => ({
+  key,
+  label: `nav ${key}`,
+}));
+
+const items = [
+  getItem('Option 1', '1', <PieChartOutlined />),
+  getItem('Option 2', '2', <DesktopOutlined />),
+  getItem('User', 'sub1', <UserOutlined />, [
+    getItem('Tom', '3'),
+    getItem('Bill', '4'),
+    getItem('Alex', '5'),
+  ]),
+  getItem('Team', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
+  getItem('Files', '9', <FileOutlined />),
+];
+
+const adminLoggerIn = (collapsed, setCollapsed) => (
+  <Layout
+    style={{
+      minHeight: '100vh',
+    }}
+  >
+    <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+      <div className="logo" />
+      <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+    </Sider>
+    <Layout className="site-layout">
+      <Header
+        className="site-layout-background"
+        style={{
+          padding: 0,
+        }}
+      >
+        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
+      </Header>
+
+      <Router>
+        <Content
+          style={{
+            margin: '0 16px',
+          }}
+        >
+          <Breadcrumb
+            style={{
+              margin: '16px 0',
+            }}
+          >
+            <Breadcrumb.Item>User</Breadcrumb.Item>
+            <Breadcrumb.Item>Bill</Breadcrumb.Item>
+          </Breadcrumb>
+          <Routes>
+            <Route path='/' element={<LoginScreen />} />
+            <Route path='/register' element={<RegisterScreen />} />
+            <Route path='/error404' element={<ErrorScreen />} />
+          </Routes>
+        </Content>
+      </Router>
+
+      <Footer
+        style={{
+          textAlign: 'center',
+        }}
+      >
+        Ant Design ©2018 Created by Ant UED
+      </Footer>
+    </Layout>
+  </Layout>
+);
+
+const userLoggerIn = () => (
+<div className="App">
       <Layout>
         <Header>
           <div className="logo" />
@@ -18,7 +102,7 @@ function App() {
             theme="dark"
             mode="horizontal"
             defaultSelectedKeys={['2']}
-            items={new Array(15).fill(null).map((_, index) => {
+            items={new Array(6).fill(null).map((_, index) => {
               const key = index + 1;
               return {
                 key,
@@ -31,16 +115,23 @@ function App() {
           <Content>
             <Routes>
               <Route path='/' element={<LoginScreen />} />
-              <Route path='/register' element={<Register />} />
+              <Route path='/register' element={<RegisterScreen />} />
+              <Route path='/error404' element={<ErrorScreen />} />
             </Routes>
           </Content>
         </Router>
         <Footer>Footer</Footer>
       </Layout>
     </div>
+);
+
+const App = () => {
+  const [collapsed, setCollapsed] = useState(false);
+  const authorization = 'ad';
+  return (
+   authorization === 'user' ? adminLoggerIn(collapsed, setCollapsed) : userLoggerIn()
+
   );
-}
-
-
+};
 
 export default App;

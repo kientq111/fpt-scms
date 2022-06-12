@@ -77,7 +77,7 @@ const tailFormItemLayout = {
   },
 };
 
-const Register = () => {
+const RegisterScreen = () => {
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
@@ -351,4 +351,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RegisterScreen;
