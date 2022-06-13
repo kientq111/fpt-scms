@@ -6,11 +6,14 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu } from 'antd';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import React, { useState } from 'react';
 import LoginScreen from './screens/login';
 import RegisterScreen from './screens/register';
 import ErrorScreen from './screens/404';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ListUserScreen from './screens/admin/ListUserScreen';
+import AddUserScreen from './screens/admin/AddUserScreen';
+import AddDishScreen from './screens/admin/AddDishScreen';
 const { Header, Content, Footer, Sider } = Layout;
 
 
@@ -72,12 +75,16 @@ const adminLoggerIn = (collapsed, setCollapsed) => (
             }}
           >
             <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
+            <Breadcrumb.Item>List</Breadcrumb.Item>
           </Breadcrumb>
           <Routes>
             <Route path='/' element={<LoginScreen />} />
             <Route path='/register' element={<RegisterScreen />} />
             <Route path='/error404' element={<ErrorScreen />} />
+            <Route path='/admin/userlist' element={<ListUserScreen />} />
+            <Route path='/admin/addaccount' element={<AddUserScreen />} />
+            <Route path='/admin/adddish' element={<AddDishScreen />} />
+
           </Routes>
         </Content>
       </Router>
@@ -127,10 +134,9 @@ const userLoggerIn = () => (
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const authorization = 'ad';
+  const authorization = 'admin';
   return (
-   authorization === 'user' ? adminLoggerIn(collapsed, setCollapsed) : userLoggerIn()
-
+   authorization === 'admin' ? adminLoggerIn(collapsed, setCollapsed) : userLoggerIn()
   );
 };
 
