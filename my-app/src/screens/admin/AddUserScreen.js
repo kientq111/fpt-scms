@@ -76,6 +76,7 @@ const AddUserScreen = () => {
                     <Form.Item
                         name="email"
                         label="E-mail"
+                        style={{width:500}}
                         rules={[
                             {
                                 type: 'email',
@@ -87,13 +88,14 @@ const AddUserScreen = () => {
                             },
                         ]}
                     >
-                        <Input />
+                        <Input      style={{width:600}} />
                     </Form.Item>
 
                     <Form.Item
                         name="first_name"
                         label="First Name"
                         tooltip="What do you want others to call you?"
+                        style={{width:500}}
                         rules={[
                             {
                                 required: true,
@@ -102,9 +104,11 @@ const AddUserScreen = () => {
                             },
                         ]}
                     >
-                        <Input />
+                        <Input   style={{width:600}}/>
                     </Form.Item>
                     <Form.Item
+                        style={{width:500}}
+
                         name="last_name"
                         label="Last Name"
                         rules={[
@@ -112,12 +116,13 @@ const AddUserScreen = () => {
                                 whitespace: true,
                             },
                         ]}
-                    >
-                        <Input />
+                    >    
+                        <Input  style={{width:600}} />
                     </Form.Item>
                     <Form.Item
                         name="password"
                         label="Password"
+                        style={{width:500}}
                         rules={[
                             {
                                 required: true,
@@ -126,11 +131,12 @@ const AddUserScreen = () => {
                         ]}
                         hasFeedback
                     >
-                        <Input.Password />
+                        <Input.Password  style={{width:600}} />
                     </Form.Item>
-                
+
                     <Form.Item
                         name="confirm"
+                        style={{width:500}}
                         label="Confirm Password"
                         dependencies={['password']}
                         hasFeedback
@@ -150,7 +156,7 @@ const AddUserScreen = () => {
                             }),
                         ]}
                     >
-                        <Input.Password />
+                        <Input.Password  style={{width:600}} />
                     </Form.Item>
 
 
@@ -158,6 +164,7 @@ const AddUserScreen = () => {
                         name="user_name"
                         label="User Name"
                         tooltip="user name used to login to your account"
+                        style={{width:500}}
                         rules={[
                             {
                                 required: true,
@@ -166,11 +173,11 @@ const AddUserScreen = () => {
                             },
                         ]}
                     >
-                        <Input />
+                        <Input  style={{width:600}}/>
                     </Form.Item>
 
-                    <Form.Item name="date-picker" label="Date of Birth" >
-                        <DatePicker />
+                    <Form.Item name="date-picker" label="Date of Birth"  style={{width:500}}>
+                        <DatePicker  style={{width:300}}/>
                     </Form.Item>
 
 
