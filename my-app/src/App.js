@@ -14,6 +14,7 @@ import ErrorScreen from './screens/404';
 import ListUserScreen from './screens/admin/ListUserScreen';
 import AddUserScreen from './screens/admin/AddUserScreen';
 import AddDishScreen from './screens/admin/AddDishScreen';
+import TestIMG from './screens/admin/test';
 const { Header, Content, Footer, Sider } = Layout;
 
 
@@ -84,6 +85,7 @@ const adminLoggerIn = (collapsed, setCollapsed) => (
             <Route path='/admin/userlist' element={<ListUserScreen />} />
             <Route path='/admin/addaccount' element={<AddUserScreen />} />
             <Route path='/admin/adddish' element={<AddDishScreen />} />
+            <Route path='/admin/test' element={<TestIMG/>} />
 
           </Routes>
         </Content>
@@ -124,6 +126,8 @@ const userLoggerIn = () => (
               <Route path='/' element={<LoginScreen />} />
               <Route path='/register' element={<RegisterScreen />} />
               <Route path='/error404' element={<ErrorScreen />} />
+              <Route path='/adduser' element={<AddUserScreen />} />
+              
             </Routes>
           </Content>
         </Router>

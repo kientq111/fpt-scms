@@ -1,20 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import {Routes, Route, Link} from "react-router-dom"
+import { Routes, Route, Link } from "react-router-dom";
 import { Row, Col } from 'antd';
+import { login } from '../actions/userActions';
 
 const LoginScreen = () => {
-    const onFinish = (values) => {
-        console.log('Received values of form: ', values);
-    };
+    const [username, setusername] = useState('');
+    const [password, setpassword] = useState('');
 
+    // const userLogin = useSelector((state) => state.userLogin)
+    // const { loading, error, userInfo } = userLogin
+    const dispatch = useDispatch();
+
+    const onSubmitHandler = (e) => {
+        e.preventDefault();
+        dispatch(login(username, password));
+    }
+    
     return (
         <Row>
             <Col span={8}></Col>
-
             <Col span={8}>
-
                 <h1 style={{
                     fontSize: 30
                 }}>Login</h1>
@@ -24,7 +32,7 @@ const LoginScreen = () => {
                     initialValues={{
                         remember: true,
                     }}
-                    onFinish={onFinish}
+                    onsubmit={onSubmitHandler}
                 >
                     <Form.Item
                         name="username"
@@ -35,7 +43,7 @@ const LoginScreen = () => {
                             },
                         ]}
                     >
-                        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
+                        <Input value={username} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
                     </Form.Item>
                     <Form.Item
                         name="password"
@@ -48,7 +56,7 @@ const LoginScreen = () => {
                     >
                         <Input
                             prefix={<LockOutlined className="site-form-item-icon" />}
-                            type="password"
+                            type="password" value={password}
                             placeholder="Password"
                         />
                     </Form.Item>
@@ -57,13 +65,13 @@ const LoginScreen = () => {
                             <Checkbox>Remember me</Checkbox>
                         </Form.Item>
 
-                        <a className="login-form-forgot" href="">
+                        <a className="login-form-forgot" href="#">
                             Forgot password
                         </a>
                     </Form.Item>
 
                     <Form.Item>
-                        <Button type="primary" htmlType="submit" className="login-form-button">
+                        <Button type="submit" htmlType="submit" className="login-form-button">
                             Log in
                         </Button>
                         Or <Link to={'/register'}>register now!</Link>
@@ -72,7 +80,6 @@ const LoginScreen = () => {
             </Col>
             <Col span={8}></Col>
         </Row>
-
     );
 };
 

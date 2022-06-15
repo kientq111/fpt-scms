@@ -1,9 +1,52 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Space, Select,  Modal, Upload } from 'antd';
-
-import React from 'react';
+import { Button, Form, Input, Space, Select, Modal, Upload } from 'antd';
+import React, { useState } from 'react';
 const { Option } = Select;
+
+
+//Base64 to handle upload image
+const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        reader.onload = () => resolve(reader.result);
+
+        reader.onerror = (error) => reject(error);
+    });
+
+
 const AddDishScreen = () => {
+    const [previewVisible, setPreviewVisible] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
+    const [previewTitle, setPreviewTitle] = useState('');
+    const [fileList, setFileList] = useState('');
+
+    const handleCancel = () => setPreviewVisible(false);
+    const handlePreview = async (file) => {
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj);
+        }
+
+        setPreviewImage(file.url || file.preview);
+        setPreviewVisible(true);
+        setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+    };
+
+    const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+    const uploadButton = (
+        <div>
+            <PlusOutlined />
+            <div
+                style={{
+                    marginTop: 8,
+                }}
+            >
+                Upload
+            </div>
+        </div>
+    );
+
     const onFinish = (values) => {
         console.log('Received values of form:', values);
     };
@@ -46,22 +89,12 @@ const AddDishScreen = () => {
                                             required: true,
                                             message: 'Missing Description',
                                         },
+
                                     ]}
                                 >
                                     <Input placeholder="Description" />
                                 </Form.Item>
-                                <Form.Item
-                                    {...restField}
-                                    name={[name, 'image']}
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: 'Missing image',
-                                        },
-                                    ]}
-                                >
-                                    <Input placeholder="Image" />
-                                </Form.Item>
+
                                 <Form.Item
                                     {...restField}
                                     name={[name, 'price']}
@@ -77,13 +110,38 @@ const AddDishScreen = () => {
                                 <Form.Item
                                     {...restField}
                                     name={[name, 'status']}
-                                   >
+                                >
                                     <Select
                                         defaultValue={'1'}
                                     >
                                         <Option value="1" >Active</Option>
                                         <Option value="0">Inactive</Option>
                                     </Select>
+                                </Form.Item>
+                                <Form.Item
+                                    {...restField}
+                                    name={[name, 'image']}
+
+                                >
+                                    <>
+                                        <Upload
+                                            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                                            listType="picture-card"
+                                            onPreview={handlePreview}
+                                            onChange={handleChange}
+                                        >
+                                            {fileList.length >= 3 ? null : uploadButton}
+                                        </Upload>
+                                        <Modal visible={previewVisible} title={previewTitle} footer={null} onCancel={handleCancel}>
+                                            <img
+                                                alt="example"
+                                                style={{
+                                                    width: '100%',
+                                                }}
+                                                src={previewImage}
+                                            />
+                                        </Modal>
+                                    </>
                                 </Form.Item>
 
                                 <MinusCircleOutlined onClick={() => remove(name)} />
