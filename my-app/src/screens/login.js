@@ -5,7 +5,6 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link } from "react-router-dom";
 import { Row, Col } from 'antd';
 import { login } from '../actions/userActions';
-import axios from 'axios';
 
 const LoginScreen = () => {
     const [username, setUsername] = useState('');
@@ -16,23 +15,11 @@ const LoginScreen = () => {
 
     const dispatch = useDispatch();
 
-    const config = {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    }
-    const baseURL = "https://backend-edu-scms.herokuapp.com/api";
+
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
-        // dispatch(login(values.username, values.password));
-        const { data } = axios.post(
-            baseURL + '/login',
-            { username, password },
-            config
-        ).then(function (response) {
-            console.log(response);
-        });
-    };
+        dispatch(login(values.username, values.password));
+      };
 
     // useEffect(() => {
     //     console.log('useEffect is active!');
@@ -47,7 +34,7 @@ const LoginScreen = () => {
                 }}>Login</h1>
                 <Form
                     name="normal_login"
-                    onFinish={onFinish}
+                   onFinish={onFinish}
                     className="login-form"
                     initialValues={{
                         remember: true,
@@ -75,7 +62,7 @@ const LoginScreen = () => {
                     >
                         <Input
                             prefix={<LockOutlined className="site-form-item-icon" />}
-                            type="password"
+                            type="password" 
                             placeholder="Password"
                         />
                     </Form.Item>
