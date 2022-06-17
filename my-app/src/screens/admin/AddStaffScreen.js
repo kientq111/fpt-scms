@@ -7,7 +7,7 @@ import {
     Row,
     Col,
     Button,
-    DatePicker,
+    DatePicker, Breadcrumb
 } from 'antd';
 const { Option } = Select;
 
@@ -42,7 +42,7 @@ const tailFormItemLayout = {
     },
 };
 
-const AddUserScreen = () => {
+const AddStaffScreen = () => {
     const [form] = Form.useForm();
 
     const onFinish = (values) => {
@@ -63,9 +63,18 @@ const AddUserScreen = () => {
     );
 
     return (
+
         <Row>
+          
             <Col flex="1 1 200px">
-                <h1 style={{ margin: 20, fontSize: 30 }}>Add User</h1>
+            <Breadcrumb>
+                <Breadcrumb.Item>Home</Breadcrumb.Item>
+                <Breadcrumb.Item>
+                    <a href="">List Staff</a>
+                </Breadcrumb.Item>
+         
+            </Breadcrumb>
+                <h1 style={{ margin: 20, fontSize: 30, position:'relative'}}>Add Staff</h1>
                 <Form
                     {...formItemLayout}
                     form={form}
@@ -76,7 +85,7 @@ const AddUserScreen = () => {
                     <Form.Item
                         name="email"
                         label="E-mail"
-                     
+
                         rules={[
                             {
                                 type: 'email',
@@ -88,14 +97,13 @@ const AddUserScreen = () => {
                             },
                         ]}
                     >
-                        <Input       />
+                        <Input />
                     </Form.Item>
-
                     <Form.Item
                         name="first_name"
                         label="First Name"
                         tooltip="What do you want others to call you?"
-                     
+
                         rules={[
                             {
                                 required: true,
@@ -107,7 +115,7 @@ const AddUserScreen = () => {
                         <Input />
                     </Form.Item>
                     <Form.Item
-                     
+
 
                         name="last_name"
                         label="Last Name"
@@ -116,13 +124,13 @@ const AddUserScreen = () => {
                                 whitespace: true,
                             },
                         ]}
-                    >    
-                        <Input  />
+                    >
+                        <Input />
                     </Form.Item>
                     <Form.Item
                         name="password"
                         label="Password"
-                  
+
                         rules={[
                             {
                                 required: true,
@@ -131,12 +139,12 @@ const AddUserScreen = () => {
                         ]}
                         hasFeedback
                     >
-                        <Input.Password   />
+                        <Input.Password />
                     </Form.Item>
 
                     <Form.Item
                         name="confirm"
-                      
+
                         label="Confirm Password"
                         dependencies={['password']}
                         hasFeedback
@@ -156,15 +164,13 @@ const AddUserScreen = () => {
                             }),
                         ]}
                     >
-                        <Input.Password  />
+                        <Input.Password />
                     </Form.Item>
-
-
                     <Form.Item
                         name="user_name"
                         label="User Name"
                         tooltip="user name used to login to your account"
-                
+
                         rules={[
                             {
                                 required: true,
@@ -173,7 +179,7 @@ const AddUserScreen = () => {
                             },
                         ]}
                     >
-                        <Input  />
+                        <Input />
                     </Form.Item>
 
                     <Form.Item name="date-picker" label="Date of Birth"  >
@@ -216,10 +222,9 @@ const AddUserScreen = () => {
                             <Option value="other">Other</Option>
                         </Select>
                     </Form.Item>
-
                     <Form.Item {...tailFormItemLayout}>
                         <Button type="primary" htmlType="submit">
-                            Add Account
+                            Add Staff
                         </Button>
                     </Form.Item>
                 </Form></Col>
@@ -229,4 +234,4 @@ const AddUserScreen = () => {
     );
 };
 
-export default AddUserScreen;
+export default AddStaffScreen;

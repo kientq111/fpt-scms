@@ -2,23 +2,42 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { Routes, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Row, Col } from 'antd';
 import { login } from '../actions/userActions';
+import axios from 'axios';
 
 const LoginScreen = () => {
-    const [username, setusername] = useState('');
-    const [password, setpassword] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
-    // const userLogin = useSelector((state) => state.userLogin)
-    // const { loading, error, userInfo } = userLogin
+    const userLogin = useSelector((state) => state.userLogin)
+    const { loading, error, userInfo } = userLogin
+
     const dispatch = useDispatch();
 
-    const onSubmitHandler = (e) => {
-        e.preventDefault();
-        dispatch(login(username, password));
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+        },
     }
-    
+    const baseURL = "https://backend-edu-scms.herokuapp.com/api";
+    const onFinish = (values) => {
+        console.log('Received values of form: ', values);
+        // dispatch(login(values.username, values.password));
+        const { data } = axios.post(
+            baseURL + '/login',
+            { username, password },
+            config
+        ).then(function (response) {
+            console.log(response);
+        });
+    };
+
+    // useEffect(() => {
+    //     console.log('useEffect is active!');
+    // }, [])
+
     return (
         <Row>
             <Col span={8}></Col>
@@ -28,11 +47,11 @@ const LoginScreen = () => {
                 }}>Login</h1>
                 <Form
                     name="normal_login"
+                    onFinish={onFinish}
                     className="login-form"
                     initialValues={{
                         remember: true,
                     }}
-                    onsubmit={onSubmitHandler}
                 >
                     <Form.Item
                         name="username"
@@ -43,7 +62,7 @@ const LoginScreen = () => {
                             },
                         ]}
                     >
-                        <Input value={username} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
+                        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
                     </Form.Item>
                     <Form.Item
                         name="password"
@@ -56,7 +75,7 @@ const LoginScreen = () => {
                     >
                         <Input
                             prefix={<LockOutlined className="site-form-item-icon" />}
-                            type="password" value={password}
+                            type="password"
                             placeholder="Password"
                         />
                     </Form.Item>
@@ -69,9 +88,8 @@ const LoginScreen = () => {
                             Forgot password
                         </a>
                     </Form.Item>
-
                     <Form.Item>
-                        <Button type="submit" htmlType="submit" className="login-form-button">
+                        <Button type="primary" htmlType="submit" className="login-form-button">
                             Log in
                         </Button>
                         Or <Link to={'/register'}>register now!</Link>
