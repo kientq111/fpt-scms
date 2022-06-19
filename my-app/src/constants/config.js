@@ -1,0 +1,1 @@
+export const baseURL = "https://backend-edu-scms.herokuapp.com/api";

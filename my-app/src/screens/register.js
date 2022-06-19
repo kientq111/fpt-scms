@@ -82,6 +82,7 @@ const RegisterScreen = () => {
 
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
+    console.log('email: ', values.email)
   };
 
   const prefixSelector = (
