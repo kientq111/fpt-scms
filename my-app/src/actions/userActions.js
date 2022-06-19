@@ -26,18 +26,18 @@ export const login = (username, password) => async (dispatch) => {
     }
 
     const { data } = await axios.post(
-     baseURL + '/login',
+       '/login',
       { username, password },
       config
     ).then(function (response) {
-      console.log(response);
+      console.log(response.data.data);
     });
     dispatch({
       type: USER_LOGIN_SUCCESS,
       payload: data,
     })
 
-    // localStorage.setItem('userInfo', JSON.stringify(data))
+    localStorage.setItem('userInfo', JSON.stringify(data))
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAIL,
