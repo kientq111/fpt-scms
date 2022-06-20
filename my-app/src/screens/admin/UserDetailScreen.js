@@ -130,7 +130,7 @@ const ViewUserDetailScreen = () => {
 
                     <Form.Item {...tailFormItemLayout}>
                         <Button type="primary" htmlType="submit">
-                            Add Account
+                            Update Profile
                         </Button>
                     </Form.Item>
                 </Form></Col>

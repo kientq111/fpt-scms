@@ -15,7 +15,7 @@ import ListUserScreen from './screens/admin/ListUserScreen';
 import AddUserScreen from './screens/admin/AddUserScreen';
 import AddDishScreen from './screens/admin/AddDishScreen'
 import AddStaffScreen from './screens/admin/AddStaffScreen';
-import ViewUserDetailScreen from './screens/admin/ViewUserDetailScreen';
+import ViewUserDetailScreen from './screens/admin/UserDetailScreen';
 import AddMenuScreen from './screens/admin/AddMenuScreen';
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -88,14 +88,6 @@ const App = () => {
             </Routes>
           </Content>
         </Router>
-
-        <Footer
-          style={{
-            textAlign: 'center',
-          }}
-        >
-          Ant Design ©2018 Created by Ant UED
-        </Footer>
       </Layout>
     </Layout>
   );
