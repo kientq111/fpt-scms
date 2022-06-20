@@ -1,22 +1,9 @@
 import axios from 'axios'
-import {
-  USER_DETAILS_FAIL,
-  USER_DETAILS_REQUEST,
-  USER_DETAILS_SUCCESS,
-  USER_LOGIN_FAIL,
-  USER_LOGIN_REQUEST,
-  USER_LOGIN_SUCCESS,
-  USER_LOGOUT,
-  USER_REGISTER_FAIL,
-  USER_REGISTER_REQUEST,
-  USER_REGISTER_SUCCESS,
-
-} from '../constants/userConstants'
-import { baseURL } from '../constants/config'
+import { userConstants } from '../constants/Constants'
 export const login = (username, password) => async (dispatch) => {
   try {
     dispatch({
-      type: USER_LOGIN_REQUEST,
+      type: userConstants.USER_LOGIN_REQUEST,
     })
 
     const config = {
@@ -29,18 +16,16 @@ export const login = (username, password) => async (dispatch) => {
        '/login',
       { username, password },
       config
-    ).then(function (response) {
-      console.log(response.data.data);
-    });
+    );
     dispatch({
-      type: USER_LOGIN_SUCCESS,
-      payload: data,
+      type: userConstants.USER_LOGIN_SUCCESS,
+      payload: data.data,
     })
 
     localStorage.setItem('userInfo', JSON.stringify(data))
   } catch (error) {
     dispatch({
-      type: USER_LOGIN_FAIL,
+      type: userConstants.USER_LOGIN_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
@@ -52,7 +37,7 @@ export const login = (username, password) => async (dispatch) => {
 export const register = (name, email, password) => async (dispatch) => {
   try {
     dispatch({
-      type: USER_REGISTER_REQUEST,
+      type: userConstants.USER_REGISTER_REQUEST,
     })
 
     const config = {
@@ -68,19 +53,19 @@ export const register = (name, email, password) => async (dispatch) => {
     )
 
     dispatch({
-      type: USER_REGISTER_SUCCESS,
+      type: userConstants.USER_REGISTER_SUCCESS,
       payload: data,
     })
 
     dispatch({
-      type: USER_LOGIN_SUCCESS,
+      type: userConstants.USER_LOGIN_SUCCESS,
       payload: data,
     })
 
     localStorage.setItem('userInfo', JSON.stringify(data))
   } catch (error) {
     dispatch({
-      type: USER_REGISTER_FAIL,
+      type: userConstants.USER_REGISTER_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

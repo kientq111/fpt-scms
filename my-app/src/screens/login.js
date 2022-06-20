@@ -5,36 +5,40 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link } from "react-router-dom";
 import { Row, Col } from 'antd';
 import { login } from '../actions/userActions';
-
+import Loader from '../components/Loader';
 const LoginScreen = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    // const [username, setUsername] = useState('');
+    // const [password, setPassword] = useState('');
 
     const userLogin = useSelector((state) => state.userLogin)
     const { loading, error, userInfo } = userLogin
 
     const dispatch = useDispatch();
 
-
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
         dispatch(login(values.username, values.password));
-      };
+    };
 
-    // useEffect(() => {
-    //     console.log('useEffect is active!');
-    // }, [])
+    useEffect(() => {
+        if (userInfo) {
+            console.log(userInfo.fullname, userInfo.role[0].authority);
+        }
+    }, [userInfo])
 
     return (
         <Row>
             <Col span={8}></Col>
             <Col span={8}>
                 <h1 style={{
-                    fontSize: 30
+                    fontSize: 30,
+                    marginTop: 80
                 }}>Login</h1>
+                {error && <h1 style={{ color: 'red' }}>{error}</h1>}
+                {loading && <Loader />}
                 <Form
                     name="normal_login"
-                   onFinish={onFinish}
+                    onFinish={onFinish}
                     className="login-form"
                     initialValues={{
                         remember: true,
@@ -62,7 +66,7 @@ const LoginScreen = () => {
                     >
                         <Input
                             prefix={<LockOutlined className="site-form-item-icon" />}
-                            type="password" 
+                            type="password"
                             placeholder="Password"
                         />
                     </Form.Item>
