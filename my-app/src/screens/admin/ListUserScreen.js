@@ -1,6 +1,8 @@
 import { Space, Table, Breadcrumb, message, Popconfirm } from 'antd';
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
+import { listUsers } from '../../actions/userActions';
+import { useDispatch, useSelector } from 'react-redux';
 const { Column, ColumnGroup } = Table;
 
 
@@ -17,20 +19,13 @@ const cancel = (e) => {
 
 const ListUserScreen = () => {
   const [userData, setUserData] = useState([])
+  const data = useSelector((state) => state.userList);
 
+  const dispatch = useDispatch();
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data: response } = await axios.get(baseURL);
-        setUserData(response);
-      } catch (error) {
-        console.error(error.message);
-      }
-    }
-    fetchData();
-  }, []);
-
-  console.log(userData.data);
+    dispatch(listUsers());
+    console.log(data.users)
+  }, []); 
 
   return (
     <>
@@ -41,20 +36,23 @@ const ListUserScreen = () => {
         </Breadcrumb.Item>
       </Breadcrumb>
 
-      <Table style={{ marginTop: 30 }} dataSource={userData.data}>
-        <Column title="ID" dataIndex="id" key="id" />
-        <ColumnGroup title="Name">
-          <Column title="First Name" dataIndex="first_name" key="first_name" />
-          <Column title="Last Name" dataIndex="last_name" key="last_name" />
-        </ColumnGroup>
-        <Column title="email" dataIndex="email" key="email" />
-        <Column
-          title="Action"
-          key="action"
-          render={(_, record) => (
-            <Space size="middle">
-              <a>Edit {record.lastName}</a>
-              <Popconfirm
+      <Table dataSource={data.users}>
+      <Column title="ID" dataIndex="id" key="id" />
+      <ColumnGroup title="Name">
+        <Column title="First Name" dataIndex="first_name" key="first_name" />
+        <Column title="Last Name" dataIndex="last_name" key="last_name" />
+      </ColumnGroup>
+      <Column title="dob" dataIndex="dob" key="dob" />
+      <Column title="email" dataIndex="email" key="email" />
+      <Column title="phone number" dataIndex="phone" key="phone" />
+      <Column title="status" dataIndex="status" key="status" />
+      <Column
+        title="Action"
+        key="action"
+        render={(_, record) => (
+          <Space size="middle">
+            <a>Edit {record.lastName}</a>
+            <Popconfirm
                 title="Are you sure to delete this task?"
                 onConfirm={confirm}
                 onCancel={cancel}
@@ -63,10 +61,10 @@ const ListUserScreen = () => {
               >
                 <a href="#">Delete</a>
               </Popconfirm>
-            </Space>
-          )}
-        />
-      </Table>
+          </Space>
+        )}
+      />
+    </Table>
     </>
 
   );
