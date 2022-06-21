@@ -13,7 +13,7 @@ export const login = (username, password) => async (dispatch) => {
     }
 
     const { data } = await axios.post(
-       '/login',
+      '/login',
       { username, password },
       config
     );
@@ -70,6 +70,47 @@ export const register = (name, email, password) => async (dispatch) => {
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
+    })
+  }
+}
+
+export const logout = () => (dispatch) => {
+  localStorage.removeItem('userInfo')
+  dispatch({ type: userConstants.USER_LOGOUT })
+  dispatch({ type: userConstants.USER_DETAILS_RESET })
+  document.location.href = '/login'
+}
+
+export const listUsers = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: userConstants.USER_LIST_REQUEST,
+    })
+    const {
+      userLogin: { userInfo },
+    } = getState()
+    const config = {
+      headers: {
+        // Authorization: `Bearer ${userInfo.accessToken}`,
+        Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY1NTgyMTgzNywiZXhwIjoxNjU1ODY1MDM3fQ.PG7r3PzmJdLzBzRsDOiIzIZAwyfB-6Hli1p9pKJCn-s`,
+      },
+    }
+    const { data } = await axios.post(`/getListUser`, {} , config)
+    dispatch({
+      type: userConstants.USER_LIST_SUCCESS,
+      payload: data.data,
+    })
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    if (message === 'Not authorized, token failed') {
+      dispatch(logout())
+    }
+    dispatch({
+      type: userConstants.USER_LIST_FAIL,
+      payload: message,
     })
   }
 }

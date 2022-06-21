@@ -22,7 +22,11 @@ const LoginScreen = () => {
 
     useEffect(() => {
         if (userInfo) {
-            console.log(userInfo.fullname, userInfo.role[0].authority);
+            if (userInfo.id)
+                // console.log(userInfo.fullname, userInfo.role[0].authority);
+                console.log(userInfo.accessToken);
+            else 
+                console.log(userInfo);
         }
     }, [userInfo])
 

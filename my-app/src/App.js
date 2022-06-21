@@ -5,6 +5,7 @@ import {
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
+import { useSelector, useDispatch } from 'react-redux';
 import { Layout, Menu } from 'antd';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import React, { useState } from 'react';
@@ -17,7 +18,7 @@ import AddDishScreen from './screens/admin/AddDishScreen'
 import AddStaffScreen from './screens/admin/AddStaffScreen';
 import ViewUserDetailScreen from './screens/admin/UserDetailScreen';
 import AddMenuScreen from './screens/admin/AddMenuScreen';
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
 
 
 function getItem(label, key, icon, children) {
@@ -29,24 +30,26 @@ function getItem(label, key, icon, children) {
   };
 }
 
-const items1 = ['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((key) => ({
+const items1 = ['1'].map((key) => ({
   key,
   label: `nav ${key}`,
 }));
 
 const items = [
-  getItem('Option 1', '1', <PieChartOutlined />),
-  getItem('Option 2', '2', <DesktopOutlined />),
-  getItem('User', 'sub1', <UserOutlined />, [
-    getItem('Tom', '3'),
-    getItem('Bill', '4'),
-    getItem('Alex', '5'),
+  getItem('Dashboard', '1', <PieChartOutlined />),
+  getItem('Menu Manager', '2', <DesktopOutlined />),
+  getItem('Account Manager', 'sub1', <UserOutlined />, [
+    getItem('User Manager', '3'),
+    getItem('Staff Manager', '4'),
+    getItem('Admin Manager', '5'),
   ]),
-  getItem('Team', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
-  getItem('Files', '9', <FileOutlined />),
+  getItem('Dish Manager', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
+  getItem('Logout', '9', <FileOutlined />),
 ];
 
 const App = () => {
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
   const [collapsed, setCollapsed] = useState(false);
 
   return (
@@ -55,19 +58,42 @@ const App = () => {
         minHeight: '100vh',
       }}
     >
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-        <div className="logo" />
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
-      </Sider>
+      {userInfo &&
+        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+          <div className="logo" />
+          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+        </Sider>
+      }
       <Layout className="site-layout">
-        <Header
-          className="site-layout-background"
-          style={{
-            padding: 0,
-          }}
-        >
-          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
-        </Header>
+        {userInfo &&
+          <Header
+            className="site-layout-background"
+            style={{
+              padding: 0,
+            }}
+          >
+            <Menu theme="light" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
+          </Header>
+        }
+
+
+        {/* <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+          <div className="logo" />
+          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+        </Sider>
+      
+      <Layout className="site-layout">
+      
+          <Header
+            className="site-layout-background"
+            style={{
+              padding: 0,
+            }}
+          >
+            <Menu theme="light" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
+          </Header>
+         */}
+
 
         <Router>
           <Content
