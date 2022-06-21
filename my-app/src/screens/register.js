@@ -177,7 +177,7 @@ const RegisterScreen = () => {
                     </Form.Item>
 
                     <Form.Item name="date-picker" label="Date of Birth"  >
-                        <DatePicker />
+                        <input type="date" />
                     </Form.Item>
 
 
