@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { Link } from "react-router-dom";
+import { Link, useNavigate  } from "react-router-dom";
 import { Row, Col } from 'antd';
 import { login } from '../actions/userActions';
 import Loader from '../components/Loader';
@@ -19,13 +19,16 @@ const LoginScreen = () => {
         console.log('Received values of form: ', values);
         dispatch(login(values.username, values.password));
     };
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         if (userInfo) {
-            if (userInfo.id)
-                // console.log(userInfo.fullname, userInfo.role[0].authority);
-                console.log(userInfo.accessToken);
-            else 
+            if (userInfo.id) {
+                console.log(userInfo.id);
+                navigate('/admin/userlist')
+            }
+            else
                 console.log(userInfo);
         }
     }, [userInfo])

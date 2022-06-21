@@ -91,8 +91,7 @@ export const listUsers = () => async (dispatch, getState) => {
     } = getState()
     const config = {
       headers: {
-        // Authorization: `Bearer ${userInfo.accessToken}`,
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY1NTgyMTgzNywiZXhwIjoxNjU1ODY1MDM3fQ.PG7r3PzmJdLzBzRsDOiIzIZAwyfB-6Hli1p9pKJCn-s`,
+         Authorization: `Bearer ${userInfo.accessToken}`,
       },
     }
     const { data } = await axios.post(`/getListUser`, {} , config)
