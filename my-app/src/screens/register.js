@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { register } from '../actions/userActions';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     Form,
     Input,
@@ -9,6 +11,7 @@ import {
     Button,
     DatePicker,
 } from 'antd';
+
 const { Option } = Select;
 
 const formItemLayout = {
@@ -29,6 +32,8 @@ const formItemLayout = {
         },
     },
 };
+
+
 const tailFormItemLayout = {
     wrapperCol: {
         xs: {
@@ -41,12 +46,13 @@ const tailFormItemLayout = {
         },
     },
 };
-
+// Complete Dispatch Register 
 const RegisterScreen = () => {
     const [form] = Form.useForm();
-
     const onFinish = (values) => {
-        console.log('Received values of form: ', values);
+        const phoneNumber = `${values.prefix}${values.phone}`;
+        console.log('Received values of form: ', phoneNumber);
+        // useDispatch(register(value))
     };
 
     const prefixSelector = (
@@ -76,7 +82,7 @@ const RegisterScreen = () => {
                     <Form.Item
                         name="email"
                         label="E-mail"
-                     
+
                         rules={[
                             {
                                 type: 'email',
@@ -88,14 +94,14 @@ const RegisterScreen = () => {
                             },
                         ]}
                     >
-                        <Input       />
+                        <Input />
                     </Form.Item>
 
                     <Form.Item
                         name="first_name"
                         label="First Name"
                         tooltip="What do you want others to call you?"
-                     
+
                         rules={[
                             {
                                 required: true,
@@ -107,7 +113,7 @@ const RegisterScreen = () => {
                         <Input />
                     </Form.Item>
                     <Form.Item
-                     
+
 
                         name="last_name"
                         label="Last Name"
@@ -116,13 +122,13 @@ const RegisterScreen = () => {
                                 whitespace: true,
                             },
                         ]}
-                    >    
-                        <Input  />
+                    >
+                        <Input />
                     </Form.Item>
                     <Form.Item
                         name="password"
                         label="Password"
-                  
+
                         rules={[
                             {
                                 required: true,
@@ -131,12 +137,12 @@ const RegisterScreen = () => {
                         ]}
                         hasFeedback
                     >
-                        <Input.Password   />
+                        <Input.Password />
                     </Form.Item>
 
                     <Form.Item
                         name="confirm"
-                      
+
                         label="Confirm Password"
                         dependencies={['password']}
                         hasFeedback
@@ -156,7 +162,7 @@ const RegisterScreen = () => {
                             }),
                         ]}
                     >
-                        <Input.Password  />
+                        <Input.Password />
                     </Form.Item>
 
 
@@ -164,7 +170,7 @@ const RegisterScreen = () => {
                         name="user_name"
                         label="User Name"
                         tooltip="user name used to login to your account"
-                
+
                         rules={[
                             {
                                 required: true,
@@ -173,7 +179,7 @@ const RegisterScreen = () => {
                             },
                         ]}
                     >
-                        <Input  />
+                        <Input />
                     </Form.Item>
 
                     <Form.Item name="date-picker" label="Date of Birth"  >
@@ -219,7 +225,7 @@ const RegisterScreen = () => {
 
                     <Form.Item {...tailFormItemLayout}>
                         <Button type="primary" htmlType="submit">
-                           Register
+                            Register
                         </Button>
                     </Form.Item>
                 </Form></Col>

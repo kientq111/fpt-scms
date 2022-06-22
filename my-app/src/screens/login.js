@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, {  useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { Link, useNavigate  } from "react-router-dom";
+import { useNavigate  } from "react-router-dom";
 import { Row, Col } from 'antd';
 import { login } from '../actions/userActions';
 import Loader from '../components/Loader';
@@ -90,7 +90,6 @@ const LoginScreen = () => {
                         <Button type="primary" htmlType="submit" className="login-form-button">
                             Log in
                         </Button>
-                        Or <Link to={'/register'}>register now!</Link>
                     </Form.Item>
                 </Form>
             </Col>

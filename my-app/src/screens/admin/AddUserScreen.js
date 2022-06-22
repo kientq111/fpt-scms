@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { register } from '../../actions/userActions';
 import {
     Form,
     Input,
-    InputNumber,
     Select,
     Row,
     Col,
     Button,
-    DatePicker,
 } from 'antd';
 const { Option } = Select;
 
@@ -41,13 +41,31 @@ const tailFormItemLayout = {
         },
     },
 };
-
+// iter2: if add success => redirect success screen
 const AddUserScreen = () => {
     const [form] = Form.useForm();
-
+    const dispatch = useDispatch();
+    //get data from store
+    const userAdd = useSelector((state) => state.userRegister)
+    const { userInfo } = userAdd;
+    //Submit register form to action
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
+        const phoneNumber = `${values.phone}`;
+        const address = {
+            street: values.street,
+            district: values.district,
+            city: values.city,
+            country: values.country,
+        }
+        dispatch(register(values.username, values.email, values.password, values.dob, values.first_name, values.last_name, phoneNumber, address));
     };
+
+    useEffect(() => {
+        if (userInfo) {
+            console.log(userInfo.message);
+        }
+    }, [userInfo])
 
     const prefixSelector = (
         <Form.Item name="prefix" noStyle>
@@ -61,7 +79,6 @@ const AddUserScreen = () => {
             </Select>
         </Form.Item>
     );
-
     return (
         <Row>
             <Col flex="1 1 200px">
@@ -76,7 +93,7 @@ const AddUserScreen = () => {
                     <Form.Item
                         name="email"
                         label="E-mail"
-                     
+
                         rules={[
                             {
                                 type: 'email',
@@ -88,14 +105,14 @@ const AddUserScreen = () => {
                             },
                         ]}
                     >
-                        <Input       />
+                        <Input />
                     </Form.Item>
 
                     <Form.Item
                         name="first_name"
                         label="First Name"
                         tooltip="What do you want others to call you?"
-                     
+
                         rules={[
                             {
                                 required: true,
@@ -107,7 +124,7 @@ const AddUserScreen = () => {
                         <Input />
                     </Form.Item>
                     <Form.Item
-                     
+
 
                         name="last_name"
                         label="Last Name"
@@ -116,13 +133,13 @@ const AddUserScreen = () => {
                                 whitespace: true,
                             },
                         ]}
-                    >    
-                        <Input  />
+                    >
+                        <Input />
                     </Form.Item>
                     <Form.Item
                         name="password"
                         label="Password"
-                  
+
                         rules={[
                             {
                                 required: true,
@@ -131,12 +148,12 @@ const AddUserScreen = () => {
                         ]}
                         hasFeedback
                     >
-                        <Input.Password   />
+                        <Input.Password />
                     </Form.Item>
 
                     <Form.Item
                         name="confirm"
-                      
+
                         label="Confirm Password"
                         dependencies={['password']}
                         hasFeedback
@@ -156,15 +173,15 @@ const AddUserScreen = () => {
                             }),
                         ]}
                     >
-                        <Input.Password  />
+                        <Input.Password />
                     </Form.Item>
 
 
                     <Form.Item
-                        name="user_name"
+                        name="username"
                         label="User Name"
                         tooltip="user name used to login to your account"
-                
+
                         rules={[
                             {
                                 required: true,
@@ -173,13 +190,91 @@ const AddUserScreen = () => {
                             },
                         ]}
                     >
-                        <Input  />
+                        <Input />
                     </Form.Item>
 
-                    <Form.Item name="date-picker" label="Date of Birth"  >
-                        <DatePicker />
+                    <Form.Item name="dob" label="Date of Birth" rules={[
+                        {
+                            required: true,
+                            message: 'Input your birthday!',
+                            whitespace: true,
+                        },
+                    ]} >
+                        <input type='date' />
                     </Form.Item>
 
+                    <Form.Item
+                        name="gender"
+                        label="Gender"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please select gender!',
+                            },
+                        ]}
+                    >
+                        <Select placeholder="select your gender" style={{ width: 200 }}>
+                            <Option value="male">Male</Option>
+                            <Option value="female">Female</Option>
+                            <Option value="other">Other</Option>
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                        name="country"
+                        label="Country"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your country!',
+                                whitespace: true,
+                            },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item layout="inline"
+                        name="city"
+                        label="City"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your city!',
+                                whitespace: true,
+                            },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="district"
+                        label="District"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your district!',
+                                whitespace: true,
+                            },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="street"
+                        label="Street"
+                        Size="small "
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your street!',
+                                whitespace: true,
+                            },
+                        ]}
+                    >
+                        <Input Size="small" />
+                    </Form.Item>
 
                     <Form.Item
                         name="phone"
@@ -197,24 +292,6 @@ const AddUserScreen = () => {
                                 width: '100%',
                             }}
                         />
-                    </Form.Item>
-
-
-                    <Form.Item
-                        name="gender"
-                        label="Gender"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please select gender!',
-                            },
-                        ]}
-                    >
-                        <Select placeholder="select your gender">
-                            <Option value="male">Male</Option>
-                            <Option value="female">Female</Option>
-                            <Option value="other">Other</Option>
-                        </Select>
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>
