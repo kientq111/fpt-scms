@@ -6,10 +6,10 @@ import { useDispatch, useSelector } from 'react-redux';
 const { Column, ColumnGroup } = Table;
 
 
-const baseURL = "https://reqres.in/api/users?page=1";
-
+//Delete Update Form
 const confirm = (e) => {
   console.log(e);
+  
   message.success('Delete successful');
 };
 
@@ -51,7 +51,7 @@ const ListUserScreen = () => {
         key="action"
         render={(_, record) => (
           <Space size="middle">
-            <a>Edit {record.lastName}</a>
+            <a>Edit {record.last_Name}</a>
             <Popconfirm
                 title="Are you sure to delete this task?"
                 onConfirm={confirm}

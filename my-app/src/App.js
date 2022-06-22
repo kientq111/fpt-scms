@@ -5,12 +5,11 @@ import {
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Layout, Menu } from 'antd';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import React, { useState } from 'react';
 import LoginScreen from './screens/login';
-import RegisterScreen from './screens/register';
 import ErrorScreen from './screens/404';
 import ListUserScreen from './screens/admin/ListUserScreen';
 import AddUserScreen from './screens/admin/AddUserScreen';
@@ -76,25 +75,6 @@ const App = () => {
           </Header>
         }
 
-
-        {/* <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-          <div className="logo" />
-          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
-        </Sider>
-      
-      <Layout className="site-layout">
-      
-          <Header
-            className="site-layout-background"
-            style={{
-              padding: 0,
-            }}
-          >
-            <Menu theme="light" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
-          </Header>
-         */}
-
-
         <Router>
           <Content
             style={{
@@ -102,15 +82,20 @@ const App = () => {
             }}
           >
             <Routes>
+              {/* Account */}
               <Route path='/' element={<LoginScreen />} />
-              <Route path='/register' element={<RegisterScreen />} />
-              <Route path='/error404' element={<ErrorScreen />} />
-              <Route path='/admin/userlist' element={<ListUserScreen />} />
-              <Route path='/admin/adduser' element={<AddUserScreen />} />
-              <Route path='/admin/adddish' element={<AddDishScreen />} />
-              <Route path='/admin/addstaff' element={<AddStaffScreen />} />
-              <Route path='/admin/userdetail' element={<ViewUserDetailScreen />} />
+              {/* Menu */}
               <Route path='/admin/addMenu' element={<AddMenuScreen />} />
+              {/* Dish */}
+              <Route path='/admin/adddish' element={<AddDishScreen />} />
+              {/* Staff */}
+              <Route path='/admin/addstaff' element={<AddStaffScreen />} />
+              {/* User */}
+              <Route path='/admin/adduser' element={<AddUserScreen />} />
+              <Route path='/admin/userdetail' element={<ViewUserDetailScreen />} />
+              <Route path='/admin/userlist' element={<ListUserScreen />} />
+              {/* Common */}
+              <Route path='/error404' element={<ErrorScreen />} />
             </Routes>
           </Content>
         </Router>
