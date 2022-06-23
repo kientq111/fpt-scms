@@ -134,11 +134,11 @@ export const deleteUser = (id) => async (dispatch, getState) => {
 
     const config = {
       headers: {
-        Authorization: `Bearer ${userInfo.token}`,
+        Authorization: `Bearer ${userInfo.accessToken}`,
       },
     }
 
-    await axios.delete(`/api/users/${id}`, config)
+    await axios.post(`/deleteUser/${id}`, {}, config)
 
     dispatch({ type: userConstants.USER_DELETE_SUCCESS })
   } catch (error) {
@@ -146,9 +146,9 @@ export const deleteUser = (id) => async (dispatch, getState) => {
       error.response && error.response.data.message
         ? error.response.data.message
         : error.message
-    if (message === 'Not authorized, token failed') {
-      dispatch(logout())
-    }
+    // if (message === 'Not authorized, token failed') {
+    //   dispatch(logout())
+    // }
     dispatch({
       type: userConstants.USER_DELETE_FAIL,
       payload: message,

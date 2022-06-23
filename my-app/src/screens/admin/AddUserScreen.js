@@ -51,7 +51,7 @@ const AddUserScreen = () => {
     //Submit register form to action
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
-        const phoneNumber = `${values.phone}`;
+        const phoneNumber = `${values.prefix}${values.phone}`;
         const address = {
             street: values.street,
             district: values.district,

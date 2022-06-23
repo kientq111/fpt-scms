@@ -17,6 +17,7 @@ import AddDishScreen from './screens/admin/AddDishScreen'
 import AddStaffScreen from './screens/admin/AddStaffScreen';
 import ViewUserDetailScreen from './screens/admin/UserDetailScreen';
 import AddMenuScreen from './screens/admin/AddMenuScreen';
+import EditUserScreen from './screens/admin/EditUserScreen';
 const { Header, Content, Sider } = Layout;
 
 
@@ -94,6 +95,7 @@ const App = () => {
               <Route path='/admin/adduser' element={<AddUserScreen />} />
               <Route path='/admin/userdetail' element={<ViewUserDetailScreen />} />
               <Route path='/admin/userlist' element={<ListUserScreen />} />
+              <Route path='/admin/edit' element={<EditUserScreen />} />
               {/* Common */}
               <Route path='/error404' element={<ErrorScreen />} />
             </Routes>

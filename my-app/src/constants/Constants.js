@@ -33,3 +33,4 @@ export const userConstants = {
     USER_UPDATE_FAIL: 'USER_UPDATE_FAIL',
     USER_UPDATE_RESET: 'USER_UPDATE_RESET',
 }
+
