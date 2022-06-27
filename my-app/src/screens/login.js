@@ -26,7 +26,7 @@ const LoginScreen = () => {
         if (userInfo) {
             if (userInfo.id) {
                 console.log(userInfo.id);
-                navigate('/admin/userlist')
+                navigate('/admin/listuser')
             }
             else
                 console.log(userInfo);

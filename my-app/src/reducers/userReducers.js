@@ -30,6 +30,7 @@ export const userRegisterReducer = (state = { users: [] }, action) => {
   }
 }
 
+
 export const userListReducer = (state = { users: [] }, action) => {
   switch (action.type) {
     case userConstants.USER_LIST_REQUEST:

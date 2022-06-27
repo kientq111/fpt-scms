@@ -94,10 +94,10 @@ const App = () => {
               {/* User */}
               <Route path='/admin/adduser' element={<AddUserScreen />} />
               <Route path='/admin/userdetail' element={<ViewUserDetailScreen />} />
-              <Route path='/admin/userlist' element={<ListUserScreen />} />
-              <Route path='/admin/edit' element={<EditUserScreen />} />
+              <Route path='/admin/listuser' element={<ListUserScreen />} />
+              <Route path='/admin/edituser' element={<EditUserScreen />} />
               {/* Common */}
-              <Route path='/error404' element={<ErrorScreen />} />
+              <Route path='*' element={<ErrorScreen />} />
             </Routes>
           </Content>
         </Router>
