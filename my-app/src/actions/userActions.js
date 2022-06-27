@@ -49,12 +49,12 @@ export const register = (username, email, password, dob, first_name, last_name, 
     const config = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${userInfo.accessToken}`
+        // Authorization: `Bearer ${userInfo.accessToken}`
       },
     }
 
     const { data } = await axios.post(
-      '/createUser',
+      '/signup',
       { username, email, password, dob, first_name, last_name, phone, address, status, type },
       config
     )
