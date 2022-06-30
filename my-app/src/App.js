@@ -18,6 +18,9 @@ import AddStaffScreen from './screens/admin/AddStaffScreen';
 import ViewUserDetailScreen from './screens/admin/UserDetailScreen';
 import AddMenuScreen from './screens/admin/AddMenuScreen';
 import EditUserScreen from './screens/admin/EditUserScreen';
+import ListStaffScreen from './screens/admin/ListStaffScreen';
+import ListDishScreen from './screens/admin/ListDishScreen';
+import AddCateScreen from './screens/admin/AddCategoryScreen';
 const { Header, Content, Sider } = Layout;
 
 
@@ -58,7 +61,7 @@ const App = () => {
         minHeight: '100vh',
       }}
     >
-      {userInfo &&
+      {/* {userInfo &&
         <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
           <div className="logo" />
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
@@ -74,7 +77,26 @@ const App = () => {
           >
             <Menu theme="light" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
           </Header>
-        }
+        } */}
+
+
+
+        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+          <div className="logo" />
+          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+        </Sider>
+      
+      <Layout className="site-layout">
+   
+          <Header
+            className="site-layout-background"
+            style={{
+              padding: 0,
+            }}
+          >
+            <Menu theme="light" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
+          </Header>
+        
 
         <Router>
           <Content
@@ -89,13 +111,17 @@ const App = () => {
               <Route path='/admin/addMenu' element={<AddMenuScreen />} />
               {/* Dish */}
               <Route path='/admin/adddish' element={<AddDishScreen />} />
+              <Route path='/admin/listdish' element={<ListDishScreen />} />
               {/* Staff */}
               <Route path='/admin/addstaff' element={<AddStaffScreen />} />
+              <Route path='/admin/liststaff' element={<ListStaffScreen />} />
               {/* User */}
               <Route path='/admin/adduser' element={<AddUserScreen />} />
               <Route path='/admin/userdetail' element={<ViewUserDetailScreen />} />
               <Route path='/admin/listuser' element={<ListUserScreen />} />
               <Route path='/admin/edituser' element={<EditUserScreen />} />
+              {/* Category&SubCategory */}
+              <Route path='/admin/addcategory' element={<AddCateScreen/>} />
               {/* Common */}
               <Route path='*' element={<ErrorScreen />} />
             </Routes>

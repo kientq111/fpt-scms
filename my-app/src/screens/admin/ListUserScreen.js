@@ -65,6 +65,7 @@ const ListUserScreen = () => {
         </Breadcrumb.Item>
       </Breadcrumb>
 
+
       <Table dataSource={data.users}>
         <Column title="ID" dataIndex="id" key="id" />
         <Column title="username" dataIndex="username" key="username" />

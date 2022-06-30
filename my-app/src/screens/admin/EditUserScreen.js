@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { register } from '../../actions/userActions';
+import { updateUser } from '../../actions/userActions';
 import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
     Form,
     Input,
@@ -42,16 +43,17 @@ const tailFormItemLayout = {
         },
     },
 };
-// iter2: if add success => redirect success screen
+
 const EditUserScreen = () => {
     const [form] = Form.useForm();
     //useLocation to get state from previous screen
     const location = useLocation();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     //get data from store
-    const userAdd = useSelector((state) => state.userRegister)
-    const { userInfo } = userAdd;
-    //Submit register form to action
+    const userUpdateSelector = useSelector((state) => state.userUpdate)
+    const { success } = userUpdateSelector;
+    //Submit edit form to action
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
         const phoneNumber = `${values.prefix}${values.phone}`;
@@ -61,7 +63,14 @@ const EditUserScreen = () => {
             city: values.city,
             country: values.country,
         }
-        dispatch(register(values.username, values.email, values.password, values.dob, values.first_name, values.last_name, phoneNumber, address));
+        dispatch(updateUser(location.state.id, values.username, values.email, values.dob, values.first_name, values.last_name, phoneNumber, address));
+        if (location.state.history === '/admin/liststaff') {
+            navigate('/admin/liststaff')
+        } else {
+            navigate('/admin/listuser')
+        }
+
+
     };
 
     useEffect(() => {
@@ -70,17 +79,17 @@ const EditUserScreen = () => {
             last_name: location.state.lastname,
             username: location.state.username,
             email: location.state.email,
-            dob: location.state.dob,
+            dob: '2022-03-03',
             country: location.state.country,
             city: location.state.city,
             district: location.state.district,
             street: location.state.street,
-            phone: location.state.phone
+            phone: location.state.phone,
+            gender: 'Male'
         })
-        if (userInfo) {
-            console.log(userInfo.message);
-        }
-    }, [userInfo])
+        console.log('phone: ', location.state.phone);
+
+    }, [])
 
     const prefixSelector = (
         <Form.Item name="prefix" noStyle>
@@ -167,7 +176,7 @@ const EditUserScreen = () => {
                             },
                         ]}
                     >
-                        <Input />
+                        <Input readOnly />
                     </Form.Item>
 
                     <Form.Item name="dob" label="Date of Birth" rules={[
@@ -177,7 +186,7 @@ const EditUserScreen = () => {
                             whitespace: true,
                         },
                     ]} >
-                        <input type='date'/>
+                        <input type='date' />
                     </Form.Item>
 
                     <Form.Item
