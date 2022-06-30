@@ -21,6 +21,7 @@ import EditUserScreen from './screens/admin/EditUserScreen';
 import ListStaffScreen from './screens/admin/ListStaffScreen';
 import ListDishScreen from './screens/admin/ListDishScreen';
 import AddCateScreen from './screens/admin/AddCategoryScreen';
+import ListCategoryScreen from './screens/admin/ListCategoryScreen';
 const { Header, Content, Sider } = Layout;
 
 
@@ -122,6 +123,7 @@ const App = () => {
               <Route path='/admin/edituser' element={<EditUserScreen />} />
               {/* Category&SubCategory */}
               <Route path='/admin/addcategory' element={<AddCateScreen/>} />
+              <Route path='/admin/listcategory' element={<ListCategoryScreen/>} />
               {/* Common */}
               <Route path='*' element={<ErrorScreen />} />
             </Routes>
