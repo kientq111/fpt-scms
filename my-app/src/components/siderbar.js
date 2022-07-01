@@ -6,9 +6,12 @@ import {
     PieChartOutlined,
     TeamOutlined,
     UserOutlined,
+    LogoutOutlined
 } from '@ant-design/icons';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logout } from '../actions/userActions';
 
 
 function getItem(label, key, icon, children) {
@@ -26,20 +29,30 @@ const items1 = ['1'].map((key) => ({
 }));
 
 const items = [
-    getItem('Dashboard', '/admin/listuser', <PieChartOutlined />),
-    // getItem('Menu Manager', '/admin/listuser', <DesktopOutlined />),
+    getItem('Dashboard', '', <PieChartOutlined />),
+    getItem('Menu Manager', '', <DesktopOutlined />, [
+        getItem('Add Dish', '/admin/adddish'),
+        getItem('List Dish', '/admin/listdish'),
+        getItem('Add Category', '/admin/addcategory'),
+        getItem('List Category', '/admin/listcategory'),
+    ]),
     getItem('Account Manager', '', <UserOutlined />, [
         // getItem('List User', '/admin/listuser'),
         getItem('Add User', '/admin/adduser'),
-        getItem('List Staff', '/admin/liststaff')
+        getItem('List Staff', '/admin/liststaff'),
+        getItem('List User', '/admin/listuser')
     ]),
     // getItem('Dish Manager', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
-    // getItem('Logout', '9', <FileOutlined />),
+    getItem('Logout', '/', <LogoutOutlined />),
 ];
 
 const SiderBar = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const handleSiderClick = (e) => {
+        if (e.key == '/') {
+            dispatch(logout());
+        }
         console.log(e.key);
         navigate(e.key)
     }

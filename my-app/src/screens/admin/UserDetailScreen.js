@@ -62,23 +62,6 @@ const ViewUserDetailScreen = () => {
                     onFinish={onFinish}
                     scrollToFirstError
                 >
-                    {/* <Form.Item
-                        name="avatar"
-                    >
-                        <Avatar
-                            size={{
-                                xs: 34,
-                                sm: 42,
-                                md: 50,
-                                lg: 74,
-                                xl: 90,
-                                xxl: 120,
-                            }}
-                            // style={{position:'relative', left:600}}
-                            icon={<AntDesignOutlined />}
-                        />
-                    </Form.Item> */}
-
                     <Form.Item
                         name="email"
                         label="E-mail"

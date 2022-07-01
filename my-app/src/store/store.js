@@ -1,10 +1,11 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { userLoginReducer, userRegisterReducer, userListReducer, userDeleteReducer, userUpdateReducer, staffListReducer } from '../reducers/userReducers';
+import { userLoginReducer, userRegisterReducer, userListReducer, userDeleteReducer, userUpdateReducer, staffListReducer, userCheckAccountReducer } from '../reducers/userReducers';
 import { dishListReducer } from '../reducers/dishReduce';
 import { addCategoryReducer, listCategoryReducer } from '../reducers/categoryReduce';
 const reducers = combineReducers({
+    userCheckAcc: userCheckAccountReducer,
     userLogin: userLoginReducer,
     userRegister: userRegisterReducer,
     userList: userListReducer,

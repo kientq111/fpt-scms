@@ -8,10 +8,14 @@ export const listDishes = () => async (dispatch, getState) => {
             type: dishConstants.DISH_LIST_REQUEST,
         })
 
+        const {
+            userLogin: { userInfo },
+        } = getState()
+        
         const config = {
             headers: {
-                //   Authorization: `Bearer ${userInfo.accessToken}`,
-                Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY1NjU2MTMyNSwiZXhwIjoxNjU2NjA0NTI1fQ.CaDPWriGBmulWZCja5trEfSaxjutoAHz27Y07rxRBT8`,
+                Authorization: `Bearer ${userInfo.accessToken}`,
+              
             },
         }
         const { data } = await axios.post(`/dish/getListDish?dishName&status&menuId&subcategoryId&startDate&endDate&createdBy&pageIndex=1&pageSize=10`, {}, config)

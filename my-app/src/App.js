@@ -6,7 +6,7 @@
 //   UserOutlined,
 // } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Divider  } from 'antd';
 import { BrowserRouter as Router, Routes, Route, useRoutes } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import LoginScreen from './screens/login';
@@ -37,7 +37,7 @@ const { Header, Content, Sider } = Layout;
 
 const items1 = ['1'].map((key) => ({
   key,
-  label: `nav ${key}`,
+  label: `Hello Admin`,
 }));
 
 // const items = [
@@ -66,72 +66,54 @@ const App = () => {
         minHeight: '100vh',
       }}
     >
-      {/* {userInfo &&
-        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-          <div className="logo" />
-          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
-        </Sider>
-      }
-      <Layout className="site-layout">
-        {userInfo &&
-          <Header
-            className="site-layout-background"
-            style={{
-              padding: 0,
-            }}
-          >
-            <Menu theme="light" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
-          </Header>
-        } */}
 
-
-
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+      {userInfo && <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
         <div className="logo" />
         {/* add onclick to menu */}
         <SiderBar />
-      </Sider>
+      </Sider>}
+
 
       <Layout className="site-layout">
-
-        <Header
+        {userInfo && <Header
           className="site-layout-background"
           style={{
             padding: 0,
           }}
         >
-          <Menu theme="light" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
-        </Header>
       
-          <Content
-            style={{
-              margin: '0 16px',
-            }}
-          >
-            <Routes>
-              {/* Account */}
-              <Route path='/' element={<LoginScreen />} />
-              {/* Menu */}
-              <Route path='/admin/addMenu' element={<AddMenuScreen />} />
-              {/* Dish */}
-              <Route path='/admin/adddish' element={<AddDishScreen />} />
-              <Route path='/admin/listdish' element={<ListDishScreen />} />
-              {/* Staff */}
-              <Route path='/admin/addstaff' element={<AddStaffScreen />} />
-              <Route path='/admin/liststaff' element={<ListStaffScreen />} />
-              {/* User */}
-              <Route path='/admin/adduser' element={<AddUserScreen />} />
-              <Route path='/admin/userdetail' element={<ViewUserDetailScreen />} />
-              <Route path='/admin/listuser' element={<ListUserScreen />} />
-              <Route path='/admin/edituser' element={<EditUserScreen />} />
-              {/* Category&SubCategory */}
-              <Route path='/admin/addcategory' element={<AddCateScreen />} />
-              <Route path='/admin/listcategory' element={<ListCategoryScreen />} />
-              {/* Common */}
-              <Route path='*' element={<ErrorScreen />} />
-            </Routes>
-          </Content>
-    
+          <Menu theme="light" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
+        </Header>}
+
+        <Content
+          style={{
+            margin: '0 16px',
+          }}
+        >
+          <Routes>
+            {/* Account */}
+            <Route path='/' element={<LoginScreen />} />
+            {/* Menu */}
+            <Route path='/admin/addMenu' element={<AddMenuScreen />} />
+            {/* Dish */}
+            <Route path='/admin/adddish' element={<AddDishScreen />} />
+            <Route path='/admin/listdish' element={<ListDishScreen />} />
+            {/* Staff */}
+            <Route path='/admin/addstaff' element={<AddStaffScreen />} />
+            <Route path='/admin/liststaff' element={<ListStaffScreen />} />
+            {/* User */}
+            <Route path='/admin/adduser' element={<AddUserScreen />} />
+            <Route path='/admin/userdetail' element={<ViewUserDetailScreen />} />
+            <Route path='/admin/listuser' element={<ListUserScreen />} />
+            <Route path='/admin/edituser' element={<EditUserScreen />} />
+            {/* Category&SubCategory */}
+            <Route path='/admin/addcategory' element={<AddCateScreen />} />
+            <Route path='/admin/listcategory' element={<ListCategoryScreen />} />
+            {/* Common */}
+            <Route path='*' element={<ErrorScreen />} />
+          </Routes>
+        </Content>
+
       </Layout>
     </Layout>
   );

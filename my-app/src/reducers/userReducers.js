@@ -1,5 +1,18 @@
 import { userConstants, staffConstants } from "../constants/Constants"
 
+export const userCheckAccountReducer = (state = {}, action) => {
+  switch (action.type) {
+    case userConstants.USER_CHECKACC_REQUEST:
+      return { loading: true }
+    case userConstants.USER_CHECKACC_SUCCESS:
+      return { loading: false, userInfo: action.payload }
+    case userConstants.USER_CHECKACC_FAIL:
+      return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
 export const userLoginReducer = (state = {}, action) => {
   switch (action.type) {
     case userConstants.USER_LOGIN_REQUEST:

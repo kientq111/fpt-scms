@@ -35,7 +35,7 @@ const ListCategoryScreen = () => {
             <Breadcrumb style={{ marginTop: 10 }}>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>
-                    <a href="">List dish</a>
+                    <a href="">List category</a>
                 </Breadcrumb.Item>
             </Breadcrumb>
 
