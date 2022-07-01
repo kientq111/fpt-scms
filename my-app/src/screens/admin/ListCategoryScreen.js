@@ -4,21 +4,20 @@ import {
 import { React, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import { listDishes } from '../../actions/dishAction';
+import { listCategory } from '../../actions/categoryAction';
 const { Column, ColumnGroup } = Table;
 
-const ListDishScreen = () => {
+const ListCategoryScreen = () => {
 
 
 
     const dispatch = useDispatch();
-    const dataDish = useSelector((state) => state.dishList);
-    const { loading, dishes } = dataDish
+    const dataCategory = useSelector((state) => state.categoryList);
+    const { loading, categoryInfo } = dataCategory
 
     useEffect(() => {
-        dispatch(listDishes());
-        console.log(dataDish);
-        console.log(dishes)
+        dispatch(listCategory());
+        console.log(categoryInfo);
     }, []);
 
 
@@ -36,19 +35,16 @@ const ListDishScreen = () => {
             <Breadcrumb style={{ marginTop: 10 }}>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>
-                    <a href="">List dish</a>
+                    <a href="">List category</a>
                 </Breadcrumb.Item>
             </Breadcrumb>
 
 
-            <Table dataSource={dishes}>
-                <Column title="dishID" dataIndex="id" key="id" />
-                <Column title="dishName" dataIndex="dishName" key="dishName" />
-                <Column title="menuID" dataIndex="menu" render={(_, record) => record.menu.id} key="menuID" />
-                <Column title="menuName" dataIndex="menu" render={(_, record) => record.menu.menuName} key="menu" />
-                <Column title="subCategoryID" dataIndex="subCategory" render={(_, record) => record.subCategory.id} key="subCategoryID" />
-                <Column title="subCategory" dataIndex="subCategory" render={(_, record) => record.subCategory.subCategoryName} key="subCategory" />
-                <Column title="dish status" dataIndex="status" key="status" />
+            <Table dataSource={categoryInfo}>
+                <Column title="id" dataIndex="id" key="id" />
+                <Column title="categoryName" dataIndex="categoryName" key="categoryName" />
+                <Column title="description" dataIndex="description" key="description" />
+                <Column title="status" dataIndex="status" key="status" />
 
                 <Column
                     title="Action"
@@ -73,4 +69,4 @@ const ListDishScreen = () => {
     )
 }
 
-export default ListDishScreen;
+export default ListCategoryScreen;

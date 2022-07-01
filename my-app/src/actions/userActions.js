@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { userConstants } from '../constants/Constants'
+import { userConstants, staffConstants } from '../constants/Constants'
+
 export const login = (username, password) => async (dispatch) => {
   try {
     dispatch({
@@ -34,6 +35,39 @@ export const login = (username, password) => async (dispatch) => {
   }
 }
 
+export const checkAccount = (username) => async (dispatch) => {
+  try {
+    dispatch({
+      type: userConstants.USER_CHECKACC_REQUEST,
+    })
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+
+    const { data } = await axios.post(
+      `/getInfoByUserName?username=${username}`,
+      {},
+      config
+    );
+    dispatch({
+      type: userConstants.USER_CHECKACC_SUCCESS,
+      payload: data.data,
+    })
+
+  } catch (error) {
+    dispatch({
+      type: userConstants.USER_CHECKACC_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
 export const register = (username, email, password, dob, first_name, last_name, phone, address) => async (dispatch, getState) => {
   try {
     dispatch({
@@ -48,8 +82,9 @@ export const register = (username, email, password, dob, first_name, last_name, 
 
     const config = {
       headers: {
+
         'Content-Type': 'application/json',
-        // Authorization: `Bearer ${userInfo.accessToken}`
+        Authorization: `Bearer ${userInfo.accessToken}`
       },
     }
 
@@ -85,7 +120,6 @@ export const logout = () => (dispatch) => {
   localStorage.removeItem('userInfo')
   dispatch({ type: userConstants.USER_LOGOUT })
   dispatch({ type: userConstants.USER_DETAILS_RESET })
-  document.location.href = '/login'
 }
 
 export const listUsers = () => async (dispatch, getState) => {
@@ -156,7 +190,7 @@ export const deleteUser = (id) => async (dispatch, getState) => {
   }
 }
 
-export const updateUser = (user) => async (dispatch, getState) => {
+export const updateUser = (id, username, email, dob, first_name, last_name, phone, address) => async (dispatch, getState) => {
   try {
     dispatch({
       type: userConstants.USER_UPDATE_REQUEST,
@@ -169,17 +203,15 @@ export const updateUser = (user) => async (dispatch, getState) => {
     const config = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${userInfo.token}`,
+        Authorization: `Bearer ${userInfo.accessToken}`
+        // Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY1NjU5MTMyMywiZXhwIjoxNjU2NjM0NTIzfQ.ynTH2uEN7DQjK7hHwC3R7j4XWjY_NiLYS3JBuJNk5Ok`,
       },
     }
 
-    const { data } = await axios.put(`/api/users/${user._id}`, user, config)
+    const { data } = await axios.post(`/updateUser/${id}`, { username, email, dob, first_name, last_name, phone, address }, config)
 
-    dispatch({ type: userConstants.USER_UPDATE_SUCCESS })
+    dispatch({ type: userConstants.USER_UPDATE_SUCCESS, payload: data })
 
-    dispatch({ type: userConstants.USER_DETAILS_SUCCESS, payload: data })
-
-    dispatch({ type: userConstants.USER_DETAILS_RESET })
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -190,6 +222,41 @@ export const updateUser = (user) => async (dispatch, getState) => {
     }
     dispatch({
       type: userConstants.USER_UPDATE_FAIL,
+      payload: message,
+    })
+  }
+}
+
+
+export const listStaff = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: staffConstants.STAFF_LIST_REQUEST,
+    })
+    const {
+      userLogin: { userInfo },
+    } = getState()
+    const config = {
+      headers: {
+        // Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY1NjU5MTMyMywiZXhwIjoxNjU2NjM0NTIzfQ.ynTH2uEN7DQjK7hHwC3R7j4XWjY_NiLYS3JBuJNk5Ok`,
+        Authorization: `Bearer ${userInfo.accessToken}`,
+      },
+    }
+    const { data } = await axios.post(`/getListStaff`, {}, config)
+    dispatch({
+      type: staffConstants.STAFF_LIST_SUCCESS,
+      payload: data.data,
+    })
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    if (message === 'Not authorized, token failed') {
+      dispatch(logout())
+    }
+    dispatch({
+      type: staffConstants.STAFF_LIST_FAIL,
       payload: message,
     })
   }
