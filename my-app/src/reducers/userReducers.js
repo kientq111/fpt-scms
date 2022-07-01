@@ -63,7 +63,7 @@ export const userDeleteReducer = (state = { users: [] }, action) => {
 export const userUpdateReducer = (state = { user: {} }, action) => {
   switch (action.type) {
     case userConstants.USER_UPDATE_REQUEST:
-      return { loading: true }
+      return { loading:true }
     case userConstants.USER_UPDATE_SUCCESS:
       return { loading: false, success: true, data: action.payload }
     case userConstants.USER_UPDATE_FAIL:
@@ -85,3 +85,4 @@ export const staffListReducer = (state = { users: [] }, action) => {
       return state
   }
 }
+ 

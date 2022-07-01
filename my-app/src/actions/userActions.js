@@ -171,7 +171,7 @@ export const updateUser = (id, username, email, dob, first_name, last_name, phon
       headers: {
         'Content-Type': 'application/json',
         // Authorization: `Bearer ${userInfo.accessToken}`
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY1NjUxNjA1MSwiZXhwIjoxNjU2NTU5MjUxfQ.0OfZ4bF3oR3lGBNuLmK8kfLBCMbv5mOUbBTzt1lXI0g`,
+        Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY1NjU5MTMyMywiZXhwIjoxNjU2NjM0NTIzfQ.ynTH2uEN7DQjK7hHwC3R7j4XWjY_NiLYS3JBuJNk5Ok`,
       },
     }
 
@@ -205,7 +205,7 @@ export const listStaff = () => async (dispatch, getState) => {
     } = getState()
     const config = {
       headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY1NjUxNjA1MSwiZXhwIjoxNjU2NTU5MjUxfQ.0OfZ4bF3oR3lGBNuLmK8kfLBCMbv5mOUbBTzt1lXI0g`,
+        Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY1NjU5MTMyMywiZXhwIjoxNjU2NjM0NTIzfQ.ynTH2uEN7DQjK7hHwC3R7j4XWjY_NiLYS3JBuJNk5Ok`,
         // Authorization: `Bearer ${userInfo.accessToken}`,
       },
     }

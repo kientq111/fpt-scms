@@ -1,8 +1,8 @@
-import React, {  useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useNavigate  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Row, Col } from 'antd';
 import { login } from '../actions/userActions';
 import Loader from '../components/Loader';
@@ -20,8 +20,6 @@ const LoginScreen = () => {
         dispatch(login(values.username, values.password));
     };
     const navigate = useNavigate();
-
-
     useEffect(() => {
         if (userInfo) {
             if (userInfo.id) {
@@ -32,7 +30,6 @@ const LoginScreen = () => {
                 console.log(userInfo);
         }
     }, [userInfo])
-
     return (
         <Row>
             <Col span={8}></Col>
