@@ -8,6 +8,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import styled from 'styled-components';
+import moment from 'moment'
+
 
 const { Column, ColumnGroup } = Table;
 
@@ -191,10 +193,10 @@ const ListUserScreen = () => {
         <Column title="UserName" dataIndex="username" key="username" sorter={(a, b) => a.username.length - b.username.length} />
         <Column title="First Name" dataIndex="first_name" key="first_name" />
         <Column title="Last Name" dataIndex="last_name" key="last_name" {...getColumnSearchProps('last_name')} />
-        <Column title="Date of Birth" dataIndex="dob" key="dob" />
+        <Column title="Date of Birth" dataIndex="dob" render={(_, record) => (moment(record.dob).format('DD/MM/YYYY'))} key="dob" />
         <Column title="Email" dataIndex="email" key="email" />
         <Column title="Phone Number" dataIndex="phone" key="phone" />
-        <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? 'True' : 'False')}
+        <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? 'active' : 'inactive')}
           filters={[{
             text: 'True',
             value: 'true',
