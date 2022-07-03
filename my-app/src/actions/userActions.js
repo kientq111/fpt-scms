@@ -80,6 +80,7 @@ export const register = (username, email, password, dob, first_name, last_name, 
       userLogin: { userInfo },
     } = getState()
 
+    const createdBy = userInfo.username;
     const config = {
       headers: {
 
@@ -89,8 +90,8 @@ export const register = (username, email, password, dob, first_name, last_name, 
     }
 
     const { data } = await axios.post(
-      '/signup',
-      { username, email, password, dob, first_name, last_name, phone, address, status, type },
+      '/createUser',
+      { username, email, password, dob, createdBy, first_name, last_name, phone, address, status, type },
       config
     )
 
@@ -135,7 +136,7 @@ export const listUsers = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.accessToken}`,
       },
     }
-    const { data } = await axios.post(`/getListUser`, {}, config)
+    const { data } = await axios.post(`/getListUser?username=&email=&phone=&status=1&createBy=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=`, {}, config)
     dispatch({
       type: userConstants.USER_LIST_SUCCESS,
       payload: data.data,
@@ -190,12 +191,13 @@ export const deleteUser = (id) => async (dispatch, getState) => {
   }
 }
 
-export const updateUser = (id, username, email, dob, first_name, last_name, phone, address) => async (dispatch, getState) => {
+export const updateUser = (id, username, email, dob, first_name, last_name, phone, address, gender) => async (dispatch, getState) => {
   try {
     dispatch({
       type: userConstants.USER_UPDATE_REQUEST,
     })
-
+    const createdBy = "";
+    const updatedBy = "";
     const {
       userLogin: { userInfo },
     } = getState()
@@ -204,14 +206,16 @@ export const updateUser = (id, username, email, dob, first_name, last_name, phon
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${userInfo.accessToken}`
-        // Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY1NjU5MTMyMywiZXhwIjoxNjU2NjM0NTIzfQ.ynTH2uEN7DQjK7hHwC3R7j4XWjY_NiLYS3JBuJNk5Ok`,
+
       },
     }
 
-    const { data } = await axios.post(`/updateUser/${id}`, { username, email, dob, first_name, last_name, phone, address }, config)
+    const { data } = await axios.post(`/updateUser/${id}`, { username, email, dob, first_name, last_name, createdBy, updatedBy, phone, address, gender }, config)
 
     dispatch({ type: userConstants.USER_UPDATE_SUCCESS, payload: data })
 
+
+    dispatch({ type: userConstants.USER_UPDATE_RESET })
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -238,11 +242,11 @@ export const listStaff = () => async (dispatch, getState) => {
     } = getState()
     const config = {
       headers: {
-        // Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY1NjU5MTMyMywiZXhwIjoxNjU2NjM0NTIzfQ.ynTH2uEN7DQjK7hHwC3R7j4XWjY_NiLYS3JBuJNk5Ok`,
+
         Authorization: `Bearer ${userInfo.accessToken}`,
       },
     }
-    const { data } = await axios.post(`/getListStaff`, {}, config)
+    const { data } = await axios.post(`/getListStaff?username=&email=&phone=&status=1&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=1&pageSize=5`, {}, config)
     dispatch({
       type: staffConstants.STAFF_LIST_SUCCESS,
       payload: data.data,
@@ -258,6 +262,51 @@ export const listStaff = () => async (dispatch, getState) => {
     dispatch({
       type: staffConstants.STAFF_LIST_FAIL,
       payload: message,
+    })
+  }
+}
+
+
+export const addStaff = (username, email, password, dob, first_name, last_name, phone, address) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: staffConstants.STAFF_ADD_REQUEST,
+    })
+    // Dinamic variable
+    const status = '1';
+    const type = '1';
+    const {
+      userLogin: { userInfo },
+    } = getState()
+    const createdBy = userInfo.username;
+    const config = {
+      headers: {
+
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.accessToken}`
+      },
+    }
+
+    const { data } = await axios.post(
+      '/createStaff',
+      { username, email, password, dob, first_name, last_name, createdBy, phone, address, status, type },
+      config
+    )
+
+    dispatch({
+      type: staffConstants.STAFF_ADD_SUCCESS,
+      payload: data,
+    })
+
+    //Iter2: If user not existed => push data to local storage
+    localStorage.setItem('userInfo', JSON.stringify(data))
+  } catch (error) {
+    dispatch({
+      type: staffConstants.STAFF_ADD_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
     })
   }
 }

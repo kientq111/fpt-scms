@@ -9,6 +9,8 @@ export const addCategoryReducer = (state = {}, action) => {
             return { loading: false, categoryInfo: action.payload }
         case categoryConstants.CATEGORY_ADD_FAIL:
             return { loading: false, error: action.payload }
+        case categoryConstants.CATEGORY_ADD_RESET:
+            return { loading: false, categoryInfo: action.payload }
         default:
             return state
     }
@@ -17,13 +19,13 @@ export const addCategoryReducer = (state = {}, action) => {
 
 export const listCategoryReducer = (state = {}, action) => {
     switch (action.type) {
-      case categoryConstants.CATEGORY_LIST_REQUEST:
-        return { loading: true }
+        case categoryConstants.CATEGORY_LIST_REQUEST:
+            return { loading: true }
         case categoryConstants.CATEGORY_LIST_SUCCESS:
-        return { loading: false, categoryInfo: action.payload }
+            return { loading: false, categoryInfo: action.payload }
         case categoryConstants.CATEGORY_LIST_FAIL:
-        return { loading: false, error: action.payload }
-      default:
-        return state
+            return { loading: false, error: action.payload }
+        default:
+            return state
     }
-  }
+}

@@ -8,7 +8,7 @@ import {
   Input,
   InputNumber,
   Row,
-  Select, Breadcrumb
+  Select, Breadcrumb, Card, Divider
 } from 'antd';
 import Loader from '../../components/Loader';
 import { useState, useEffect } from 'react';
@@ -55,7 +55,7 @@ const AddCateScreen = () => {
     dispatch(addCategory(values.categoryName, values.description));
   };
 
-
+  
   useEffect(() => {
     console.log(categoryInfo);
 
@@ -63,35 +63,35 @@ const AddCateScreen = () => {
 
   return (
     <Row>
-      <Col flex="1 1 200px">
 
-        <Breadcrumb>
-          <Breadcrumb.Item>Home</Breadcrumb.Item>
-          <Breadcrumb.Item>
-            <a href="">Add Category</a>
-          </Breadcrumb.Item>
+      <Breadcrumb>
+        <Breadcrumb.Item>Home</Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <a href="" >Add Category</a>
+        </Breadcrumb.Item>
 
-        </Breadcrumb>
-        <h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>Add Category</h1>
+      </Breadcrumb>
+
+
+      <Card
+        style={{ marginTop: 30, width: 1100, height: 700 }}
+      >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>Add Category</h1></Divider>
         {error && <h1 style={{ color: 'red', fontSize: 20 }}>{error}</h1>}
         {(() => {
           if (loading === false) {
             if (categoryInfo.isSuccess === false) {
               return (
-                <h2 style={{ color: 'red', fontSize: 20, position: 'relative', left: 400 }}>{categoryInfo.data}</h2>
+                <h2 style={{ color: 'red', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>{categoryInfo.data}</h2>
               )
             } else if (categoryInfo.isSuccess === true) {
               return (
-                <h2 style={{ color: 'green', fontSize: 20, position: 'relative', left: 400 }}>Add category successfull</h2>
+                <h2 style={{ color: 'green', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>Add category successfull</h2>
               )
             }
 
           }
         })()}
-
-
-
-        <Form
+        <Form style={{ marginTop: 50 }}
           {...formItemLayout}
           form={form}
           name="register"
@@ -132,12 +132,14 @@ const AddCateScreen = () => {
           <Form.Item {...tailFormItemLayout}>
             {loading && <Loader />}
             <Button type="primary" htmlType="submit">
-              Register
+              Add Category
             </Button>
           </Form.Item>
         </Form>
-      </Col>
-      <Col flex="0 1 500px"></Col>
+
+      </Card>
+
+
     </Row >
   );
 };
