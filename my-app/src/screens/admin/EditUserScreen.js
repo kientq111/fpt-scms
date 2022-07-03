@@ -3,13 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateUser } from '../../actions/userActions';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import Loader from '../../components/Loader';
 import {
     Form,
     Input,
     Select,
     Row,
     Col,
-    Button,
+    Button, Divider
 } from 'antd';
 const { Option } = Select;
 
@@ -52,7 +53,7 @@ const EditUserScreen = () => {
     const navigate = useNavigate();
     //get data from store
     const userUpdateSelector = useSelector((state) => state.userUpdate)
-    const { success } = userUpdateSelector;
+    const { success, loading } = userUpdateSelector;
     //Submit edit form to action
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
@@ -63,14 +64,12 @@ const EditUserScreen = () => {
             city: values.city,
             country: values.country,
         }
-        dispatch(updateUser(location.state.id, values.username, values.email, values.dob, values.first_name, values.last_name, phoneNumber, address));
+        dispatch(updateUser(location.state.id, values.username, values.email, values.dob, values.first_name, values.last_name, phoneNumber, address, values.gender));
         if (location.state.history === '/admin/liststaff') {
             navigate('/admin/liststaff')
         } else {
             navigate('/admin/listuser')
         }
-
-
     };
 
     useEffect(() => {
@@ -91,6 +90,7 @@ const EditUserScreen = () => {
 
     }, [])
 
+
     const prefixSelector = (
         <Form.Item name="prefix" noStyle>
             <Select
@@ -107,7 +107,8 @@ const EditUserScreen = () => {
         <Row>
             <div>{location.state.uid}</div>
             <Col flex="1 1 200px">
-                <h1 style={{ margin: 20, fontSize: 30 }}>Edit User</h1>
+                <Divider plain>     <h1 style={{ margin: 20, fontSize: 30 }}>Edit User</h1></Divider>
+
                 <Form
                     {...formItemLayout}
                     form={form}
@@ -200,9 +201,8 @@ const EditUserScreen = () => {
                         ]}
                     >
                         <Select placeholder="select your gender" style={{ width: 200 }}>
-                            <Option value="male">Male</Option>
-                            <Option value="female">Female</Option>
-                            <Option value="other">Other</Option>
+                            <Option value="Male">Male</Option>
+                            <Option value="Female">Female</Option>
                         </Select>
                     </Form.Item>
 
@@ -282,8 +282,9 @@ const EditUserScreen = () => {
 
                     <Form.Item {...tailFormItemLayout}>
                         <Button type="primary" htmlType="submit">
-                            Add Account
+                            Update Account
                         </Button>
+                        {loading && <Loader />}
                     </Form.Item>
                 </Form></Col>
             <Col flex="0 1 500px"></Col>

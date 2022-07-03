@@ -1,21 +1,25 @@
 import {
-  Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Divider, Input
+  Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag 
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { deleteUser, listUsers } from '../../actions/userActions';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link } from "react-router-dom";
-import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import styled from 'styled-components';
 import moment from 'moment'
-
+import { DeleteOutlined, EditOutlined, UserAddOutlined } from '@ant-design/icons';
 
 const { Column, ColumnGroup } = Table;
 
+const StyledTable = styled((props) => <Table {...props} />)`
+&& tbody > tr:hover > td {
+  background: rgba(208, 225, 225);
+}
+`;
 
 const ListUserScreen = () => {
-
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
@@ -116,20 +120,16 @@ const ListUserScreen = () => {
       ),
   });
 
-  const StyledTable = styled((props) => <Table {...props} />)`
-  && tbody > tr:hover > td {
-    background: rgba(208, 225, 225);
-  }
-`;
   const navigate = useNavigate();
   const data = useSelector((state) => state.userList);
   const deleteSuccess = useSelector((state) => state.userDelete);
   const [userData, setUserData] = useState(data)
 
   const [form] = Form.useForm();
-
+  const location = useLocation();
   const editUser = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street) => {
     console.log(id);
+
     navigate('/admin/edituser', {
       state:
       {
@@ -144,13 +144,10 @@ const ListUserScreen = () => {
         country: country,
         city: city,
         district: district,
-        street: street
+        street: street,
+        history: location.pathname
       }
     })
-  }
-
-  const ActiveHandle = (id) => {
-    console.log('handle active', id);
   }
 
   const dispatch = useDispatch();
@@ -170,51 +167,62 @@ const ListUserScreen = () => {
   const cancel = (e) => {
     console.log(e);
   };
-  // const data1 = [
-  //   { id: 1, username: 'kien', first_name: 'kiennn', last_name: 'nguyen', dob: '03/02/2013', email: 'a@gmail.com', status: '1', phone: '04', address: { country: 'vn', city: 'hn', district: 'dis', street: 'tq' } },
-  //   { id: 1, username: 'knguyenien', first_name: 'kiennn', last_name: 'nguyen', dob: '03/02/2013', email: 'a@gmail.com', status: '1', phone: '04', address: { country: 'vn', city: 'hn', district: 'dis', street: 'tq' } },
-  //   { id: 1, username: 'a', first_name: 'kiennn', last_name: 'nguyen', dob: '03/02/2013', email: 'a@gmail.com', status: '1', phone: '04', address: { country: 'vn', city: 'hn', district: 'dis', street: 'tq' } },
-  //   { id: 1, username: 'b', first_name: 'kiennn', last_name: 'nguyen', dob: '03/02/2013', email: 'a@gmail.com', status: '1', phone: '04', address: { country: 'vn', city: 'hn', district: 'dis', street: 'tq' } }
-  // ]
+
+  const ActiveHandle = (id) => {
+    console.log(id);
+  }
+
   return (
     <>
       <Breadcrumb style={{ marginTop: 10 }}>
         <Breadcrumb.Item>Home</Breadcrumb.Item>
         <Breadcrumb.Item>
-          <a href="">List User</a>
+          <a href="">List Users</a>
         </Breadcrumb.Item>
       </Breadcrumb>
+      <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/adduser'}>Add User</Link></Button></Divider>
 
-      {/* <Button type="primary" style={{position:'relative', left:1500, marginBottom:2}} size="small">Add User</Button> */}
-
-      <Divider orientation="right">  <Button type="primary" size="small">Add User</Button></Divider>
-      <StyledTable dataSource={data.users}>
+      <StyledTable dataSource={data.users} onRow={(record, rowIndex) => {
+        return {
+          onClick: event => { console.log(record.id) }, // click row
+        };
+      }}>
         <Column title="ID" dataIndex="id" key="id" />
-        <Column title="UserName" dataIndex="username" key="username" sorter={(a, b) => a.username.length - b.username.length} />
+        <Column title="UserName" dataIndex="username" key="username" {...getColumnSearchProps('username')} />
         <Column title="First Name" dataIndex="first_name" key="first_name" />
-        <Column title="Last Name" dataIndex="last_name" key="last_name" {...getColumnSearchProps('last_name')} />
+        <Column title="Last Name" dataIndex="last_name" key="last_name" />
         <Column title="Date of Birth" dataIndex="dob" render={(_, record) => (moment(record.dob).format('DD/MM/YYYY'))} key="dob" />
-        <Column title="Email" dataIndex="email" key="email" />
+        <Column title="Email" dataIndex="email" key="email" {...getColumnSearchProps('email')} />
         <Column title="Phone Number" dataIndex="phone" key="phone" />
-        <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? 'active' : 'inactive')}
+        <Column title="Gender" dataIndex="gender" key="gender" filters={[{
+          text: 'Male',
+          value: 'Male',
+        }, {
+          text: 'Female',
+          value: 'Female',
+        },]} onFilter={(value, record) => record.gender.indexOf(value) === 0} />
+
+        <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? 'True' : 'False')}
           filters={[{
             text: 'True',
-            value: 'true',
+            value: '1',
           }, {
             text: 'False',
-            value: 'false',
-          },]}
+            value: '0',
+          },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
           key="status" />
-        <Column title="Country" dataIndex="address" render={(_, record) => record.address.country} key="country" />
-        <Column title="City" dataIndex="address" render={(_, record) => record.address.city} key="city" />
-        <Column title="District" dataIndex="address" render={(_, record) => record.address.district} key="district" />
-        <Column title="Street" dataIndex="address" render={(_, record) => record.address.street} key="street" />
+        <Column title="is_active" dataIndex="is_active" render={(_, record) => (record.is_active == true ?  <Tag color="green">true</Tag> :  <Tag color="error">false</Tag> )}  key="is_active" />
+        <Column title="country" dataIndex="address" render={(_, record) => record.address.country} key="country" />
+        <Column title="city" dataIndex="address" render={(_, record) => record.address.city} key="city" />
+        <Column title="district" dataIndex="address" render={(_, record) => record.address.district} key="district" />
+        <Column title="street" dataIndex="address" render={(_, record) => record.address.street} key="street" />
+
         <Column
           title="Action"
           key="action"
           render={(_, record) => (
             <Space size="middle">
-              <a style={{ color: 'blue' }} onClick={() => ActiveHandle(record.id)}>{record.status == 1 ? 'inactive' : 'active'}</a>
+              <a style={{ color: 'blue' }} onClick={() => ActiveHandle(record.id)}>{record.is_active == true ? 'inactive' : 'active'}</a>
               <a onClick={() => editUser(record.id, record.username, record['first_name'], record['last_name'],
                 record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street)}><EditOutlined style={{ fontSize: 17 }} /></a>
               <Popconfirm

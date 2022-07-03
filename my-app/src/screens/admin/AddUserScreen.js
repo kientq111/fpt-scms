@@ -7,7 +7,7 @@ import {
     Select,
     Row,
     Col,
-    Button,
+    Button, Divider, Card, Breadcrumb
 } from 'antd';
 const { Option } = Select;
 
@@ -81,9 +81,20 @@ const AddUserScreen = () => {
     );
     return (
         <Row>
-            <Col flex="1 1 200px">
-                <h1 style={{ margin: 20, fontSize: 30 }}>Add User</h1>
-                <Form
+
+            <Breadcrumb style={{ marginTop: 10 }}>
+                <Breadcrumb.Item>Home</Breadcrumb.Item>
+                <Breadcrumb.Item>
+                    <a href="">Add Staff</a>
+                </Breadcrumb.Item>
+            </Breadcrumb>
+            <Card
+                style={{
+                    width: 900, height: 900, marginTop: 20, marginLeft: 100
+                }}
+            >
+                <Divider plain>     <h1 style={{ fontSize: 30 }}>Add User</h1></Divider>
+                <Form style={{ marginRight: 150 }}
                     {...formItemLayout}
                     form={form}
                     name="register"
@@ -228,6 +239,7 @@ const AddUserScreen = () => {
                                 required: true,
                                 message: 'Please input your country!',
                                 whitespace: true,
+                                max: 50
                             },
                         ]}
                     >
@@ -241,6 +253,7 @@ const AddUserScreen = () => {
                                 required: true,
                                 message: 'Please input your city!',
                                 whitespace: true,
+                                max: 50
                             },
                         ]}
                     >
@@ -255,6 +268,7 @@ const AddUserScreen = () => {
                                 required: true,
                                 message: 'Please input your district!',
                                 whitespace: true,
+                                max: 50
                             },
                         ]}
                     >
@@ -270,7 +284,10 @@ const AddUserScreen = () => {
                                 required: true,
                                 message: 'Please input your street!',
                                 whitespace: true,
-                            },
+                            }, {
+                                max: 10,
+                                
+                            }
                         ]}
                     >
                         <Input Size="small" />
@@ -299,8 +316,10 @@ const AddUserScreen = () => {
                             Add Account
                         </Button>
                     </Form.Item>
-                </Form></Col>
-            <Col flex="0 1 500px"></Col>
+                </Form>
+            </Card>
+
+
         </Row>
 
     );
