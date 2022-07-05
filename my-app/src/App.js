@@ -23,6 +23,7 @@ import ListDishScreen from './screens/admin/ListDishScreen';
 import AddCateScreen from './screens/admin/AddCategoryScreen';
 import ListCategoryScreen from './screens/admin/ListCategoryScreen';
 import SiderBar from './components/siderbar';
+import EditDishScreen from './screens/admin/EditDishScreen';
 const { Header, Content, Sider } = Layout;
 
 
@@ -76,6 +77,7 @@ const App = () => {
             {/* Dish */}
             <Route path='/admin/adddish' element={<AddDishScreen />} />
             <Route path='/admin/listdish' element={<ListDishScreen />} />
+            <Route path='/admin/editdish' element={<EditDishScreen />} />
             {/* Staff */}
             <Route path='/admin/addstaff' element={<AddStaffScreen />} />
             <Route path='/admin/liststaff' element={<ListStaffScreen />} />
