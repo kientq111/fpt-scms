@@ -2,8 +2,8 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { userLoginReducer, userRegisterReducer, userListReducer, userDeleteReducer, userUpdateReducer, staffListReducer, userCheckAccountReducer, AddStaffReducer } from '../reducers/userReducers';
-import { dishListReducer } from '../reducers/dishReduce';
-import { addCategoryReducer, listCategoryReducer } from '../reducers/categoryReduce';
+import { dishListReducer, dishChangeStatusReducer, dishAddReducer } from '../reducers/dishReduce';
+import { addCategoryReducer, listCategoryReducer, listSubCategoryReducer } from '../reducers/categoryReduce';
 const reducers = combineReducers({
     userCheckAcc: userCheckAccountReducer,
     userLogin: userLoginReducer,
@@ -14,8 +14,11 @@ const reducers = combineReducers({
     staffList: staffListReducer,
     staffAdd: AddStaffReducer,
     dishList: dishListReducer,
+    dishAdd: dishAddReducer,
+    dishChangestatus: dishChangeStatusReducer,
     categoryAdd: addCategoryReducer,
-    categoryList: listCategoryReducer
+    categoryList: listCategoryReducer,
+    subcategoryList: listSubCategoryReducer
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')

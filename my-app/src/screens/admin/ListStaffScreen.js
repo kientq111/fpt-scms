@@ -1,5 +1,5 @@
 import {
-  Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider
+  Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { deleteUser, listStaff } from '../../actions/userActions';
@@ -182,7 +182,7 @@ const ListStaffScreen = () => {
       </Breadcrumb>
       <Divider orientation="right">  <Button type="primary" size="middle"><Link to={'/admin/addstaff'}>Add Staff</Link></Button></Divider>
 
-      <StyledTable dataSource={data.users}>
+      <StyledTable dataSource={data.users}  className="table-striped-rows">
         <Column title="ID" dataIndex="id" key="id" />
         <Column title="UserName" dataIndex="username" key="username" {...getColumnSearchProps('username')} />
         <Column title="First Name" dataIndex="first_name" key="first_name" />
@@ -199,7 +199,7 @@ const ListStaffScreen = () => {
         },]} onFilter={(value, record) => record.gender.indexOf(value) === 0} />
 
 
-        <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? 'True' : 'False')}
+        <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <Tag color="green">true</Tag> : <Tag color="error">false</Tag>)}
           filters={[{
             text: 'True',
             value: '1',
@@ -208,7 +208,7 @@ const ListStaffScreen = () => {
             value: '0',
           },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
           key="status" />
-        <Column title="is_active" dataIndex="is_active" render={(_, record) => (record.is_active == true ? 'True' : 'False')} key="is_active" />
+        <Column title="is_active" dataIndex="is_active" render={(_, record) => (record.is_active == true ? <Tag color="green">true</Tag> : <Tag color="error">false</Tag>)} key="is_active" />
         <Column title="country" dataIndex="address" render={(_, record) => record.address.country} key="country" />
         <Column title="city" dataIndex="address" render={(_, record) => record.address.city} key="city" />
         <Column title="district" dataIndex="address" render={(_, record) => record.address.district} key="district" />

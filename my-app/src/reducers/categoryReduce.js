@@ -1,4 +1,4 @@
-import { categoryConstants } from "../constants/Constants"
+import { categoryConstants, subCategoryConstatnts } from "../constants/Constants"
 
 
 export const addCategoryReducer = (state = {}, action) => {
@@ -24,6 +24,20 @@ export const listCategoryReducer = (state = {}, action) => {
         case categoryConstants.CATEGORY_LIST_SUCCESS:
             return { loading: false, categoryInfo: action.payload }
         case categoryConstants.CATEGORY_LIST_FAIL:
+            return { loading: false, error: action.payload }
+        default:
+            return state
+    }
+}
+
+//Subcategory ZONEE
+export const listSubCategoryReducer = (state = {}, action) => {
+    switch (action.type) {
+        case subCategoryConstatnts.SUB_CATEGORY_LIST_REQUEST:
+            return { loading: true }
+        case subCategoryConstatnts.SUB_CATEGORY_LIST_SUCCESS:
+            return { loading: false, subcategoryInfo: action.payload }
+        case subCategoryConstatnts.SUB_CATEGORY_LIST_FAIL:
             return { loading: false, error: action.payload }
         default:
             return state
