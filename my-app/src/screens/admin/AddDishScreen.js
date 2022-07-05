@@ -12,80 +12,60 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { listSubcategory } from '../../actions/categoryAction';
 import { addDish } from '../../actions/dishAction';
+import { listMenus } from '../../actions/menuAction';
+import Loader from '../../components/Loader';
 const { TextArea } = Input;
 
 
 
-const getBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
 
-    reader.onload = () => resolve(reader.result);
-
-    reader.onerror = (error) => reject(error);
-  });
-const arrOption = [
-  { value: 'mot hai ba' },
-  { value: '4 5 ba' },
-  { value: 'mot ha5i ba' },
-
-]
 
 const AddDishScreen = () => {
   const [form] = Form.useForm();
-  const [previewVisible, setPreviewVisible] = useState(false);
-  const [previewImage, setPreviewImage] = useState('');
-  const [previewTitle, setPreviewTitle] = useState('');
-  const [fileList, setFileList] = useState([]);
+  
   const dispatch = useDispatch();
   const selectSubcategorySelector = useSelector((state) => state.subcategoryList);
-  const { loading, subcategoryInfo } = selectSubcategorySelector;
-  //IMG ZONEEEEE!!!
-  const [componentDisabled, setComponentDisabled] = useState(true);
-  const onFormLayoutChange = ({ disabled }) => {
-    setComponentDisabled(disabled);
-  };
-  const handleCancel = () => setPreviewVisible(false);
-  const handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewVisible(true);
-    setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
-  };
-  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
-
+  const selectMenuSelector = useSelector((state) => state.menuList);
+  const addDishSelector = useSelector((state) => state.dishAdd);
+  const addDishLoading = addDishSelector.loading;
+  const { subcategoryInfo } = selectSubcategorySelector;
+  const loadingSubcategory = selectMenuSelector.loading;
+  const { loading, menus } = selectMenuSelector;
 
   useEffect(() => {
     dispatch(listSubcategory());
+    dispatch(listMenus());
   }, []);
+
+
 
   //CALL API ZONEEE
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
-    const menu = {
-      menuName: values.menuname
-    }
-    const subcategory = {
-      subCategoryName: values.menuname
-    }
-    dispatch(addDish(values.dishname, values.description));
-  };
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </div>
-  );
 
+    dispatch(addDish(values.dishname, values.description, values.menu, values.subcategory));
+  };
+
+
+  //BASE64 ZONEE
+  const ImageHandler = e => {
+    const files = e.target.files;
+    const file = files[0];
+    getBase64(file);
+  };
+
+
+  const onLoad = fileString => {
+    console.log(fileString);
+  };
+
+  const getBase64 = file => {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      onLoad(reader.result);
+    };
+  };
   return (
     <>
       <div className="site-card-border-less-wrapper">
@@ -110,13 +90,28 @@ const AddDishScreen = () => {
             onFinish={onFinish}
             scrollToFirstError
           >
-
+            {/* <h4 style={{ marginLeft: 140, fontSize: 15, color: 'green'}}>ADD DISH SUCCESSFUL!</h4> */}
             <Form.Item label="Dish Name" name="dishname">
               <Input />
             </Form.Item>
-            <Form.Item label="Menu" name="menuname">
-              <Select>
-                <Select.Option value="demo">MenuTusday</Select.Option>
+            <Form.Item label="Menu" name="menu">
+              <Select
+                showSearch
+                style={{
+                  width: 200,
+                }}
+                placeholder="Search to Select"
+                optionFilterProp="children"
+                filterOption={(input, option) => option.children.includes(input)}
+                filterSort={(optionA, optionB) =>
+                  optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
+                }
+              >
+                {loading === false && menus.map((menu) => {
+                  return (
+                    <Select.Option value={menu.id}>{menu.menuName}</Select.Option>
+                  )
+                })}
               </Select>
             </Form.Item>
             <Form.Item label="Sub Category" name="subcategory">
@@ -133,7 +128,7 @@ const AddDishScreen = () => {
                   optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
                 }
               >
-                {loading === false && subcategoryInfo.map((subCategory) => {
+                {loadingSubcategory === false && subcategoryInfo.map((subCategory) => {
                   return (
                     <Select.Option value={subCategory.id}>{subCategory.subCategoryName}</Select.Option>
                   )
@@ -147,26 +142,12 @@ const AddDishScreen = () => {
               <TextArea rows={4} />
             </Form.Item>
             <Form.Item label="Image" name="dishimg" >
-              <Upload
-                listType="picture-card"
-                fileList={fileList}
-                onPreview={handlePreview}
-                onChange={handleChange}
-              >
-                {fileList.length >= 1 ? null : uploadButton}
-              </Upload>
-              <Modal visible={previewVisible} title={previewTitle} footer={null} onCancel={handleCancel}>
-                <img
-                  alt="example"
-                  style={{
-                    width: '100%',
-                  }}
-                  src={previewImage}
-                />
-              </Modal>
+              <input type="file" onChange={ImageHandler} />
+
             </Form.Item>
             <Form.Item style={{ marginLeft: 160 }}>
               <Space size={'large'}>
+                {addDishLoading && <Loader />}
                 <Button type='primary' htmlType="submit">Add Dish</Button>
                 <Button>Cancel</Button>
               </Space>

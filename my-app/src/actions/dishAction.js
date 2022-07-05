@@ -18,7 +18,7 @@ export const listDishes = () => async (dispatch, getState) => {
 
             },
         }
-        const { data } = await axios.post(`/dish/getListDish?dishName&status&menuId&subcategoryId&startDate&endDate&createdBy&pageIndex=1&pageSize=10`, {}, config)
+        const { data } = await axios.get(`/dish/getListDish?dishName&status&menuId&subcategoryId&startDate&endDate&createdBy&pageIndex=1&pageSize=10`, config)
         dispatch({
             type: dishConstants.DISH_LIST_SUCCESS,
             payload: data.data,
@@ -53,7 +53,7 @@ export const changeDishStatus = (id, status) => async (dispatch, getState) => {
             },
         }
 
-        await axios.post(`/dish/changeDishStatus?status=${status === 1 ? 0 : 1}&dishID=${id}`, {}, config)
+        await axios.get(`/dish/changeDishStatus?status=${status === 1 ? 0 : 1}&dishID=${id}`, config)
 
         dispatch({ type: dishConstants.DISH_CHANGE_STATUS_SUCCESS })
     } catch (error) {
@@ -73,25 +73,45 @@ export const changeDishStatus = (id, status) => async (dispatch, getState) => {
 
 
 
-export const addDish = (dishName, description, menu, subcategory) => async (dispatch, getState) => {
+export const addDish = (dishName, description, menuID, subcategoryID) => async (dispatch, getState) => {
     try {
         dispatch({
+
             type: dishConstants.DISH_ADD_REQUEST,
         })
-
         const {
             userLogin: { userInfo },
         } = getState()
 
         const config = {
             headers: {
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
+        //Call API to get menu name
+        const menuResponse = await axios.get(`/menu/getMenuById/${menuID}`, config);
+        const menuData = menuResponse.data;
+        const menuName = menuData.data.menuName;
+        const menu = {
+            id: menuID,
+            menuName: menuName
+        }
+        //Call API to get subcategory name
 
-        await axios.post(`/dish/addOrUpdate`, { dishName, description, menu, subcategory }, config)
+        const subcategoryResponse = await axios.get(`/subcategory/getSubCategoryByID/${subcategoryID}`, config)
+        const subcategoryData = subcategoryResponse.data;
+        // parse to object base on format on API
+        const createdBy = userInfo.username;
+        const subcategoryName = subcategoryData.data.subCategoryName;
+        const subcategory = {
+            "id": subcategoryID,
+            "subCategoryName": subcategoryName
+        }
 
-        dispatch({ type: dishConstants.DISH_ADD_SUCCESS })
+        const { data } = await axios.post(`/dish/addOrUpdate`, { dishName, description, createdBy, menu, subcategory }, config)
+
+        dispatch({ type: dishConstants.DISH_ADD_SUCCESS, payload: data })
     } catch (error) {
         const message =
             error.response && error.response.data.message

@@ -131,7 +131,7 @@ export const listUsers = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.accessToken}`,
       },
     }
-    const { data } = await axios.post(`/getListUser?username=&email=&phone=&status=1&createBy=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=`, {}, config)
+    const { data } = await axios.post(`/getListUser?username=&email=&phone=&status=1&createBy=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=`,{} ,config)
     dispatch({
       type: userConstants.USER_LIST_SUCCESS,
       payload: data.data,

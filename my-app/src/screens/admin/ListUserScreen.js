@@ -10,6 +10,7 @@ import Highlighter from 'react-highlight-words';
 import styled from 'styled-components';
 import moment from 'moment'
 import { DeleteOutlined, EditOutlined, UserAddOutlined } from '@ant-design/icons';
+import Loader from '../../components/Loader';
 
 const { Column, ColumnGroup } = Table;
 
@@ -124,7 +125,7 @@ const ListUserScreen = () => {
   const data = useSelector((state) => state.userList);
   const deleteSuccess = useSelector((state) => state.userDelete);
   const [userData, setUserData] = useState(data)
-
+  const { loading } = data;
   const [form] = Form.useForm();
   const location = useLocation();
   const editUser = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street) => {
@@ -181,8 +182,8 @@ const ListUserScreen = () => {
         </Breadcrumb.Item>
       </Breadcrumb>
       <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/adduser'}>Add User</Link></Button></Divider>
-
-      <StyledTable dataSource={data.users}  className="table-striped-rows" onRow={(record, rowIndex) => {
+      {loading && <Loader/>}
+      {loading === false && <StyledTable dataSource={data.users} className="table-striped-rows" onRow={(record, rowIndex) => {
         return {
           onClick: event => { console.log(record.id) }, // click row
         };
@@ -244,7 +245,8 @@ const ListUserScreen = () => {
             </Space>
           )}
         />
-      </StyledTable>
+      </StyledTable>}
+
     </>
 
   );

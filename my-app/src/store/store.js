@@ -4,6 +4,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { userLoginReducer, userRegisterReducer, userListReducer, userDeleteReducer, userUpdateReducer, staffListReducer, userCheckAccountReducer, AddStaffReducer } from '../reducers/userReducers';
 import { dishListReducer, dishChangeStatusReducer, dishAddReducer } from '../reducers/dishReduce';
 import { addCategoryReducer, listCategoryReducer, listSubCategoryReducer } from '../reducers/categoryReduce';
+import { menuListReducer } from '../reducers/menuReducers';
 const reducers = combineReducers({
     userCheckAcc: userCheckAccountReducer,
     userLogin: userLoginReducer,
@@ -18,7 +19,8 @@ const reducers = combineReducers({
     dishChangestatus: dishChangeStatusReducer,
     categoryAdd: addCategoryReducer,
     categoryList: listCategoryReducer,
-    subcategoryList: listSubCategoryReducer
+    subcategoryList: listSubCategoryReducer,
+    menuList: menuListReducer
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
