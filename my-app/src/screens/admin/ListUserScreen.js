@@ -1,5 +1,5 @@
 import {
-  Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag 
+  Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { deleteUser, listUsers } from '../../actions/userActions';
@@ -182,12 +182,11 @@ const ListUserScreen = () => {
       </Breadcrumb>
       <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/adduser'}>Add User</Link></Button></Divider>
 
-      <StyledTable dataSource={data.users} onRow={(record, rowIndex) => {
+      <StyledTable dataSource={data.users}  className="table-striped-rows" onRow={(record, rowIndex) => {
         return {
           onClick: event => { console.log(record.id) }, // click row
         };
       }}>
-        <Column title="ID" dataIndex="id" key="id" />
         <Column title="UserName" dataIndex="username" key="username" {...getColumnSearchProps('username')} />
         <Column title="First Name" dataIndex="first_name" key="first_name" />
         <Column title="Last Name" dataIndex="last_name" key="last_name" />
@@ -202,7 +201,7 @@ const ListUserScreen = () => {
           value: 'Female',
         },]} onFilter={(value, record) => record.gender.indexOf(value) === 0} />
 
-        <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? 'True' : 'False')}
+        <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <Tag color="green">true</Tag> : <Tag color="error">false</Tag>)}
           filters={[{
             text: 'True',
             value: '1',
@@ -211,7 +210,15 @@ const ListUserScreen = () => {
             value: '0',
           },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
           key="status" />
-        <Column title="is_active" dataIndex="is_active" render={(_, record) => (record.is_active == true ?  <Tag color="green">true</Tag> :  <Tag color="error">false</Tag> )}  key="is_active" />
+        <Column title="is_active" dataIndex="is_active" render={(_, record) => (record.is_active == true ? <Tag color="green">true</Tag> : <Tag color="error">false</Tag>)}
+          filters={[{
+            text: 'true',
+            value: 'true',
+          }, {
+            text: 'false',
+            value: 'false',
+          },]} onFilter={(value, record) => record.is_active.indexOf(value) === 0}
+          key="is_active" />
         <Column title="country" dataIndex="address" render={(_, record) => record.address.country} key="country" />
         <Column title="city" dataIndex="address" render={(_, record) => record.address.city} key="city" />
         <Column title="district" dataIndex="address" render={(_, record) => record.address.district} key="district" />
@@ -222,7 +229,6 @@ const ListUserScreen = () => {
           key="action"
           render={(_, record) => (
             <Space size="middle">
-              <a style={{ color: 'blue' }} onClick={() => ActiveHandle(record.id)}>{record.is_active == true ? 'inactive' : 'active'}</a>
               <a onClick={() => editUser(record.id, record.username, record['first_name'], record['last_name'],
                 record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street)}><EditOutlined style={{ fontSize: 17 }} /></a>
               <Popconfirm

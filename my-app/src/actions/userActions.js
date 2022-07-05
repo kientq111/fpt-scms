@@ -99,11 +99,6 @@ export const register = (username, email, password, dob, first_name, last_name, 
       type: userConstants.USER_REGISTER_SUCCESS,
       payload: data,
     })
-
-    dispatch({
-      type: userConstants.USER_LOGIN_SUCCESS,
-      payload: data,
-    })
     //Iter2: If user not existed => push data to local storage
     localStorage.setItem('userInfo', JSON.stringify(data))
   } catch (error) {

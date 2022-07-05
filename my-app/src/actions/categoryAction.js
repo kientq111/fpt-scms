@@ -1,4 +1,4 @@
-import { categoryConstants } from "../constants/Constants";
+import { categoryConstants, subCategoryConstatnts } from "../constants/Constants";
 import axios from "axios";
 
 
@@ -62,7 +62,7 @@ export const listCategory = () => async (dispatch, getState) => {
 
             },
         }
-        const { data } = await axios.post(`/category/getListCategory?categoryName&status&startDate&endDate&createdBy&pageIndex=1&pageSize=10`, {}, config)
+        const { data } = await axios.get(`/category/getListCategory?categoryName&status&startDate&endDate&createdBy&pageIndex=1&pageSize=10`, {}, config)
         dispatch({
             type: categoryConstants.CATEGORY_LIST_SUCCESS,
             payload: data.data,
@@ -74,6 +74,38 @@ export const listCategory = () => async (dispatch, getState) => {
                 : error.message
         dispatch({
             type: categoryConstants.CATEGORY_LIST_FAIL,
+            payload: message,
+        })
+    }
+}
+//SUBCATEGORY ZONEEEE
+export const listSubcategory = () => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: subCategoryConstatnts.SUB_CATEGORY_LIST_REQUEST,
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.accessToken}`,
+            },
+        }
+        const { data } = await axios.get(`/subcategory/getListSubCategory?subcategoryName=&status=&startDate=&endDate=&categoryID=&pageIndex=&pageSize=`, {}, config)
+        dispatch({
+            type: subCategoryConstatnts.SUB_CATEGORY_LIST_SUCCESS,
+            payload: data.data,
+        })
+    } catch (error) {
+        const message =
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        dispatch({
+            type: subCategoryConstatnts.SUB_CATEGORY_LIST_FAIL,
             payload: message,
         })
     }

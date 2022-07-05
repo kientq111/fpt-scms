@@ -1,14 +1,24 @@
 import {
-    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider
+    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag
 } from 'antd';
 import { React, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import { listDishes } from '../../actions/dishAction';
+import { changeDishStatus, listDishes } from '../../actions/dishAction';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import moment from 'moment'
+import { render } from 'react-dom';
+import { DeleteOutlined, EditOutlined, UserAddOutlined } from '@ant-design/icons';
+import styled from 'styled-components';
 const { Column, ColumnGroup } = Table;
+
+const StyledTable = styled((props) => <Table {...props} />)`
+&& tbody > tr:hover > td {
+  background: rgba(208, 225, 225);
+}
+`;
+
 
 const ListDishScreen = () => {
 
@@ -115,24 +125,25 @@ const ListDishScreen = () => {
 
     const dispatch = useDispatch();
     const dataDish = useSelector((state) => state.dishList);
+    const dishStatusSelector = useSelector((state) => state.dishChangestatus);
+    const { success } = dishStatusSelector;
     const { loading, dishes } = dataDish
 
     useEffect(() => {
         dispatch(listDishes());
         console.log(dataDish);
         console.log(dishes)
-    }, []);
+    }, [dispatch, dishStatusSelector]);
 
 
     //Delete Update Form
-    const confirm = (id) => {
-        console.log(id);
-        message.success('Delete successful');
+    const changeStatusHandle = (id, status) => {
+        console.log(id, status);
+        dispatch(changeDishStatus(id, status));
+        message.success('Update Status successful');
     };
 
-    const cancel = (e) => {
-        console.log(e);
-    };
+
     return (
         <>
             <Breadcrumb style={{ marginTop: 10 }}>
@@ -142,13 +153,21 @@ const ListDishScreen = () => {
                 </Breadcrumb.Item>
             </Breadcrumb>
 
-            <Divider orientation="right">  <Button type="primary" size="middle">Add Dish</Button></Divider>
-            <Table dataSource={dishes}>
+            <Divider orientation="right">  <Button type="primary" size="middle"><Link to={'../admin/adddish'}>Add Dish</Link></Button></Divider>
+            <StyledTable dataSource={dishes}  className="table-striped-rows">
                 <Column title="Menu Name" dataIndex="menu" render={(_, record) => record.menu.menuName} key="menu" />
                 <Column title="Dish Name" dataIndex="dishName" key="dishName" {...getColumnSearchProps('dishName')} />
 
                 <Column title="Sub Category" dataIndex="subCategory" render={(_, record) => record.subCategory.subCategoryName} key="subCategory" />
-                <Column title="Dish Status" dataIndex="status" key="status" render={(_, record) => (record.status == 1 ? 'active' : 'inactive')} />
+                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status === 1 ?  <Tag color="green">true</Tag> :  <Tag color="error">false</Tag>)}
+          filters={[{
+            text: 'True',
+            value: '1',
+          }, {
+            text: 'False',
+            value: '0',
+          },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
+          key="status" />
                 <Column title="Created Time" dataIndex="createdTime" key="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} />
                 <Column title="Created By" dataIndex="createdBy" key="createdBy" render={(_, record) => (record.createdBy == null ? 'null' : record.createdBy)} />
                 <Column title="Updated Time" dataIndex="updatedTime" key="updatedTime" render={(_, record) => (moment(record.updatedTime).format('DD/MM/YYYY'))} />
@@ -158,20 +177,12 @@ const ListDishScreen = () => {
                     key="action"
                     render={(_, record) => (
                         <Space size="middle">
-                            <a>Edit</a>
-                            <Popconfirm
-                                title="Are you sure to delete this task?"
-                                onConfirm={() => confirm()}
-                                onCancel={cancel}
-                                okText="Yes"
-                                cancelText="No"
-                            >
-                                <a>Delete</a>
-                            </Popconfirm>
+                            <a onClick={() => { changeStatusHandle(record.id, record.status) }}>{record.status == 1 ? <Tag color="error">Change Status</Tag> : <Tag color="green">Change Status</Tag>}</a>
+                            <a><EditOutlined style={{ fontSize: 17 }} /></a>
                         </Space>
                     )}
                 />
-            </Table>
+            </StyledTable>
         </>
     )
 }

@@ -41,7 +41,7 @@ const ListCategoryScreen = () => {
             </Breadcrumb>
 
 
-            <Table dataSource={categoryInfo}>
+            <Table dataSource={categoryInfo}  className="table-striped-rows">
                 <Column title="id" dataIndex="id" key="id" />
                 <Column title="categoryName" dataIndex="categoryName" key="categoryName" />
                 <Column title="description" dataIndex="description" key="description" />

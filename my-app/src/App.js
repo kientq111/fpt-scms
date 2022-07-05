@@ -26,40 +26,18 @@ import SiderBar from './components/siderbar';
 const { Header, Content, Sider } = Layout;
 
 
-// function getItem(label, key, icon, children) {
-//   return {
-//     key,
-//     icon,
-//     children,
-//     label,
-//   };
-// }
-
 const items1 = ['1'].map((key) => ({
   key,
   label: `Hello Admin`,
 }));
 
-// const items = [
-//   getItem('Dashboard', '1', <PieChartOutlined />),
-//   getItem('Menu Manager', '', <DesktopOutlined />),
-//   getItem('Account Manager', '', <UserOutlined />, [
-//     getItem('List User', '/admin/listuser'),
-//     getItem('Add User', '/admin/adduser'),
-//     getItem('List Staff', '/admin/liststaff')
-//   ]),
-//   getItem('Dish Manager', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
-//   getItem('Logout', '9', <FileOutlined />),
-// ];
 
 const App = () => {
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
   const [collapsed, setCollapsed] = useState(false);
 
-  // const handleSiderClick = (e) => {
-  //   console.log(e.key);
-  // }
+
   return (
     <Layout
       style={{
@@ -67,7 +45,7 @@ const App = () => {
       }}
     >
 
-      {userInfo && <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+      {userInfo && <Sider collapsible collapsed={collapsed}  className="site-layout-background" onCollapse={(value) => setCollapsed(value)}>
         <div className="logo" />
         {/* add onclick to menu */}
         <SiderBar />
