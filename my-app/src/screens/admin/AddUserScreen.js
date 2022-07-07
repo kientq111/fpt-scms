@@ -46,8 +46,8 @@ const AddUserScreen = () => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
     //get data from store
-    const userAdd = useSelector((state) => state.userRegister)
-    const { userInfo } = userAdd;
+    const userAddSelector = useSelector((state) => state.userRegister)
+    const { userInfo, loading } = userAddSelector;
     //Submit register form to action
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
@@ -63,7 +63,7 @@ const AddUserScreen = () => {
 
     useEffect(() => {
         if (userInfo) {
-            console.log(userInfo.message);
+            console.log(userInfo.success);
         }
     }, [userInfo])
 
@@ -90,7 +90,7 @@ const AddUserScreen = () => {
             </Breadcrumb>
             <Card
                 style={{
-                    width: 900, height: 900, marginTop: 20, marginLeft: 100
+                    width: 900, height: 1000, marginTop: 20, marginLeft: 100
                 }}
             >
                 <Divider plain>     <h1 style={{ fontSize: 30 }}>Add User</h1></Divider>
@@ -101,6 +101,7 @@ const AddUserScreen = () => {
                     onFinish={onFinish}
                     scrollToFirstError
                 >
+                    {/* <h5 style={{marginLeft:230, color:'red'}}>Email not existed</h5> */}
                     <Form.Item
                         name="email"
                         label="E-mail"
@@ -286,7 +287,7 @@ const AddUserScreen = () => {
                                 whitespace: true,
                             }, {
                                 max: 10,
-                                
+                                message: 'please input not larger than 10 words!',
                             }
                         ]}
                     >
@@ -315,6 +316,7 @@ const AddUserScreen = () => {
                         <Button type="primary" htmlType="submit">
                             Add Account
                         </Button>
+                        {}
                     </Form.Item>
                 </Form>
             </Card>

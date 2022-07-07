@@ -1,5 +1,5 @@
 import {
-  Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag
+  Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { deleteUser, listUsers } from '../../actions/userActions';
@@ -9,16 +9,19 @@ import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import styled from 'styled-components';
 import moment from 'moment'
-import { DeleteOutlined, EditOutlined, UserAddOutlined } from '@ant-design/icons';
-import Loader from '../../components/Loader';
+import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
+import { Loader, LargeLoader } from '../../components/Loader';
 
 const { Column, ColumnGroup } = Table;
 
 const StyledTable = styled((props) => <Table {...props} />)`
-&& tbody > tr:hover > td {
-  background: rgba(208, 225, 225);
-}
-`;
+  && tbody > tr:hover > td {
+    background: rgba(208, 225, 225);
+  }
+  thead > tr > th {
+    background-color: rgba(202, 235, 199);
+  }
+  `;
 
 const ListUserScreen = () => {
   const [searchText, setSearchText] = useState('');
@@ -121,9 +124,13 @@ const ListUserScreen = () => {
       ),
   });
 
+
   const navigate = useNavigate();
   const data = useSelector((state) => state.userList);
   const deleteSuccess = useSelector((state) => state.userDelete);
+  const updateSelector = useSelector((state) => state.userUpdate);
+  const updateSuccess = updateSelector.success
+  const { success } = deleteSuccess;
   const [userData, setUserData] = useState(data)
   const { loading } = data;
   const [form] = Form.useForm();
@@ -153,12 +160,16 @@ const ListUserScreen = () => {
 
   const dispatch = useDispatch();
   useEffect(() => {
+    if (updateSuccess === true) {
+      message.success('Update successful');
+    }
     dispatch(listUsers());
-    console.log(data.users)
-  }, [dispatch, deleteSuccess]);
+    console.log(deleteSuccess)
+  }, [success]);
 
 
-  //Delete Update Form
+
+  // Delete Update Form
   const confirm = (id) => {
     console.log(id);
     message.success('Delete successful');
@@ -169,9 +180,29 @@ const ListUserScreen = () => {
     console.log(e);
   };
 
-  const ActiveHandle = (id) => {
+
+  const userDetailHandler = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street) => {
     console.log(id);
+    navigate('/admin/userdetail', {
+      state:
+      {
+        id: id,
+        username: username,
+        firstname: firstname,
+        lastname: lastname,
+        dob: dob,
+        email: email,
+        phone: phone,
+        status: status,
+        country: country,
+        city: city,
+        district: district,
+        street: street,
+        history: location.pathname
+      }
+    })
   }
+
 
   return (
     <>
@@ -181,13 +212,19 @@ const ListUserScreen = () => {
           <a href="">List Users</a>
         </Breadcrumb.Item>
       </Breadcrumb>
-      <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/adduser'}>Add User</Link></Button></Divider>
-      {loading && <Loader/>}
-      {loading === false && <StyledTable dataSource={data.users} className="table-striped-rows" onRow={(record, rowIndex) => {
-        return {
-          onClick: event => { console.log(record.id) }, // click row
-        };
-      }}>
+      <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/adduser'} style={{ textDecoration: 'none' }}>Add User</Link></Button></Divider>
+
+      {loading === true && <>
+        <br></br> <br /> <br />
+        <br></br> <br /> <br />
+        <Row>
+          <Col span={5}></Col>
+          <Col span={5}></Col>
+          <Col span={5}><LargeLoader /></Col>
+          <Col span={5}></Col>
+        </Row></>}
+
+      {loading === false && <StyledTable dataSource={data.users} className="table-striped-rows" >
         <Column title="UserName" dataIndex="username" key="username" {...getColumnSearchProps('username')} />
         <Column title="First Name" dataIndex="first_name" key="first_name" />
         <Column title="Last Name" dataIndex="last_name" key="last_name" />
@@ -201,6 +238,7 @@ const ListUserScreen = () => {
           text: 'Female',
           value: 'Female',
         },]} onFilter={(value, record) => record.gender.indexOf(value) === 0} />
+
 
         <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <Tag color="green">true</Tag> : <Tag color="error">false</Tag>)}
           filters={[{
@@ -230,6 +268,8 @@ const ListUserScreen = () => {
           key="action"
           render={(_, record) => (
             <Space size="middle">
+              <a><EyeOutlined onClick={() => userDetailHandler(record.id, record.username, record['first_name'], record['last_name'],
+                record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street)} /></a>
               <a onClick={() => editUser(record.id, record.username, record['first_name'], record['last_name'],
                 record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street)}><EditOutlined style={{ fontSize: 17 }} /></a>
               <Popconfirm

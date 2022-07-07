@@ -1,5 +1,5 @@
 import {
-  Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag
+  Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag,Row,Col
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { deleteUser, listStaff } from '../../actions/userActions';
@@ -9,8 +9,8 @@ import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import styled from 'styled-components';
 import moment from 'moment'
-import { DeleteOutlined, EditOutlined, UserAddOutlined } from '@ant-design/icons';
-
+import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
+import { Loader, LargeLoader } from '../../components/Loader';
 const { Column, ColumnGroup } = Table;
 
 const StyledTable = styled((props) => <Table {...props} />)`
@@ -120,11 +120,33 @@ const ListStaffScreen = () => {
       ),
   });
 
+  const userDetailHandler = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street) => {
+    console.log(id);
+    navigate('/admin/userdetail', {
+      state:
+      {
+        id: id,
+        username: username,
+        firstname: firstname,
+        lastname: lastname,
+        dob: dob,
+        email: email,
+        phone: phone,
+        status: status,
+        country: country,
+        city: city,
+        district: district,
+        street: street,
+        history: location.pathname
+      }
+    })
+  }
+
   const navigate = useNavigate();
   const data = useSelector((state) => state.staffList);
   const deleteSuccess = useSelector((state) => state.userDelete);
   const [userData, setUserData] = useState(data)
-
+  const loadingStaff = data.loading;
   const [form] = Form.useForm();
   const location = useLocation();
   const editUser = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street) => {
@@ -180,10 +202,18 @@ const ListStaffScreen = () => {
           <a href="">List Staff</a>
         </Breadcrumb.Item>
       </Breadcrumb>
-      <Divider orientation="right">  <Button type="primary" size="middle"><Link to={'/admin/addstaff'}>Add Staff</Link></Button></Divider>
+      <Divider orientation="right">  <Button type="primary" size="middle"><Link to={'/admin/addstaff'} style={{ textDecoration: 'none' }}>Add Staff</Link></Button></Divider>
+      {loadingStaff === true && <>
+        <br></br> <br /> <br />
+        <br></br> <br /> <br />
+        <Row>
+          <Col span={5}></Col>
+          <Col span={5}></Col>
+          <Col span={5}><LargeLoader /></Col>
+          <Col span={5}></Col>
+        </Row></>}
 
-      <StyledTable dataSource={data.users}  className="table-striped-rows">
-        <Column title="ID" dataIndex="id" key="id" />
+      {loadingStaff === false && <StyledTable dataSource={data.users} className="table-striped-rows" >
         <Column title="UserName" dataIndex="username" key="username" {...getColumnSearchProps('username')} />
         <Column title="First Name" dataIndex="first_name" key="first_name" />
         <Column title="Last Name" dataIndex="last_name" key="last_name" />
@@ -208,7 +238,15 @@ const ListStaffScreen = () => {
             value: '0',
           },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
           key="status" />
-        <Column title="is_active" dataIndex="is_active" render={(_, record) => (record.is_active == true ? <Tag color="green">true</Tag> : <Tag color="error">false</Tag>)} key="is_active" />
+        <Column title="is_active" dataIndex="is_active" render={(_, record) => (record.is_active == true ? <Tag color="green">true</Tag> : <Tag color="error">false</Tag>)}
+          filters={[{
+            text: 'true',
+            value: 'true',
+          }, {
+            text: 'false',
+            value: 'false',
+          },]} onFilter={(value, record) => record.is_active.indexOf(value) === 0}
+          key="is_active" />
         <Column title="country" dataIndex="address" render={(_, record) => record.address.country} key="country" />
         <Column title="city" dataIndex="address" render={(_, record) => record.address.city} key="city" />
         <Column title="district" dataIndex="address" render={(_, record) => record.address.district} key="district" />
@@ -219,7 +257,8 @@ const ListStaffScreen = () => {
           key="action"
           render={(_, record) => (
             <Space size="middle">
-              <a style={{ color: 'blue' }} onClick={() => ActiveHandle(record.id)}>{record.is_active == true ? 'inactive' : 'active'}</a>
+              <a><EyeOutlined onClick={() => userDetailHandler(record.id, record.username, record['first_name'], record['last_name'],
+                record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street)} /></a>
               <a onClick={() => editUser(record.id, record.username, record['first_name'], record['last_name'],
                 record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street)}><EditOutlined style={{ fontSize: 17 }} /></a>
               <Popconfirm
@@ -235,7 +274,8 @@ const ListStaffScreen = () => {
             </Space>
           )}
         />
-      </StyledTable>
+      </StyledTable>}
+
     </>
 
   );

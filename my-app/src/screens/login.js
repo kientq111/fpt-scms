@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
-import { Form, Input, Button, Checkbox, Card } from 'antd';
+import { Form, Input, Button, Checkbox, Card,Space } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
 import { Row, Col } from 'antd';
@@ -40,14 +40,14 @@ const LoginScreen = () => {
                     marginTop: 150
                 }}></h1>
                 {error && <h1 style={{ color: 'red' }}>{error}</h1>}
-            
+
 
                 <div className="site-card-border-less-wrapper">
                     <Card
                         title="LOGIN"
                         bordered={false}
                         style={{
-                            
+
                         }}
                     >
                         <Form
@@ -94,10 +94,13 @@ const LoginScreen = () => {
                                 </a>
                             </Form.Item>
                             <Form.Item>
-                                <Button type="primary" htmlType="submit" className="login-form-button">
-                                    Log in
-                                </Button>
-                                {loading && <Loader />}
+                                <Space size={"middle"}>
+                                    <Button type="primary" htmlType="submit" className="login-form-button">
+                                        Log in
+                                    </Button>
+                                    {loading && <Loader />}
+                                </Space>
+
                             </Form.Item>
                         </Form>
                     </Card>

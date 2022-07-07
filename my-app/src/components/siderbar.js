@@ -6,7 +6,8 @@ import {
     PieChartOutlined,
     TeamOutlined,
     UserOutlined,
-    LogoutOutlined
+    LogoutOutlined,
+    FormOutlined
 } from '@ant-design/icons';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -30,18 +31,24 @@ const items1 = ['1'].map((key) => ({
 
 const items = [
     getItem('Dashboard', '', <PieChartOutlined />),
+    getItem('Account Manager', '', <UserOutlined />, [
+        // getItem('List User', '/admin/listuser'),
+        getItem('Add User', '/admin/adduser'),
+        getItem('Add Staff', '/admin/addstaff'),
+        getItem('List Staff', '/admin/liststaff'),
+        getItem('List User', '/admin/listuser')
+    ]),
     getItem('Menu Manager', '', <DesktopOutlined />, [
         getItem('Add Dish', '/admin/adddish'),
         getItem('List Dish', '/admin/listdish'),
         getItem('Add Category', '/admin/addcategory'),
         getItem('List Category', '/admin/listcategory'),
+        getItem('List Subcategory', '/admin/listsubcategory'),
     ]),
-    getItem('Account Manager', '', <UserOutlined />, [
-        // getItem('List User', '/admin/listuser'),
-        getItem('Add User', '/admin/adduser'),
-        getItem('List Staff', '/admin/liststaff'),
-        getItem('List User', '/admin/listuser')
+    getItem('Blog Manager', '', <FormOutlined />, [
+        getItem('Add Blog', '/admin/addblog'),
     ]),
+
     // getItem('Dish Manager', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
     getItem('Logout', '/', <LogoutOutlined />),
 ];

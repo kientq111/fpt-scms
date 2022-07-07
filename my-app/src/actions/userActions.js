@@ -131,11 +131,12 @@ export const listUsers = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.accessToken}`,
       },
     }
-    const { data } = await axios.post(`/getListUser?username=&email=&phone=&status=1&createBy=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=`,{} ,config)
+    const { data } = await axios.get(`/getListUser?username=&email=&phone=&status=&createBy=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=10`, config)
     dispatch({
       type: userConstants.USER_LIST_SUCCESS,
       payload: data.data,
     })
+    dispatch({ type: userConstants.USER_UPDATE_RESET })
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -168,7 +169,7 @@ export const deleteUser = (id) => async (dispatch, getState) => {
       },
     }
 
-    await axios.post(`/deleteUser/${id}`, {}, config)
+    await axios.delete(`/deleteUser/${id}`, config)
 
     dispatch({ type: userConstants.USER_DELETE_SUCCESS })
   } catch (error) {
@@ -205,12 +206,11 @@ export const updateUser = (id, username, email, dob, first_name, last_name, phon
       },
     }
 
-    const { data } = await axios.post(`/updateUser/${id}`, { username, email, dob, first_name, last_name, createdBy, updatedBy, phone, address, gender }, config)
+    const { data } = await axios.put(`/updateUser/${id}`, { username, email, dob, first_name, last_name, createdBy, updatedBy, phone, address, gender }, config)
 
     dispatch({ type: userConstants.USER_UPDATE_SUCCESS, payload: data })
 
 
-    dispatch({ type: userConstants.USER_UPDATE_RESET })
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -241,11 +241,12 @@ export const listStaff = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.accessToken}`,
       },
     }
-    const { data } = await axios.post(`/getListStaff?username=&email=&phone=&status=1&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=1&pageSize=5`, {}, config)
+    const { data } = await axios.get(`/getListStaff?username=&email=&phone=&status=1&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=`, config)
     dispatch({
       type: staffConstants.STAFF_LIST_SUCCESS,
       payload: data.data,
     })
+    dispatch({ type: userConstants.USER_UPDATE_RESET })
   } catch (error) {
     const message =
       error.response && error.response.data.message
