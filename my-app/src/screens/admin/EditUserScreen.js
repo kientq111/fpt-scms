@@ -65,12 +65,19 @@ const EditUserScreen = () => {
             country: values.country,
         }
         dispatch(updateUser(location.state.id, values.username, values.email, values.dob, values.first_name, values.last_name, phoneNumber, address, values.gender));
-        if (location.state.history === '/admin/liststaff') {
-            navigate('/admin/liststaff')
-        } else {
-            navigate('/admin/listuser')
-        }
+
     };
+
+    useEffect(() => {
+        if (success === true) {
+            if (location.state.history === '/admin/liststaff') {
+                navigate('/admin/liststaff')
+            } else {
+                navigate('/admin/listuser')
+            }
+        }
+
+    }, [success])
 
     useEffect(() => {
         form.setFieldsValue({

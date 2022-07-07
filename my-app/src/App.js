@@ -15,7 +15,7 @@ import ListUserScreen from './screens/admin/ListUserScreen';
 import AddUserScreen from './screens/admin/AddUserScreen';
 import AddDishScreen from './screens/admin/AddDishScreen'
 import AddStaffScreen from './screens/admin/AddStaffScreen';
-import ViewUserDetailScreen from './screens/admin/UserDetailScreen';
+import UserDetailScreen from './screens/admin/UserDetailScreen';
 import AddMenuScreen from './screens/admin/AddMenuScreen';
 import EditUserScreen from './screens/admin/EditUserScreen';
 import ListStaffScreen from './screens/admin/ListStaffScreen';
@@ -24,6 +24,8 @@ import AddCateScreen from './screens/admin/AddCategoryScreen';
 import ListCategoryScreen from './screens/admin/ListCategoryScreen';
 import SiderBar from './components/siderbar';
 import EditDishScreen from './screens/admin/EditDishScreen';
+import AddBlogScreen from './screens/admin/AddBlogScreen';
+import ListSubCategoryScreen from './screens/admin/ListSubCategoryScreen';
 const { Header, Content, Sider } = Layout;
 
 
@@ -83,12 +85,15 @@ const App = () => {
             <Route path='/admin/liststaff' element={<ListStaffScreen />} />
             {/* User */}
             <Route path='/admin/adduser' element={<AddUserScreen />} />
-            <Route path='/admin/userdetail' element={<ViewUserDetailScreen />} />
+            <Route path='/admin/userdetail' element={<UserDetailScreen />} />
             <Route path='/admin/listuser' element={<ListUserScreen />} />
             <Route path='/admin/edituser' element={<EditUserScreen />} />
             {/* Category&SubCategory */}
             <Route path='/admin/addcategory' element={<AddCateScreen />} />
             <Route path='/admin/listcategory' element={<ListCategoryScreen />} />
+            <Route path='/admin/listsubcategory' element={<ListSubCategoryScreen/>} />
+            {/* Blog */}
+            <Route path='/admin/addblog' element={<AddBlogScreen />} />
             {/* Common */}
             <Route path='*' element={<ErrorScreen />} />
           </Routes>
