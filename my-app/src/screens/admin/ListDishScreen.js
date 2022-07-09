@@ -136,9 +136,9 @@ const ListDishScreen = () => {
     const { loading, dishes } = dataDish
 
     useEffect(() => {
-            dispatch(listDishes());
-            console.log(dataDish);
-            console.log(dishStatusSelector)
+        dispatch(listDishes());
+        console.log(dataDish);
+        console.log(dishStatusSelector)
     }, [success]);
 
 
@@ -149,18 +149,17 @@ const ListDishScreen = () => {
         message.success('Update Status successful');
     };
 
-    const updateDishHandle = (id, dishName, menuID, menuName, subCategoryID, subCategoryName, description) => {
-        console.log(id, dishName, menuID, menuName, subCategoryID, subCategoryName, description);
+    const updateDishHandle = (id, dishName, subCategory, description, createdTime, createdBy) => {
+        console.log(id, dishName, subCategory, description);
         navigate('/admin/editdish', {
             state:
             {
                 id: id,
                 dishName: dishName,
-                menuID: menuID,
-                menuName: menuName,
-                subCategoryID: subCategoryID,
-                subCategoryName: subCategoryName,
+                subCategory: subCategory,
                 description: description,
+                createdTime: createdTime,
+                createdBy: createdBy,
                 history: location.pathname
             }
         })
@@ -210,7 +209,7 @@ const ListDishScreen = () => {
                     render={(_, record) => (
                         <Space size="middle">
                             <a onClick={() => { changeStatusHandle(record.id, record.status) }}>{record.status == 1 ? <Tag color="error">Change Status</Tag> : <Tag color="green">Change Status</Tag>}</a>
-                            <a onClick={() => { updateDishHandle(record.id, record.dishName, record.menu.id, record.menu.menuName, record.subCategory.id, record.subCategory.subCategoryName, record.description) }}><EditOutlined style={{ fontSize: 17 }} /></a>
+                            <a onClick={() => { updateDishHandle(record.id, record.dishName, record.subCategory, record.description, record.createdTime, record.createdBy) }}><EditOutlined style={{ fontSize: 17 }} /></a>
                         </Space>
                     )}
                 />

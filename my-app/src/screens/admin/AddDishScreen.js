@@ -2,18 +2,17 @@ import {
   Button,
   Form,
   Input,
-  InputNumber,
-  Select,
   Switch, Card, Space, Divider
 } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import { Modal, Upload } from 'antd';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { listSubcategory } from '../../actions/categoryAction';
 import { addDish } from '../../actions/dishAction';
 import { listMenus } from '../../actions/menuAction';
 import Loader from '../../components/Loader';
+import Select from "react-select";
+
+
 const { TextArea } = Input;
 
 
@@ -22,14 +21,19 @@ const { TextArea } = Input;
 
 const AddDishScreen = () => {
   const [form] = Form.useForm();
-  
+  const [selectedOptions, setSelectedOptions] = useState();
+  // const [menuState, setmenuState] = useState();
+  // const [subCategoryState, SetSubCategoryState] = useState();
+
   const dispatch = useDispatch();
+
+
   const selectSubcategorySelector = useSelector((state) => state.subcategoryList);
   const selectMenuSelector = useSelector((state) => state.menuList);
   const addDishSelector = useSelector((state) => state.dishAdd);
   const addDishLoading = addDishSelector.loading;
   const { subcategoryInfo } = selectSubcategorySelector;
-  const loadingSubcategory = selectMenuSelector.loading;
+  const loadingSubcategory = selectSubcategorySelector.loading;
   const { loading, menus } = selectMenuSelector;
 
   useEffect(() => {
@@ -37,12 +41,43 @@ const AddDishScreen = () => {
     dispatch(listMenus());
   }, []);
 
+  //Option Zoneeeee
+  const optionListMenu = [];
+  const optionListSubCategory = [];
 
+  if (loading === false) {
+    menus.forEach(menu => {
+      optionListMenu.push({
+        value: menu.id,
+        label: menu.menuName,
+        description: menu.description,
+        status: menu.status,
+        createdTime: menu.createdTime,
+        createdBy: menu.createdBy,
+        updatedTime: menu.updatedTime,
+        updatedBy: menu.updatedBy
+      })
+    });
+  }
+
+  if (loadingSubcategory === false) {
+    subcategoryInfo.forEach(sub => {
+      optionListSubCategory.push({
+        value: sub.id,
+        label: sub.subCategoryName,
+        description: sub.description,
+        status: sub.status,
+        createdTime: sub.createdTime,
+        createdBy: sub.createdBy,
+        updatedBy: sub.updatedBy,
+        updatedTime: sub.updatedTime
+      })
+    });
+  }
 
   //CALL API ZONEEE
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
-
     dispatch(addDish(values.dishname, values.description, values.menu, values.subcategory));
   };
 
@@ -96,48 +131,24 @@ const AddDishScreen = () => {
             </Form.Item>
             <Form.Item label="Menu" name="menu">
               <Select
-                showSearch
-                style={{
-                  width: 200,
-                }}
-                placeholder="Search to Select"
-                optionFilterProp="children"
-                filterOption={(input, option) => option.children.includes(input)}
-                filterSort={(optionA, optionB) =>
-                  optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
-                }
-              >
-                {loading === false && menus.map((menu) => {
-                  return (
-                    <Select.Option value={menu.id}>{menu.menuName}</Select.Option>
-                  )
-                })}
-              </Select>
+                options={optionListMenu}
+                placeholder="Select menu"
+                value={selectedOptions}
+                // onChange={handleMenuSelect}
+                isSearchable={true}
+                isMulti
+              />
             </Form.Item>
             <Form.Item label="Sub Category" name="subcategory">
-
               <Select
-                showSearch
-                style={{
-                  width: 200,
-                }}
-                placeholder="Search to Select"
-                optionFilterProp="children"
-                filterOption={(input, option) => option.children.includes(input)}
-                filterSort={(optionA, optionB) =>
-                  optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
-                }
-              >
-                {loadingSubcategory === false && subcategoryInfo.map((subCategory) => {
-                  return (
-                    <Select.Option value={subCategory.id}>{subCategory.subCategoryName}</Select.Option>
-                  )
-                })}
-              </Select>
+                options={optionListSubCategory}
+                placeholder="Select subcategory"
+                value={selectedOptions}
+                // onChange={handleSubCategorySelect}
+                isSearchable={true}
 
-
+              />
             </Form.Item>
-
             <Form.Item label="Description" name="description">
               <TextArea rows={4} />
             </Form.Item>
@@ -149,7 +160,6 @@ const AddDishScreen = () => {
               <Space size={'large'}>
                 {addDishLoading && <Loader />}
                 <Button type='primary' htmlType="submit">Add Dish</Button>
-                <Button>Cancel</Button>
               </Space>
 
             </Form.Item>

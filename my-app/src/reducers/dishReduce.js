@@ -33,7 +33,7 @@ export const dishAddReducer = (state = {}, action) => {
     case dishConstants.DISH_ADD_REQUEST:
       return { loading: true }
     case dishConstants.DISH_ADD_SUCCESS:
-      return { loading: false, dishes: action.payload }
+      return { loading: false, dishes: action.payload, success: true }
     case dishConstants.DISH_ADD_FAIL:
       return { loading: false, error: action.payload }
     default:
@@ -46,11 +46,25 @@ export const dishEditReducer = (state = {}, action) => {
     case dishConstants.DISH_EDIT_REQUEST:
       return { loading: true }
     case dishConstants.DISH_EDIT_SUCCESS:
-      return { loading: false, dishes: action.payload, success:true }
+      return { loading: false, dishes: action.payload, success: true }
     case dishConstants.DISH_EDIT_FAIL:
       return { loading: false, error: action.payload }
     case dishConstants.DISH_EDIT_RESET:
-      return { }
+      return {}
+    default:
+      return state
+  }
+}
+
+
+export const dishGetByIdReducer = (state = {}, action) => {
+  switch (action.type) {
+    case dishConstants.DISH_GET_BY_ID_REQUEST:
+      return { loading: true }
+    case dishConstants.DISH_GET_BY_ID_SUCCESS:
+      return { loading: false, dish: action.payload }
+    case dishConstants.DISH_CHANGE_STATUS_FAIL:
+      return { loading: false, error: action.payload }
     default:
       return state
   }
