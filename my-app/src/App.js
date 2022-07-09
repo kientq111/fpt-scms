@@ -6,7 +6,7 @@
 //   UserOutlined,
 // } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
-import { Layout, Menu, Divider  } from 'antd';
+import { Layout, Menu, Divider } from 'antd';
 import { BrowserRouter as Router, Routes, Route, useRoutes } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import LoginScreen from './screens/login';
@@ -26,6 +26,8 @@ import SiderBar from './components/siderbar';
 import EditDishScreen from './screens/admin/EditDishScreen';
 import AddBlogScreen from './screens/admin/AddBlogScreen';
 import ListSubCategoryScreen from './screens/admin/ListSubCategoryScreen';
+import Test from './screens/test';
+import AddSubCategoryScreen from './screens/admin/AddSubCategoryScreen';
 const { Header, Content, Sider } = Layout;
 
 
@@ -48,7 +50,7 @@ const App = () => {
       }}
     >
 
-      {userInfo && <Sider collapsible collapsed={collapsed}  className="site-layout-background" onCollapse={(value) => setCollapsed(value)}>
+      {userInfo && <Sider collapsible collapsed={collapsed} className="site-layout-background" onCollapse={(value) => setCollapsed(value)}>
         <div className="logo" />
         {/* add onclick to menu */}
         <SiderBar />
@@ -62,7 +64,7 @@ const App = () => {
             padding: 0,
           }}
         >
-      
+
           <Menu theme="light" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
         </Header>}
 
@@ -91,11 +93,13 @@ const App = () => {
             {/* Category&SubCategory */}
             <Route path='/admin/addcategory' element={<AddCateScreen />} />
             <Route path='/admin/listcategory' element={<ListCategoryScreen />} />
-            <Route path='/admin/listsubcategory' element={<ListSubCategoryScreen/>} />
+            <Route path='/admin/listsubcategory' element={<ListSubCategoryScreen />} />
+            <Route path='/admin/addsubcategory' element={<AddSubCategoryScreen />} />
             {/* Blog */}
             <Route path='/admin/addblog' element={<AddBlogScreen />} />
             {/* Common */}
             <Route path='*' element={<ErrorScreen />} />
+            <Route path='/test' element={<Test />} />
           </Routes>
         </Content>
 
