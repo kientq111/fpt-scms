@@ -125,7 +125,7 @@ const AddDishScreen = () => {
             onFinish={onFinish}
             scrollToFirstError
           >
-            {/* <h4 style={{ marginLeft: 140, fontSize: 15, color: 'green'}}>ADD DISH SUCCESSFUL!</h4> */}
+            {addDishLoading === false && <h4 style={{ marginLeft: 140, fontSize: 15, color: 'green' }}>ADD DISH SUCCESSFUL!</h4>}
             <Form.Item label="Dish Name" name="dishname">
               <Input />
             </Form.Item>

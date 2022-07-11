@@ -126,6 +126,7 @@ export const listUsers = () => async (dispatch, getState) => {
     const {
       userLogin: { userInfo },
     } = getState()
+    // const userFromLocal = localStorage.getItem("userInfo");
     const config = {
       headers: {
         Authorization: `Bearer ${userInfo.accessToken}`,

@@ -3,14 +3,15 @@ import {
     Form,
     Input,
     Row,
-    Breadcrumb, Card, Divider
+    Breadcrumb, Card, Divider, Space
 } from 'antd';
 import Loader from '../../components/Loader';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { listDishes } from '../../actions/dishAction';
 import Select from 'react-select';
-import { addMenu } from '../../actions/menuAction';
+import { addMenu, editMenu, getMenuById } from '../../actions/menuAction';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const formItemLayout = {
     labelCol: {
@@ -42,27 +43,70 @@ const tailFormItemLayout = {
         },
     },
 };
-const AddMenuScreen = () => {
+const EditMenuScreen = () => {
     const dispatch = useDispatch()
     const [form] = Form.useForm();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    let oldDishInMenuIndex = [];
 
 
     let listDishOption = [];
     const getListDishSelector = useSelector((state) => state.dishList);
+    const getMenuByIdSelector = useSelector((state) => state.menuGetById);
+    const menuEditSelector = useSelector((state) => state.menuEdit);
+
+    const menuLoading = getMenuByIdSelector.loading;
+    const menuInfo = getMenuByIdSelector.menu;
+    const menuEditSuccess = menuEditSelector.success;
+    const menuEditLoading = menuEditSelector.loading;
     const { loading, dishes } = getListDishSelector;
+
+
     const onFinish = (values) => {
         console.log(values);
-        dispatch(addMenu(values.menu, values.description, values.dish))
+
+        dispatch(editMenu(location.state.id, values.menu, values.description, values.dish, location.state.createdBy, location.state.createdTime))
     };
+
 
 
     useEffect(() => {
         dispatch(listDishes())
+        dispatch(getMenuById(location.state.id))
+        form.setFieldsValue({
+            menu: location.state.menuName,
+            description: location.state.description,
+        })
     }, [])
 
 
-    if (loading === false) {
+
+    useEffect(() => {
+        if (menuEditSuccess === true) {
+            console.log('aaaaa hahah');
+            navigate('/admin/listmenu', {
+                state: {
+                    isEditMenuSuccess: true
+                }
+            })
+        }
+    }, [menuEditSelector])
+
+
+    if (loading === false && menuLoading === false) {
         listDishOption = dishes;
+
+        menuInfo.listDish.forEach(e => {
+            let rawDishInMenu = listDishOption.findIndex(x => x.id === e.id);
+            oldDishInMenuIndex.push(rawDishInMenu)
+        });
+    
+    }
+
+    const cancelHandle = () => {
+        navigate('/admin/listmenu');
     }
 
     return (
@@ -71,13 +115,13 @@ const AddMenuScreen = () => {
             <Breadcrumb>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>
-                    <a href="" >Add Menu</a>
+                    <a href="" >Edit Menu</a>
                 </Breadcrumb.Item>
             </Breadcrumb>
 
             <Card
                 style={{ marginTop: 30, width: 1100, height: 700 }}
-            >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>Add Menu</h1></Divider>
+            >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>Edit Menu</h1></Divider>
 
                 <Form style={{ marginTop: 50, marginRight: 250 }}
                     {...formItemLayout}
@@ -108,6 +152,7 @@ const AddMenuScreen = () => {
                             getOptionLabel={option => option.dishName}
                             getOptionValue={option => option.id}
                             options={listDishOption}
+                            defaultValue={oldDishInMenuIndex.map((index) => (listDishOption[index]))}
                             isMulti
                         />
                     </Form.Item>
@@ -126,9 +171,14 @@ const AddMenuScreen = () => {
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit">
-                            Add menu
-                        </Button>
+
+                        <Space size={'large'}>
+                            <Button type="primary" htmlType="submit">
+                                Edit Menu
+                            </Button>
+                            {menuEditLoading && <Loader />}
+                            <Button onClick={cancelHandle}>Cancel</Button>
+                        </Space>
                     </Form.Item>
                 </Form>
 
@@ -139,4 +189,4 @@ const AddMenuScreen = () => {
     );
 };
 
-export default AddMenuScreen;
+export default EditMenuScreen;

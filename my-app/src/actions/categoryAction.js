@@ -45,12 +45,61 @@ export const addCategory = (categoryName, description) => async (dispatch, getSt
     }
 }
 
+export const editCategory = (id, categoryName, description, createdTime, createdBy) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: categoryConstants.CATEGORY_EDIT_REQUEST,
+        })
+        // Dinamic variable
+        const status = '1';
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.accessToken}`
+            },
+        }
+        const updatedBy = userInfo.userName
+        const updatedTime = new Date();
+        const { data } = await axios.post(
+            '/category/addOrUpdateCategory',
+            { id, categoryName, description, status, createdTime, createdBy, updatedTime, updatedBy },
+            config
+        )
+
+        dispatch({
+            type: categoryConstants.CATEGORY_EDIT_SUCCESS,
+            payload: data,
+        })
+
+        dispatch({ type: categoryConstants.CATEGORY_ADD_RESET })
+
+    } catch (error) {
+        dispatch({
+            type: categoryConstants.CATEGORY_EDIT_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        })
+    }
+}
+
 
 export const listCategory = () => async (dispatch, getState) => {
     try {
         dispatch({
             type: categoryConstants.CATEGORY_LIST_REQUEST,
         })
+
+        dispatch({
+            type: categoryConstants.CATEGORY_EDIT_RESET,
+        })
+
 
         const {
             userLogin: { userInfo },
@@ -67,6 +116,11 @@ export const listCategory = () => async (dispatch, getState) => {
             type: categoryConstants.CATEGORY_LIST_SUCCESS,
             payload: data.data,
         })
+
+        dispatch({
+            type: categoryConstants.CATEGORY_EDIT_RESET,
+        })
+
     } catch (error) {
         const message =
             error.response && error.response.data.message

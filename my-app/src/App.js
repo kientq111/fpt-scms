@@ -1,10 +1,3 @@
-// import {
-//   DesktopOutlined,
-//   FileOutlined,
-//   PieChartOutlined,
-//   TeamOutlined,
-//   UserOutlined,
-// } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { Layout, Menu, Divider } from 'antd';
 import { BrowserRouter as Router, Routes, Route, useRoutes } from 'react-router-dom';
@@ -28,6 +21,10 @@ import AddBlogScreen from './screens/admin/AddBlogScreen';
 import ListSubCategoryScreen from './screens/admin/ListSubCategoryScreen';
 import Test from './screens/test';
 import AddSubCategoryScreen from './screens/admin/AddSubCategoryScreen';
+import EditCategoryScreen from './screens/admin/EditCategoryScreen';
+import ListMenuScreen from './screens/admin/ListMenuScreen';
+import EditMenuScreen from './screens/admin/EditMenuScreen';
+import MenuDetailScreen from './screens/admin/MenuDetailScreen';
 const { Header, Content, Sider } = Layout;
 
 
@@ -78,6 +75,9 @@ const App = () => {
             <Route path='/' element={<LoginScreen />} />
             {/* Menu */}
             <Route path='/admin/addMenu' element={<AddMenuScreen />} />
+            <Route path='/admin/listmenu' element={<ListMenuScreen />} />
+            <Route path='/admin/editmenu' element={<EditMenuScreen />} />
+            <Route path='/admin/menudetail' element={<MenuDetailScreen />} />
             {/* Dish */}
             <Route path='/admin/adddish' element={<AddDishScreen />} />
             <Route path='/admin/listdish' element={<ListDishScreen />} />
@@ -92,6 +92,7 @@ const App = () => {
             <Route path='/admin/edituser' element={<EditUserScreen />} />
             {/* Category&SubCategory */}
             <Route path='/admin/addcategory' element={<AddCateScreen />} />
+            <Route path='/admin/editcategory' element={<EditCategoryScreen />} />
             <Route path='/admin/listcategory' element={<ListCategoryScreen />} />
             <Route path='/admin/listsubcategory' element={<ListSubCategoryScreen />} />
             <Route path='/admin/addsubcategory' element={<AddSubCategoryScreen />} />
@@ -100,6 +101,8 @@ const App = () => {
             {/* Common */}
             <Route path='*' element={<ErrorScreen />} />
             <Route path='/test' element={<Test />} />
+
+
           </Routes>
         </Content>
 
