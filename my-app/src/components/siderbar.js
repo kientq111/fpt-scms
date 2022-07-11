@@ -39,6 +39,8 @@ const items = [
         getItem('List User', '/admin/listuser')
     ]),
     getItem('Menu Manager', '', <DesktopOutlined />, [
+        getItem('Add Menu', '/admin/addmenu'),
+        getItem('List Menu', '/admin/listmenu'),
         getItem('Add Dish', '/admin/adddish'),
         getItem('List Dish', '/admin/listdish'),
         getItem('Add Category', '/admin/addcategory'),

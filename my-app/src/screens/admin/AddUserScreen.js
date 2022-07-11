@@ -9,6 +9,7 @@ import {
     Col,
     Button, Divider, Card, Breadcrumb
 } from 'antd';
+import Loader from '../../components/Loader';
 const { Option } = Select;
 
 const formItemLayout = {
@@ -101,7 +102,8 @@ const AddUserScreen = () => {
                     onFinish={onFinish}
                     scrollToFirstError
                 >
-                    {/* <h5 style={{marginLeft:230, color:'red'}}>Email not existed</h5> */}
+                    {loading === false && userInfo.success === false && <h5 style={{ marginLeft: 230, color: 'red' }}>{userInfo.message}</h5>}
+                    {loading === false && userInfo.success === true && <h5 style={{ marginLeft: 230, color: 'green' }}>{userInfo.message}</h5>}
                     <Form.Item
                         name="email"
                         label="E-mail"
@@ -316,13 +318,13 @@ const AddUserScreen = () => {
                         <Button type="primary" htmlType="submit">
                             Add Account
                         </Button>
-                        {}
+                        {loading && <Loader />}
                     </Form.Item>
                 </Form>
             </Card>
 
 
-        </Row>
+        </Row >
 
     );
 };

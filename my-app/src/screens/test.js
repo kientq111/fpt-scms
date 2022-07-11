@@ -1,37 +1,153 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  Form,
+  Input,
+  Row,
+  Col,
+  Button, Divider, Card, Breadcrumb
+} from 'antd';
 import Select from "react-select";
 
-export default function App() {
-  // React state to manage selected options
-  const [selectedOptions, setSelectedOptions] = useState();
 
-  // Array of all options
-  const optionList = [
-    { value: "red", a: "Red", label:"a"},
-    { value: "green", a: "Green" },
-    { value: "yellow", a: "Yellow" },
-    { value: "blue", a: "Blue" },
-    { value: "white", a: "White" }
-  ];
+const { Option } = Select;
+
+const formItemLayout = {
+  labelCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 8,
+    },
+  },
+  wrapperCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 16,
+    },
+  },
+};
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 16,
+      offset: 8,
+    },
+  },
+};
+
+
+export default function App() {
+  const [form] = Form.useForm();
+  const [provin, setProvin] = useState([{ name: "", code: "" }]);
+  const [district, setDistrict] = useState([{ name: "", code: "" }]);
+  const [wards, setWards] = useState([{ name: "", code: "" }])
+
+  useEffect(() => {
+    axios.get(`https://provinces.open-api.vn/api/p/`)
+      .then(res => {
+        const dataRes = res.data;
+        setProvin(dataRes);
+      })
+      .catch(error => console.log(error));
+  }, []);
+
+
+
+  const onFinish = (values) => {
+    console.log('Received values of form: ', values);
+
+  };
 
   // Function triggered on selection
-  function handleSelect(data) {
-    setSelectedOptions(data);
-    console.log(data);
+  function handleProvinSelect(value) {
+    console.log(value);
+    axios.get(`https://provinces.open-api.vn/api/p/${value.code}?depth=3`)
+      .then(res => {
+        const dataRes = res.data;
+        setDistrict(dataRes.districts);
+      })
+      .catch(error => console.log(error));
+    form.setFieldsValue({
+      district: "",
+      wards: ""
+    })
+  }
+
+  function handleDistrictSelect(value) {
+    console.log(value);
+    axios.get(`https://provinces.open-api.vn/api/d/${value.code}?depth=2`)
+      .then(res => {
+        const dataRes = res.data;
+        setWards(dataRes.wards);
+      })
+      .catch(error => console.log(error));
+    form.setFieldsValue({
+      wards: "",
+    })
   }
   return (
-    <div className="app">
-      <h2>Choose your color</h2>
-      <div className="dropdown-container">
-        <Select
-          options={optionList}
-          placeholder="Select color"
-          value={selectedOptions}
-          onChange={handleSelect}
-          isSearchable={true}
-          isMulti
-        />
-      </div>
-    </div>
+    <>
+      <Form style={{ marginRight: 150 }}
+        {...formItemLayout}
+        form={form}
+        name="register"
+        onFinish={onFinish}
+        scrollToFirstError
+      >
+
+        <Form.Item
+          name="city"
+          label="city"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Select
+            getOptionLabel={option => option.name}
+            getOptionValue={option => option.code}
+            onChange={handleProvinSelect}
+            options={provin}
+          />
+        </Form.Item>
+        <Form.Item
+          name="district"
+          label="District"
+        >
+          <Select
+            getOptionLabel={option => option.name}
+            getOptionValue={option => option.code}
+            onChange={handleDistrictSelect}
+            options={district}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="wards"
+          label="wards"
+          Size="small "
+        >
+          <Select
+            getOptionLabel={option => option.name}
+            getOptionValue={option => option.code}
+            options={wards}
+          />
+        </Form.Item>
+        <Form.Item {...tailFormItemLayout}>
+          <Button type="primary" htmlType="submit">
+            Add Account
+          </Button>
+        </Form.Item>
+      </Form>
+    </>
   );
 }

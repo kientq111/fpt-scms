@@ -10,7 +10,7 @@ import {
     Select,
     Row,
     Col,
-    Button, Divider
+    Button, Divider, Space
 } from 'antd';
 const { Option } = Select;
 
@@ -97,6 +97,14 @@ const EditUserScreen = () => {
 
     }, [])
 
+
+    const handlerCancel = () => {
+        if (location.state.history === '/admin/liststaff') {
+            navigate('/admin/liststaff')
+        } else {
+            navigate('/admin/listuser')
+        }
+    }
 
     const prefixSelector = (
         <Form.Item name="prefix" noStyle>
@@ -288,10 +296,13 @@ const EditUserScreen = () => {
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit">
-                            Update Account
-                        </Button>
-                        {loading && <Loader />}
+                        <Space size={'large'}>
+                            <Button type="primary" htmlType="submit">
+                                Update Account
+                            </Button>
+                            {loading && <Loader />}
+                            <Button onClick={handlerCancel}>Cancel</Button>
+                        </Space>
                     </Form.Item>
                 </Form></Col>
             <Col flex="0 1 500px"></Col>

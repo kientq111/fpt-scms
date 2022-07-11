@@ -11,8 +11,8 @@ import {
     dishListReducer, dishChangeStatusReducer,
     dishAddReducer, dishEditReducer, dishGetByIdReducer
 } from '../reducers/dishReduce';
-import { addCategoryReducer, listCategoryReducer, listSubCategoryReducer } from '../reducers/categoryReduce';
-import { menuListReducer } from '../reducers/menuReducers';
+import { addCategoryReducer, listCategoryReducer, listSubCategoryReducer, editCategoryReducer } from '../reducers/categoryReduce';
+import { menuListReducer, menuChangeStatusReducer, menuAddReducer, menuEditReducer, menuGetByIdReducer } from '../reducers/menuReducers';
 const reducers = combineReducers({
     //ACCOUNT ZONEEE
     userCheckAcc: userCheckAccountReducer,
@@ -31,10 +31,15 @@ const reducers = combineReducers({
     dishGetById: dishGetByIdReducer,
     //CATEGORY & SUBCATEGORY ZONEEE
     categoryAdd: addCategoryReducer,
+    categoryEdit: editCategoryReducer,
     categoryList: listCategoryReducer,
     subcategoryList: listSubCategoryReducer,
     //MENU ZONEE
-    menuList: menuListReducer
+    menuList: menuListReducer,
+    menuChangeStatus: menuChangeStatusReducer,
+    menuAdd: menuAddReducer,
+    menuEdit: menuEditReducer,
+    menuGetById: menuGetByIdReducer
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
@@ -43,10 +48,14 @@ const userInfoFromStorage = localStorage.getItem('userInfo')
 
 const middleware = [thunk]
 
-//get user from local storage - something make it not active
-const initialState = {
-    // userLogin: { userInfo: userInfoFromStorage },
+//get user from local storage
+let initialState = {};
+if (userInfoFromStorage) {
+    initialState = {
+        userLogin: { userInfo: userInfoFromStorage.data },
+    }
 }
+
 
 const store = createStore(
     reducers,
