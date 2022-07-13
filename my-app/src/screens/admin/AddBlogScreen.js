@@ -7,10 +7,9 @@ import {
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../components/Loader';
-import { Editor, EditorState } from "draft-js";
-import "draft-js/dist/Draft.css";
+import { Editor } from "@tinymce/tinymce-react";
 import { addBlog } from '../../actions/blogAction';
-const { TextArea } = Input;
+
 
 
 
@@ -20,14 +19,10 @@ const AddBlogScreen = () => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
     const [imageStringBase64, setImageStringBase64] = useState();
-    const [editorState, setEditorState] = useState(() =>
-        EditorState.createEmpty()
-    );
+    const initialText = 'Type content here';
+    const [text, setText] = useState(initialText);
 
-    const editor = useRef(null);
-    function focusEditor() {
-        editor.current.focus();
-    }
+
 
 
     useEffect(() => {
@@ -35,11 +30,10 @@ const AddBlogScreen = () => {
     }, []);
 
 
+
     //CALL API ZONEEE
     const onFinish = (values) => {
-        console.log('Received values of form: ', values);
-        console.log(imageStringBase64);
-        dispatch(addBlog(values.blogTitle, "content nek", imageStringBase64))
+        dispatch(addBlog(values.blogTitle, text, imageStringBase64))
     };
 
 
@@ -69,12 +63,13 @@ const AddBlogScreen = () => {
                 <Card
                     bordered={false}
                     style={{
+                        borderRadius: 10,
                         marginTop: 20, marginLeft: 150,
-                        width: 1000, height: 700
+                        width: 1300, height: 800
                     }}
                 >
                     <Divider plain>     <h1 style={{ fontSize: 30 }}>Add Blog</h1></Divider>
-                    <Form style={{ marginLeft: 100 }}
+                    <Form style={{ width: 1400 }}
                         labelCol={{
                             span: 4,
                         }}
@@ -88,35 +83,33 @@ const AddBlogScreen = () => {
                         scrollToFirstError
                     >
                         {/* <h4 style={{ marginLeft: 140, fontSize: 15, color: 'green'}}>ADD DISH SUCCESSFUL!</h4> */}
-                        <Form.Item label="Blog Title" name="blogTitle">
+                        <Form.Item label="Blog Title" name="blogTitle"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input Blog Title!',
+                                },
+                            ]}
+                        >
                             <Input />
                         </Form.Item>
 
-
-
-
-                        <Form.Item label="Content" name="content">
-                            <div
-                                style={{ border: "1px solid black", minHeight: "6em", cursor: "text" }}
-                                onClick={focusEditor}
-                            >
-                                <Editor
-                                    ref={editor}
-                                    editorState={editorState}
-                                    onChange={setEditorState}
-                                    placeholder="Write something!"
-                                />
-                            </div>
-                        </Form.Item>
+                        <div style={{ width: 900, marginLeft: 150 }}>
+                            <Editor
+                                apiKey="qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc"
+                                value={text}
+                                outputFormat='text'
+                                onEditorChange={(newText) => setText(newText)}
+                            />
+                        </div>
                         <Form.Item label="Image" name="dishimg" >
                             <input type="file" onChange={ImageHandler} />
 
                         </Form.Item>
-                        <Form.Item style={{ marginLeft: 160 }}>
+                        <Form.Item style={{ marginLeft: 230 }}>
                             <Space size={'large'}>
                                 {/* {addDishLoading && <Loader />} */}
                                 <Button type='primary' htmlType="submit">Add Blog</Button>
-                                <Button>Cancel</Button>
                             </Space>
 
                         </Form.Item>

@@ -1,7 +1,6 @@
 import { Button, Descriptions, PageHeader, Statistic, Tabs, Table, Card } from 'antd';
 import { Avatar, Divider, List, Skeleton } from 'antd';
 import React, { useEffect, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getMenuById } from '../../actions/menuAction';
@@ -54,6 +53,7 @@ const MenuDetailScreen = () => {
             </Descriptions.Item>
         </Descriptions>
     );
+
 
     const extraContent = (
         <div
@@ -117,7 +117,6 @@ const MenuDetailScreen = () => {
                 </PageHeader>
 
                 <div>
-                    <Divider />
                     {menuLoading === false && <StyledTable className="table-striped-rows" 
                         onRow={(values) => ({
                             onClick: () => dishDetailHandler(values.id),
