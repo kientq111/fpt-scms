@@ -27,6 +27,7 @@ import EditMenuScreen from './screens/admin/EditMenuScreen';
 import MenuDetailScreen from './screens/admin/MenuDetailScreen';
 import UserDetailP2 from './screens/admin/UserDetailScreenP2';
 import DishDetailScreen from './screens/admin/DishDetailScreen';
+import AuthorizedFailScreen from './screens/401';
 const { Header, Content, Sider } = Layout;
 
 
@@ -41,7 +42,6 @@ const App = () => {
   const { userInfo } = userLogin
   const [collapsed, setCollapsed] = useState(false);
 
-
   return (
     <Layout
       style={{
@@ -49,15 +49,14 @@ const App = () => {
       }}
     >
 
-      {userInfo && <Sider collapsible collapsed={collapsed} className="site-layout-background" onCollapse={(value) => setCollapsed(value)}>
+      {userInfo && userInfo !== "Bad credentials" && <Sider Sider collapsible collapsed={collapsed} className="site-layout-background" onCollapse={(value) => setCollapsed(value)}>
         <div className="logo" />
         {/* add onclick to menu */}
         <SiderBar />
       </Sider>}
 
-
       <Layout className="site-layout">
-        {userInfo && <Header
+        {userInfo && userInfo !== "Bad credentials" && <Header
           className="site-layout-background"
           style={{
             padding: 0,
@@ -104,6 +103,7 @@ const App = () => {
             <Route path='/admin/addblog' element={<AddBlogScreen />} />
             {/* Common */}
             <Route path='*' element={<ErrorScreen />} />
+            <Route path='/authorizedfail' element={<AuthorizedFailScreen/>} />
             <Route path='/test' element={<Test />} />
 
 
@@ -111,7 +111,7 @@ const App = () => {
         </Content>
 
       </Layout>
-    </Layout>
+    </Layout >
   );
 };
 

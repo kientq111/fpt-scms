@@ -148,7 +148,7 @@ export const listSubcategory = () => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-        const { data } = await axios.get(`/subcategory/getListSubCategory?subcategoryName=&status=&startDate=&endDate=&categoryID=&pageIndex=&pageSize=`, {}, config)
+        const { data } = await axios.get(`/subcategory/getListSubCategory?subcategoryName=&status=&startDate=&endDate=&categoryID=&pageIndex=&pageSize=100`, {}, config)
         dispatch({
             type: subCategoryConstatnts.SUB_CATEGORY_LIST_SUCCESS,
             payload: data.data,
