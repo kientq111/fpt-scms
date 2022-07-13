@@ -25,13 +25,13 @@ import EditCategoryScreen from './screens/admin/EditCategoryScreen';
 import ListMenuScreen from './screens/admin/ListMenuScreen';
 import EditMenuScreen from './screens/admin/EditMenuScreen';
 import MenuDetailScreen from './screens/admin/MenuDetailScreen';
+import UserDetailP2 from './screens/admin/UserDetailScreenP2';
+import DishDetailScreen from './screens/admin/DishDetailScreen';
+import AuthorizedFailScreen from './screens/401';
 const { Header, Content, Sider } = Layout;
 
 
-const items1 = ['1'].map((key) => ({
-  key,
-  label: `Hello Admin`,
-}));
+
 
 
 const App = () => {
@@ -39,6 +39,10 @@ const App = () => {
   const { userInfo } = userLogin
   const [collapsed, setCollapsed] = useState(false);
 
+  const items1 = ['1'].map((key) => ({
+    key,
+    label: `Hello ${userInfo && userInfo.username}`,
+  }));
 
   return (
     <Layout
@@ -47,15 +51,14 @@ const App = () => {
       }}
     >
 
-      {userInfo && <Sider collapsible collapsed={collapsed} className="site-layout-background" onCollapse={(value) => setCollapsed(value)}>
+      {userInfo && userInfo !== "Bad credentials" && <Sider Sider collapsible collapsed={collapsed} className="site-layout-background" onCollapse={(value) => setCollapsed(value)}>
         <div className="logo" />
         {/* add onclick to menu */}
         <SiderBar />
       </Sider>}
 
-
       <Layout className="site-layout">
-        {userInfo && <Header
+        {userInfo && userInfo !== "Bad credentials" && <Header
           className="site-layout-background"
           style={{
             padding: 0,
@@ -66,8 +69,9 @@ const App = () => {
         </Header>}
 
         <Content
+          className='backgroundLogin'
           style={{
-            margin: '0 16px',
+            margin: '0 10px',
           }}
         >
           <Routes>
@@ -82,6 +86,7 @@ const App = () => {
             <Route path='/admin/adddish' element={<AddDishScreen />} />
             <Route path='/admin/listdish' element={<ListDishScreen />} />
             <Route path='/admin/editdish' element={<EditDishScreen />} />
+            <Route path='/admin/dishdetail' element={<DishDetailScreen />} />
             {/* Staff */}
             <Route path='/admin/addstaff' element={<AddStaffScreen />} />
             <Route path='/admin/liststaff' element={<ListStaffScreen />} />
@@ -90,6 +95,7 @@ const App = () => {
             <Route path='/admin/userdetail' element={<UserDetailScreen />} />
             <Route path='/admin/listuser' element={<ListUserScreen />} />
             <Route path='/admin/edituser' element={<EditUserScreen />} />
+            <Route path='/admin/user2' element={<UserDetailP2 />} />
             {/* Category&SubCategory */}
             <Route path='/admin/addcategory' element={<AddCateScreen />} />
             <Route path='/admin/editcategory' element={<EditCategoryScreen />} />
@@ -100,6 +106,7 @@ const App = () => {
             <Route path='/admin/addblog' element={<AddBlogScreen />} />
             {/* Common */}
             <Route path='*' element={<ErrorScreen />} />
+            <Route path='/authorizedfail' element={<AuthorizedFailScreen />} />
             <Route path='/test' element={<Test />} />
 
 
@@ -107,7 +114,7 @@ const App = () => {
         </Content>
 
       </Layout>
-    </Layout>
+    </Layout >
   );
 };
 

@@ -22,6 +22,7 @@ const { TextArea } = Input;
 const AddDishScreen = () => {
   const [form] = Form.useForm();
   const [selectedOptions, setSelectedOptions] = useState();
+  const [message, setMessage] = useState();
   // const [menuState, setmenuState] = useState();
   // const [subCategoryState, SetSubCategoryState] = useState();
 
@@ -40,6 +41,12 @@ const AddDishScreen = () => {
     dispatch(listSubcategory());
     dispatch(listMenus());
   }, []);
+
+  useEffect(() => {
+    if (addDishLoading === false) {
+      setMessage('Add Dish Successful');
+    }
+  }, [addDishSelector]);
 
   //Option Zoneeeee
   const optionListMenu = [];
@@ -108,7 +115,7 @@ const AddDishScreen = () => {
           bordered={false}
           style={{
             marginTop: 20, marginLeft: 150,
-            width: 1000, height: 700
+            width: 1000, height: 700,borderRadius: 25
           }}
         >
           <Divider plain>     <h1 style={{ fontSize: 30 }}>Add Dish</h1></Divider>
@@ -125,8 +132,15 @@ const AddDishScreen = () => {
             onFinish={onFinish}
             scrollToFirstError
           >
-            {addDishLoading === false && <h4 style={{ marginLeft: 140, fontSize: 15, color: 'green' }}>ADD DISH SUCCESSFUL!</h4>}
-            <Form.Item label="Dish Name" name="dishname">
+            <h4 style={{ marginLeft: 140, fontSize: 15, color: 'green' }}>{message}</h4>
+            <Form.Item label="Dish Name" name="dishname"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input dishname!',
+                },
+              ]}
+            >
               <Input />
             </Form.Item>
             <Form.Item label="Menu" name="menu">

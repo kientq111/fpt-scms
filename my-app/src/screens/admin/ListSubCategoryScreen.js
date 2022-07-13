@@ -166,7 +166,7 @@ const ListSubCategoryScreen = () => {
                     <a href="">List SubCategory</a>
                 </Breadcrumb.Item>
             </Breadcrumb>
-            <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/adduser'} style={{ textDecoration: 'none' }}>Add SubCategory</Link></Button></Divider>
+            <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/addsubcategory'} style={{ textDecoration: 'none' }}>Add SubCategory</Link></Button></Divider>
 
             {loading === true && <>
                 <br></br> <br /> <br />

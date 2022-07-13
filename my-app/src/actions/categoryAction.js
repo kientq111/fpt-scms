@@ -148,7 +148,7 @@ export const listSubcategory = () => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-        const { data } = await axios.get(`/subcategory/getListSubCategory?subcategoryName=&status=&startDate=&endDate=&categoryID=&pageIndex=&pageSize=`, {}, config)
+        const { data } = await axios.get(`/subcategory/getListSubCategory?subcategoryName=&status=&startDate=&endDate=&categoryID=&pageIndex=&pageSize=100`, {}, config)
         dispatch({
             type: subCategoryConstatnts.SUB_CATEGORY_LIST_SUCCESS,
             payload: data.data,
@@ -161,6 +161,62 @@ export const listSubcategory = () => async (dispatch, getState) => {
         dispatch({
             type: subCategoryConstatnts.SUB_CATEGORY_LIST_FAIL,
             payload: message,
+        })
+    }
+}
+
+
+export const addSubCategory = (subCategoryName, rawCategory, description) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: subCategoryConstatnts.SUB_CATEGORY_ADD_REQUEST,
+        })
+        // Dinamic variable
+        const status = 3;
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.accessToken}`
+            },
+        }
+        let category = {
+            id: rawCategory.id,
+            categoryName: rawCategory.categoryName,
+            description: rawCategory.description,
+            status: rawCategory.status,
+            createdTime: rawCategory.createdTime,
+            createdBy: rawCategory.createdBy,
+            updatedBy: rawCategory.updatedBy,
+            updatedTime: rawCategory.updatedTime
+        }
+        console.log(category);
+        const createdBy = userInfo.username;
+        const updatedBy = userInfo.username;
+        const createdTime = new Date();
+        const updatedTime = new Date();
+        const { data } = await axios.post(
+            '/category/addOrUpdateCategory',
+            { subCategoryName, category, description, status, createdBy, updatedBy, createdTime, updatedTime },
+            config
+        )
+
+        dispatch({
+            type: subCategoryConstatnts.SUB_CATEGORY_ADD_SUCCESS,
+            payload: data,
+        })
+
+    } catch (error) {
+        dispatch({
+            type: subCategoryConstatnts.SUB_CATEGORY_ADD_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
         })
     }
 }

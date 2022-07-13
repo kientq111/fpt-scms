@@ -22,8 +22,11 @@ export const login = (username, password) => async (dispatch) => {
       type: userConstants.USER_LOGIN_SUCCESS,
       payload: data.data,
     })
+    if (data.success === true) {
+      localStorage.setItem('userInfo', JSON.stringify(data))
+    }
 
-    localStorage.setItem('userInfo', JSON.stringify(data))
+
   } catch (error) {
     dispatch({
       type: userConstants.USER_LOGIN_FAIL,
@@ -47,14 +50,13 @@ export const checkAccount = (username) => async (dispatch) => {
       },
     }
 
-    const { data } = await axios.post(
+    const { data } = await axios.get(
       `/getInfoByUserName?username=${username}`,
-      {},
       config
     );
     dispatch({
       type: userConstants.USER_CHECKACC_SUCCESS,
-      payload: data.data,
+      payload: data,
     })
 
   } catch (error) {
@@ -99,8 +101,7 @@ export const register = (username, email, password, dob, first_name, last_name, 
       type: userConstants.USER_REGISTER_SUCCESS,
       payload: data,
     })
-    //Iter2: If user not existed => push data to local storage
-    localStorage.setItem('userInfo', JSON.stringify(data))
+
   } catch (error) {
     dispatch({
       type: userConstants.USER_REGISTER_FAIL,
@@ -132,20 +133,20 @@ export const listUsers = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.accessToken}`,
       },
     }
-    const { data } = await axios.get(`/getListUser?username=&email=&phone=&status=&createBy=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=10`, config)
+    const { data } = await axios.get(`/getListUser?username=&email=&phone=&status=&createBy=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=100`, config)
     dispatch({
       type: userConstants.USER_LIST_SUCCESS,
       payload: data.data,
     })
     dispatch({ type: userConstants.USER_UPDATE_RESET })
+    dispatch({
+      type: userConstants.USER_CHECKACC_RESET,
+    })
   } catch (error) {
     const message =
       error.response && error.response.data.message
         ? error.response.data.message
         : error.message
-    if (message === 'Not authorized, token failed') {
-      dispatch(logout())
-    }
     dispatch({
       type: userConstants.USER_LIST_FAIL,
       payload: message,
@@ -295,8 +296,6 @@ export const addStaff = (username, email, password, dob, first_name, last_name, 
       payload: data,
     })
 
-    //Iter2: If user not existed => push data to local storage
-    localStorage.setItem('userInfo', JSON.stringify(data))
   } catch (error) {
     dispatch({
       type: staffConstants.STAFF_ADD_FAIL,

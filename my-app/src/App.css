@@ -48,3 +48,12 @@ body {
 .table-striped-rows thead {
     background-color: #130808;
 }
+
+.backgroundLogin {
+    background-image: url("../public/images/StockSnap_X76QKLPTP0.jpg");
+    background-size: cover;
+}
+
+.ant-page-header-heading-title {
+    font-size: 30px;
+}

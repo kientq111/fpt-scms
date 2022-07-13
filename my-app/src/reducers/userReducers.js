@@ -5,9 +5,11 @@ export const userCheckAccountReducer = (state = {}, action) => {
     case userConstants.USER_CHECKACC_REQUEST:
       return { loading: true }
     case userConstants.USER_CHECKACC_SUCCESS:
-      return { loading: false, userInfo: action.payload }
+      return { loading: false, userCheckAccount: action.payload }
     case userConstants.USER_CHECKACC_FAIL:
       return { loading: false, error: action.payload }
+    case userConstants.USER_CHECKACC_RESET:
+      return {}
     default:
       return state
   }

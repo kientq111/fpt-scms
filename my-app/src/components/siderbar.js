@@ -44,6 +44,7 @@ const items = [
         getItem('Add Dish', '/admin/adddish'),
         getItem('List Dish', '/admin/listdish'),
         getItem('Add Category', '/admin/addcategory'),
+        getItem('Add SubCategory', '/admin/addsubcategory'),
         getItem('List Category', '/admin/listcategory'),
         getItem('List Subcategory', '/admin/listsubcategory'),
     ]),

@@ -9,7 +9,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import moment from 'moment'
 import { render } from 'react-dom';
-import { DeleteOutlined, EditOutlined, UserAddOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, UserAddOutlined, EyeOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { LargeLoader } from '../../components/Loader';
 const { Column, ColumnGroup } = Table;
@@ -165,6 +165,13 @@ const ListDishScreen = () => {
         })
     }
 
+    const dishDetailHandler = (id) => {
+        navigate('/admin/dishdetail', {
+            state: {
+                id: id
+            }
+        })
+    }
 
     return (
         <>
@@ -175,7 +182,7 @@ const ListDishScreen = () => {
                 </Breadcrumb.Item>
             </Breadcrumb>
 
-            <Divider orientation="right">  <Button type="primary" size="middle"><Link to={'../admin/adddish'}>Add Dish</Link></Button></Divider>
+            <Divider orientation="right">  <Button type="primary" size="middle"><Link to={'../admin/adddish'} style={{ textDecoration: "none" }}>Add Dish</Link></Button></Divider>
             {loading === true && <>
                 <br></br> <br /> <br />
                 <br></br> <br /> <br />
@@ -208,6 +215,7 @@ const ListDishScreen = () => {
                     key="action"
                     render={(_, record) => (
                         <Space size="middle">
+                            <a onClick={() => { dishDetailHandler(record.id) }}><EyeOutlined /></a>
                             <a onClick={() => { changeStatusHandle(record.id, record.status) }}>{record.status == 1 ? <Tag color="error">Change Status</Tag> : <Tag color="green">Change Status</Tag>}</a>
                             <a onClick={() => { updateDishHandle(record.id, record.dishName, record.subCategory, record.description, record.createdTime, record.createdBy) }}><EditOutlined style={{ fontSize: 17 }} /></a>
                         </Space>

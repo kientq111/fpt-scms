@@ -13,7 +13,7 @@ import {
 import Loader from '../../components/Loader';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
-import { addCategory, editCategory } from '../../actions/categoryAction';
+import { addSubCategory, editCategory } from '../../actions/categoryAction';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const formItemLayout = {
