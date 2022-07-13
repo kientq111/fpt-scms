@@ -114,7 +114,7 @@ const AddMenuScreen = () => {
 
                     <Form.Item
                         name="description"
-                        label="description"
+                        label="menu description"
                         rules={[
                             {
                                 required: true,

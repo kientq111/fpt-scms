@@ -164,3 +164,48 @@ export const listSubcategory = () => async (dispatch, getState) => {
         })
     }
 }
+
+
+export const addSubCategory = (subCategoryName, categoryEntity, description) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: subCategoryConstatnts.SUB_CATEGORY_ADD_REQUEST,
+        })
+        // Dinamic variable
+        const status = '3';
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.accessToken}`
+            },
+        }
+        const createdBy = userInfo.username;
+        const updatedBy = userInfo.username;
+        const createdTime = new Date();
+        const updatedTime = new Date();
+        const { data } = await axios.post(
+            '/category/addOrUpdateCategory',
+            { subCategoryName, categoryEntity, description, status, createdBy, updatedBy, createdTime, updatedTime },
+            config
+        )
+
+        dispatch({
+            type: subCategoryConstatnts.SUB_CATEGORY_ADD_SUCCESS,
+            payload: data,
+        })
+
+    } catch (error) {
+        dispatch({
+            type: subCategoryConstatnts.SUB_CATEGORY_ADD_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        })
+    }
+}

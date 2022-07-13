@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../components/Loader';
 import { Editor, EditorState } from "draft-js";
 import "draft-js/dist/Draft.css";
+import { addBlog } from '../../actions/blogAction';
 const { TextArea } = Input;
 
 
@@ -18,7 +19,7 @@ const { TextArea } = Input;
 const AddBlogScreen = () => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
-
+    const [imageStringBase64, setImageStringBase64] = useState();
     const [editorState, setEditorState] = useState(() =>
         EditorState.createEmpty()
     );
@@ -37,6 +38,8 @@ const AddBlogScreen = () => {
     //CALL API ZONEEE
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
+        console.log(imageStringBase64);
+        dispatch(addBlog(values.blogTitle, "content nek", imageStringBase64))
     };
 
 
@@ -50,6 +53,7 @@ const AddBlogScreen = () => {
 
     const onLoad = fileString => {
         console.log(fileString);
+        setImageStringBase64(fileString)
     };
 
     const getBase64 = file => {
@@ -91,7 +95,7 @@ const AddBlogScreen = () => {
 
 
 
-                        <Form.Item label="Content" name="description">
+                        <Form.Item label="Content" name="content">
                             <div
                                 style={{ border: "1px solid black", minHeight: "6em", cursor: "text" }}
                                 onClick={focusEditor}

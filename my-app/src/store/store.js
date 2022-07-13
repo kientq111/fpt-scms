@@ -11,8 +11,9 @@ import {
     dishListReducer, dishChangeStatusReducer,
     dishAddReducer, dishEditReducer, dishGetByIdReducer
 } from '../reducers/dishReduce';
-import { addCategoryReducer, listCategoryReducer, listSubCategoryReducer, editCategoryReducer } from '../reducers/categoryReduce';
+import { addCategoryReducer, listCategoryReducer, listSubCategoryReducer, editCategoryReducer, addSubCategoryReducer } from '../reducers/categoryReduce';
 import { menuListReducer, menuChangeStatusReducer, menuAddReducer, menuEditReducer, menuGetByIdReducer } from '../reducers/menuReducers';
+import { addBlogReducer } from '../reducers/blogReducer';
 const reducers = combineReducers({
     //ACCOUNT ZONEEE
     userCheckAcc: userCheckAccountReducer,
@@ -34,12 +35,15 @@ const reducers = combineReducers({
     categoryEdit: editCategoryReducer,
     categoryList: listCategoryReducer,
     subcategoryList: listSubCategoryReducer,
+    subCategoryAdd: addSubCategoryReducer,
     //MENU ZONEE
     menuList: menuListReducer,
     menuChangeStatus: menuChangeStatusReducer,
     menuAdd: menuAddReducer,
     menuEdit: menuEditReducer,
-    menuGetById: menuGetByIdReducer
+    menuGetById: menuGetByIdReducer,
+    //BLOG ZONE
+    blogAdd: addBlogReducer
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')

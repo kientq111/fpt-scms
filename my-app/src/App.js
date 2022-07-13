@@ -25,6 +25,8 @@ import EditCategoryScreen from './screens/admin/EditCategoryScreen';
 import ListMenuScreen from './screens/admin/ListMenuScreen';
 import EditMenuScreen from './screens/admin/EditMenuScreen';
 import MenuDetailScreen from './screens/admin/MenuDetailScreen';
+import UserDetailP2 from './screens/admin/UserDetailScreenP2';
+import DishDetailScreen from './screens/admin/DishDetailScreen';
 const { Header, Content, Sider } = Layout;
 
 
@@ -82,6 +84,7 @@ const App = () => {
             <Route path='/admin/adddish' element={<AddDishScreen />} />
             <Route path='/admin/listdish' element={<ListDishScreen />} />
             <Route path='/admin/editdish' element={<EditDishScreen />} />
+            <Route path='/admin/dishdetail' element={<DishDetailScreen />} />
             {/* Staff */}
             <Route path='/admin/addstaff' element={<AddStaffScreen />} />
             <Route path='/admin/liststaff' element={<ListStaffScreen />} />
@@ -90,6 +93,7 @@ const App = () => {
             <Route path='/admin/userdetail' element={<UserDetailScreen />} />
             <Route path='/admin/listuser' element={<ListUserScreen />} />
             <Route path='/admin/edituser' element={<EditUserScreen />} />
+            <Route path='/admin/user2' element={<UserDetailP2 />} />
             {/* Category&SubCategory */}
             <Route path='/admin/addcategory' element={<AddCateScreen />} />
             <Route path='/admin/editcategory' element={<EditCategoryScreen />} />

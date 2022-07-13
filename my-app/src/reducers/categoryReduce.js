@@ -58,3 +58,19 @@ export const listSubCategoryReducer = (state = {}, action) => {
             return state
     }
 }
+
+
+export const addSubCategoryReducer = (state = {}, action) => {
+    switch (action.type) {
+        case subCategoryConstatnts.SUB_CATEGORY_ADD_REQUEST:
+            return { loading: true }
+        case subCategoryConstatnts.SUB_CATEGORY_ADD_SUCCESS:
+            return { loading: false, subCategoryInfo: action.payload }
+        case subCategoryConstatnts.SUB_CATEGORY_ADD_FAIL:
+            return { loading: false, error: action.payload }
+        case subCategoryConstatnts.SUB_CATEGORY_ADD_RESET:
+            return {}
+        default:
+            return state
+    }
+}

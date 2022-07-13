@@ -99,8 +99,7 @@ export const register = (username, email, password, dob, first_name, last_name, 
       type: userConstants.USER_REGISTER_SUCCESS,
       payload: data,
     })
-    //Iter2: If user not existed => push data to local storage
-    localStorage.setItem('userInfo', JSON.stringify(data))
+
   } catch (error) {
     dispatch({
       type: userConstants.USER_REGISTER_FAIL,
@@ -295,8 +294,6 @@ export const addStaff = (username, email, password, dob, first_name, last_name, 
       payload: data,
     })
 
-    //Iter2: If user not existed => push data to local storage
-    localStorage.setItem('userInfo', JSON.stringify(data))
   } catch (error) {
     dispatch({
       type: staffConstants.STAFF_ADD_FAIL,

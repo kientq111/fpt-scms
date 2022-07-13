@@ -159,8 +159,12 @@ const ListMenuScreen = () => {
         dispatch(changeMenuStatus(id, status));
     };
 
-    const userDetailHandler = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street) => {
-
+    const menuDetailHandler = (id) => {
+        navigate('/admin/menudetail', {
+            state: {
+                id: id
+            }
+        })
     }
 
     const editMenuHandle = (id, menuName, description, createdBy, createdTime) => {
@@ -198,12 +202,12 @@ const ListMenuScreen = () => {
             {loading === false && <StyledTable dataSource={menus} className="table-striped-rows" >
                 <Column title="Menu Name" dataIndex="menuName" key="menuName" {...getColumnSearchProps('menuName')} />
                 <Column title="Description" dataIndex="description" key="description" />
-                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <Tag color="green">true</Tag> : <Tag color="error">false</Tag>)}
+                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <Tag color="green">Active</Tag> : <Tag color="error">DeActive</Tag>)}
                     filters={[{
-                        text: 'True',
+                        text: 'Active',
                         value: '1',
                     }, {
-                        text: 'False',
+                        text: 'DeActive',
                         value: '0',
                     },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
                     key="status" />
@@ -219,7 +223,7 @@ const ListMenuScreen = () => {
                     render={(_, record) => (
                         <Space size="middle">
                             <a onClick={() => { changeStatusHandle(record.id, record.status) }}>{record.status == 1 ? <Tag color="error">Change Status</Tag> : <Tag color="green">Change Status</Tag>}</a>
-                            <a><EyeOutlined /></a>
+                            <a onClick={() => { menuDetailHandler(record.id) }}><EyeOutlined /></a>
                             <a onClick={() => { editMenuHandle(record.id, record.menuName, record.description, record.createdBy, record.createdTime) }}><EditOutlined style={{ fontSize: 17 }} /></a>
                         </Space>
                     )}
