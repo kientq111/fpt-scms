@@ -117,7 +117,6 @@ export const logout = () => (dispatch) => {
   localStorage.removeItem('userInfo')
   dispatch({ type: userConstants.USER_LOGOUT })
   dispatch({ type: userConstants.USER_DETAILS_RESET })
-  document.location.href = '/'
 }
 
 export const listUsers = () => async (dispatch, getState) => {

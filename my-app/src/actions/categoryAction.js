@@ -166,13 +166,13 @@ export const listSubcategory = () => async (dispatch, getState) => {
 }
 
 
-export const addSubCategory = (subCategoryName, categoryEntity, description) => async (dispatch, getState) => {
+export const addSubCategory = (subCategoryName, rawCategory, description) => async (dispatch, getState) => {
     try {
         dispatch({
             type: subCategoryConstatnts.SUB_CATEGORY_ADD_REQUEST,
         })
         // Dinamic variable
-        const status = '3';
+        const status = 3;
 
         const {
             userLogin: { userInfo },
@@ -184,13 +184,24 @@ export const addSubCategory = (subCategoryName, categoryEntity, description) => 
                 Authorization: `Bearer ${userInfo.accessToken}`
             },
         }
+        let category = {
+            id: rawCategory.id,
+            categoryName: rawCategory.categoryName,
+            description: rawCategory.description,
+            status: rawCategory.status,
+            createdTime: rawCategory.createdTime,
+            createdBy: rawCategory.createdBy,
+            updatedBy: rawCategory.updatedBy,
+            updatedTime: rawCategory.updatedTime
+        }
+        console.log(category);
         const createdBy = userInfo.username;
         const updatedBy = userInfo.username;
         const createdTime = new Date();
         const updatedTime = new Date();
         const { data } = await axios.post(
             '/category/addOrUpdateCategory',
-            { subCategoryName, categoryEntity, description, status, createdBy, updatedBy, createdTime, updatedTime },
+            { subCategoryName, category, description, status, createdBy, updatedBy, createdTime, updatedTime },
             config
         )
 

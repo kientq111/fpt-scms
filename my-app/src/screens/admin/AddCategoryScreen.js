@@ -69,7 +69,7 @@ const AddCateScreen = () => {
 
 
       <Card
-        style={{ marginTop: 30, width: 1100, height: 700 }}
+        style={{ marginTop: 30, width: 1100, height: 700,borderRadius: 25 }}
       >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>Add Category</h1></Divider>
         {error && <h1 style={{ color: 'red', fontSize: 20 }}>{error}</h1>}
         {(() => {
@@ -86,7 +86,7 @@ const AddCateScreen = () => {
 
           }
         })()}
-        <Form style={{ marginTop: 50 }}
+        <Form style={{ marginTop: 50, marginRight:100 }}
           {...formItemLayout}
           form={form}
           name="register"
@@ -98,7 +98,7 @@ const AddCateScreen = () => {
 
           <Form.Item
             name="categoryName"
-            label="category name"
+            label="Category Name"
             rules={[
               {
                 required: true,
@@ -113,7 +113,7 @@ const AddCateScreen = () => {
 
           <Form.Item
             name="description"
-            label="description"
+            label="Description"
             rules={[
               {
                 required: true,

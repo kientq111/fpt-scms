@@ -91,7 +91,7 @@ const AddUserScreen = () => {
             </Breadcrumb>
             <Card
                 style={{
-                    width: 900, height: 1000, marginTop: 20, marginLeft: 100
+                    width: 900, height: 1000, marginTop: 20, marginLeft: 100, borderRadius: 25
                 }}
             >
                 <Divider plain>     <h1 style={{ fontSize: 30 }}>Add User</h1></Divider>

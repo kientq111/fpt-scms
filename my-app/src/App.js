@@ -31,16 +31,18 @@ import AuthorizedFailScreen from './screens/401';
 const { Header, Content, Sider } = Layout;
 
 
-const items1 = ['1'].map((key) => ({
-  key,
-  label: `Hello Admin`,
-}));
+
 
 
 const App = () => {
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
   const [collapsed, setCollapsed] = useState(false);
+
+  const items1 = ['1'].map((key) => ({
+    key,
+    label: `Hello ${userInfo && userInfo.username}`,
+  }));
 
   return (
     <Layout
@@ -67,8 +69,9 @@ const App = () => {
         </Header>}
 
         <Content
+          className='backgroundLogin'
           style={{
-            margin: '0 16px',
+            margin: '0 10px',
           }}
         >
           <Routes>
@@ -103,7 +106,7 @@ const App = () => {
             <Route path='/admin/addblog' element={<AddBlogScreen />} />
             {/* Common */}
             <Route path='*' element={<ErrorScreen />} />
-            <Route path='/authorizedfail' element={<AuthorizedFailScreen/>} />
+            <Route path='/authorizedfail' element={<AuthorizedFailScreen />} />
             <Route path='/test' element={<Test />} />
 
 

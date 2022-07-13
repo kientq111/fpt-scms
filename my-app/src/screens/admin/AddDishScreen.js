@@ -115,7 +115,7 @@ const AddDishScreen = () => {
           bordered={false}
           style={{
             marginTop: 20, marginLeft: 150,
-            width: 1000, height: 700
+            width: 1000, height: 700,borderRadius: 25
           }}
         >
           <Divider plain>     <h1 style={{ fontSize: 30 }}>Add Dish</h1></Divider>

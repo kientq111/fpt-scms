@@ -1,10 +1,11 @@
-import { Button, Descriptions, PageHeader, Statistic, Tabs } from 'antd';
+import { Button, Descriptions, PageHeader, Statistic, Tabs, Table, Card } from 'antd';
 import { Avatar, Divider, List, Skeleton } from 'antd';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getMenuById } from '../../actions/menuAction';
+import styled from 'styled-components';
 import moment from 'moment';
 
 const { TabPane } = Tabs;
@@ -17,9 +18,17 @@ const Content = ({ children, extra }) => (
     </div>
 );
 
+const StyledTable = styled((props) => <Table {...props} />)`
+  && tbody > tr:hover > td {
+    background: rgba(208, 225, 225);
+  }
+  thead > tr > th {
+    background-color: rgba(202, 235, 199);
+  }
+  `;
+
 const MenuDetailScreen = () => {
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState([]);
     const location = useLocation()
     const navigate = useNavigate();
     const dispatch = useDispatch()
@@ -56,7 +65,7 @@ const MenuDetailScreen = () => {
         >
             <Statistic
                 title="Status"
-                value={menuLoading === false && menuInfo.status === 1 ? "active" : "inactive"}
+                value={menuLoading === false && menuInfo.status === 1 ? "Active" : "DeActive"}
                 style={{
                     marginRight: 32,
                 }}
@@ -68,33 +77,59 @@ const MenuDetailScreen = () => {
         navigate('/admin/dishdetail', { state: { id: id } })
     }
 
+    const columns = [
+        {
+            title: 'Dish Name',
+            dataIndex: 'dishName',
+            render: (text) => <a>{text}</a>,
+        },
+        {
+            title: 'Description',
+            dataIndex: 'description',
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            render: (text) => <a>{text === 1 ? <p style={{ color: 'green' }}>True</p> : <p style={{ color: 'red' }}>False</p>}</a>,
+        },
+    ];
+
+
+    const onRowTableHandler = (id) => {
+        console.log(id);
+    }
+
     return (
+        <div style={{ marginTop: 20 }}>
+            <Card >
+                <PageHeader
+                    className="site-page-header-responsive"
+                    onBack={() => window.history.back()}
+                    title={menuLoading === false && menuInfo.menuName}
 
-        <>
-            <PageHeader
-                className="site-page-header-responsive"
-                onBack={() => window.history.back()}
-                title={menuLoading === false && menuInfo.menuName}
+                    footer={
+                        <Tabs defaultActiveKey="1">
+                            <TabPane tab="List dish in menu" key="1" />
+                        </Tabs>
+                    }
+                >
+                    <Content extra={extraContent}>{renderContent()}</Content>
+                </PageHeader>
 
-                footer={
-                    <Tabs defaultActiveKey="1">
-                        <TabPane tab="List dish in menu" key="1" />
-                    </Tabs>
-                }
-            >
-                <Content extra={extraContent}>{renderContent()}</Content>
-            </PageHeader>
+                <div>
+                    <Divider />
+                    {menuLoading === false && <StyledTable className="table-striped-rows" 
+                        onRow={(values) => ({
+                            onClick: () => dishDetailHandler(values.id),
+                        })}
+                        columns={columns}
+                        dataSource={menuInfo.listDish}
+                    />}
 
-            <div
-                id="scrollableDiv"
-                style={{
-                    height: 400,
-                    overflow: 'auto',
-                    padding: '0 16px',
-                    border: '1px solid rgba(140, 140, 140, 0.35)',
-                }}
-            >
-                {menuLoading === false && <List
+                </div>
+            </Card>
+
+            {/* {menuLoading === false && <List
                     dataSource={menuInfo.listDish}
                     renderItem={(item) => (
                         <List.Item key={item}>
@@ -105,9 +140,10 @@ const MenuDetailScreen = () => {
                             />
                         </List.Item>
                     )}
-                />}
-            </div>
-        </>
+                />} */}
+
+
+        </div>
 
     )
 

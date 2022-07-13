@@ -73,7 +73,7 @@ const AddSubCategoryScreen = () => {
         </Breadcrumb.Item>
       </Breadcrumb>
       <Card
-        style={{ marginTop: 30, width: 1100, height: 700 }}
+        style={{ marginTop: 30, width: 1100, height: 700,borderRadius: 25 }}
       >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>Add SubCategory</h1></Divider>
 
         <Form style={{ marginTop: 50, marginRight: 150 }}
