@@ -70,7 +70,7 @@ export const checkAccount = (username) => async (dispatch) => {
   }
 }
 
-export const register = (username, email, password, dob, first_name, last_name, phone, address) => async (dispatch, getState) => {
+export const register = (username, email, password, dob, first_name, last_name, gender, phone, address) => async (dispatch, getState) => {
   try {
     dispatch({
       type: userConstants.USER_REGISTER_REQUEST,
@@ -93,7 +93,7 @@ export const register = (username, email, password, dob, first_name, last_name, 
 
     const { data } = await axios.post(
       '/createUser',
-      { username, email, password, dob, createdBy, first_name, last_name, phone, address, status, type },
+      { username, email, password, dob, createdBy, first_name, last_name, gender, phone, address, status, type },
       config
     )
 
@@ -265,7 +265,7 @@ export const listStaff = () => async (dispatch, getState) => {
 }
 
 
-export const addStaff = (username, email, password, dob, first_name, last_name, phone, address) => async (dispatch, getState) => {
+export const addStaff = (username, email, password, dob, first_name, last_name, gender, phone, address) => async (dispatch, getState) => {
   try {
     dispatch({
       type: staffConstants.STAFF_ADD_REQUEST,
@@ -287,7 +287,7 @@ export const addStaff = (username, email, password, dob, first_name, last_name, 
 
     const { data } = await axios.post(
       '/createStaff',
-      { username, email, password, dob, first_name, last_name, createdBy, phone, address, status, type },
+      { username, email, password, dob, first_name, last_name, createdBy, phone, address, status, type, gender },
       config
     )
 

@@ -108,7 +108,7 @@ export const AddStaffReducer = (state = { users: [] }, action) => {
     case staffConstants.STAFF_ADD_REQUEST:
       return { loading: true }
     case staffConstants.STAFF_ADD_SUCCESS:
-      return { loading: false, users: action.payload }
+      return { loading: false, userInfo: action.payload }
     case staffConstants.STAFF_ADD_FAIL:
       return { loading: false, error: action.payload }
     default:

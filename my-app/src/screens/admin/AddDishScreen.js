@@ -166,7 +166,7 @@ const AddDishScreen = () => {
             <Form.Item label="Description" name="description">
               <TextArea rows={4} />
             </Form.Item>
-            <Form.Item label="Image" name="dishimg" >
+            <Form.Item label="Image" name="dishimg" accept="image/png, image/gif, image/jpeg" >
               <input type="file" onChange={ImageHandler} />
 
             </Form.Item>

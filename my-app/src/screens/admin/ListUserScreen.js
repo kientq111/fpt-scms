@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import moment from 'moment'
 import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { Loader, LargeLoader } from '../../components/Loader';
-
+import LinesEllipsis from 'react-lines-ellipsis'
 const { Column, ColumnGroup } = Table;
 
 const StyledTable = styled((props) => <Table {...props} />)`
@@ -261,7 +261,13 @@ const ListUserScreen = () => {
         <Column title="country" dataIndex="address" render={(_, record) => record.address.country} key="country" />
         <Column title="city" dataIndex="address" render={(_, record) => record.address.city} key="city" />
         <Column title="district" dataIndex="address" render={(_, record) => record.address.district} key="district" />
-        <Column title="street" dataIndex="address" render={(_, record) => record.address.street} key="street" />
+        <Column title="street" dataIndex="address" render={(_, record) => <LinesEllipsis
+          text={record.address.street}
+          maxLine='1'
+          ellipsis='...'
+          trimRight
+          basedOn='letters'
+        />} key="street" />
 
         <Column
           title="Action"

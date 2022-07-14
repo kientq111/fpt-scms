@@ -13,7 +13,7 @@ import {
 } from '../reducers/dishReduce';
 import { addCategoryReducer, listCategoryReducer, listSubCategoryReducer, editCategoryReducer, addSubCategoryReducer } from '../reducers/categoryReduce';
 import { menuListReducer, menuChangeStatusReducer, menuAddReducer, menuEditReducer, menuGetByIdReducer } from '../reducers/menuReducers';
-import { addBlogReducer } from '../reducers/blogReducer';
+import { addBlogReducer, listBlogReducer, editBlogReducer, changeBlogStatusReducer, deleteBlogReducer, blogDetailReducer } from '../reducers/blogReducer';
 const reducers = combineReducers({
     //ACCOUNT ZONEEE
     userCheckAcc: userCheckAccountReducer,
@@ -43,7 +43,12 @@ const reducers = combineReducers({
     menuEdit: menuEditReducer,
     menuGetById: menuGetByIdReducer,
     //BLOG ZONE
-    blogAdd: addBlogReducer
+    blogAdd: addBlogReducer,
+    blogList: listBlogReducer,
+    blogEdit: editBlogReducer,
+    blogChangeStatus: changeBlogStatusReducer,
+    blogDelete: deleteBlogReducer,
+    blogDetail: blogDetailReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
