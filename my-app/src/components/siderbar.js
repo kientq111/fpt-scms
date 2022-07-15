@@ -50,6 +50,7 @@ const items = [
     ]),
     getItem('Blog Manager', '', <FormOutlined />, [
         getItem('Add Blog', '/admin/addblog'),
+        getItem('List Blog', '/admin/listblog'),
     ]),
 
     // getItem('Dish Manager', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),

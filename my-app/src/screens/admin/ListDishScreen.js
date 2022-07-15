@@ -8,7 +8,7 @@ import { changeDishStatus, listDishes } from '../../actions/dishAction';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import moment from 'moment'
-import { render } from 'react-dom';
+import LinesEllipsis from 'react-lines-ellipsis'
 import { DeleteOutlined, EditOutlined, UserAddOutlined, EyeOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { LargeLoader } from '../../components/Loader';
@@ -194,10 +194,16 @@ const ListDishScreen = () => {
                 </Row></>}
             {loading === false && <StyledTable dataSource={dishes} className="table-striped-rows">
                 <Column title="Dish Name" dataIndex="dishName" key="dishName" {...getColumnSearchProps('dishName')} />
-                <Column title="Description" dataIndex="description" key="description" />
+                <Column title="Description" dataIndex="description" render={(_, record) => (<LinesEllipsis
+                    text={record.description}
+                    maxLine='3'
+                    ellipsis='...'
+                    trimRight
+                    basedOn='letters'
+                />)} key="description" />
 
                 <Column title="Sub Category" dataIndex="subCategory" render={(_, record) => record.subCategory.subCategoryName} key="subCategory" />
-                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <Tag color="green">true</Tag> : <Tag color="error">false</Tag>)}
+                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>true</p> : <p style={{color:'red'}}>false</p>)}
                     filters={[{
                         text: 'True',
                         value: '1',

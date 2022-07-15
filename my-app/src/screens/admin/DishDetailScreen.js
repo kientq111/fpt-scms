@@ -1,7 +1,6 @@
 import { Button, Card, Descriptions, PageHeader, Statistic, Tabs, Table } from 'antd';
 import { Avatar, Divider, List, Skeleton, Image } from 'antd';
 import React, { useEffect, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getMenuById } from '../../actions/menuAction';

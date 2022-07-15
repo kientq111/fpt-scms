@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addStaff } from '../../actions/userActions';
+import { addStaff, register } from '../../actions/userActions';
 import {
     Form,
     Input,
-    Select,
     Row,
     Col,
     Button, Divider, Card, Breadcrumb
 } from 'antd';
+import Loader from '../../components/Loader';
+import Select from "react-select";
+import axios from 'axios';
 const { Option } = Select;
 
 const formItemLayout = {
@@ -45,40 +47,80 @@ const tailFormItemLayout = {
 const AddStaffScreen = () => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
+    const [provin, setProvin] = useState([{ name: "", code: "" }]);
+    const [district, setDistrict] = useState([{ name: "", code: "" }]);
+    const [wards, setWards] = useState([{ name: "", code: "" }])
+
+    useEffect(() => {
+        axios.get(`https://provinces.open-api.vn/api/p/`)
+            .then(res => {
+                const dataRes = res.data;
+                setProvin(dataRes);
+            })
+            .catch(error => console.log(error));
+    }, []);
+
+
+    // Function triggered on selection
+    function handleProvinSelect(value) {
+        axios.get(`https://provinces.open-api.vn/api/p/${value.code}?depth=3`)
+            .then(res => {
+                const dataRes = res.data;
+                setDistrict(dataRes.districts);
+            })
+            .catch(error => console.log(error));
+        form.setFieldsValue({
+            district: "",
+            wards: ""
+        })
+    }
+
+    function handleDistrictSelect(value) {
+        axios.get(`https://provinces.open-api.vn/api/d/${value.code}?depth=2`)
+            .then(res => {
+                const dataRes = res.data;
+                setWards(dataRes.wards);
+            })
+            .catch(error => console.log(error));
+        form.setFieldsValue({
+            wards: "",
+        })
+    }
+
     //get data from store
-    const userAdd = useSelector((state) => state.staffAdd)
-    const { userInfo } = userAdd;
+    const userAddSelector = useSelector((state) => state.staffAdd)
+    const { userInfo, loading } = userAddSelector;
     //Submit register form to action
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
-        const phoneNumber = `${values.prefix}${values.phone}`;
         const address = {
-            street: values.street,
-            district: values.district,
-            city: values.city,
-            country: values.country,
+            street: `${values.street}-${values.wards.name}`,
+            district: values.district.name,
+            city: values.city.name,
+            country: "VIET NAM",
         }
-        dispatch(addStaff(values.username, values.email, values.password, values.dob, values.first_name, values.last_name, phoneNumber, address));
+        console.log(values.gender.Value);
+        dispatch(addStaff(values.username, values.email, values.password, values.dob, values.first_name, values.last_name, values.gender.Value, values.phone, address));
     };
 
     useEffect(() => {
         if (userInfo) {
-            console.log(userInfo.message);
+            console.log(userInfo.success);
         }
     }, [userInfo])
 
-    const prefixSelector = (
-        <Form.Item name="prefix" noStyle>
-            <Select
-                style={{
-                    width: 70,
-                }}
-            >
-                <Option value="84">+84</Option>
-                <Option value="85">+85</Option>
-            </Select>
-        </Form.Item>
-    );
+
+    const genderOptions = [
+        {
+            Value: true,
+            Label: 'Male'
+        },
+        {
+            Value: false,
+            Label: 'Female'
+        },
+    ]
+
     return (
         <Row>
 
@@ -90,10 +132,10 @@ const AddStaffScreen = () => {
             </Breadcrumb>
             <Card
                 style={{
-                    width: 900, height: 900, marginTop: 20, marginLeft: 100, borderRadius: 25
+                    width: 900, height: 1100, marginTop: 20, marginLeft: 100, borderRadius: 25
                 }}
             >
-                <Divider plain>     <h1 style={{ fontSize: 30, }}>Add Staff</h1></Divider>
+                <Divider plain>     <h1 style={{ fontSize: 30 }}>ADD STAFF</h1></Divider>
                 <Form style={{ marginRight: 150 }}
                     {...formItemLayout}
                     form={form}
@@ -101,6 +143,8 @@ const AddStaffScreen = () => {
                     onFinish={onFinish}
                     scrollToFirstError
                 >
+                    {loading === false && userInfo.success === false && <h5 style={{ marginLeft: 230, color: 'red' }}>{userInfo.message}</h5>}
+                    {loading === false && userInfo.success === true && <h5 style={{ marginLeft: 230, color: 'green' }}>{userInfo.message}</h5>}
                     <Form.Item
                         name="email"
                         label="E-mail"
@@ -130,6 +174,13 @@ const AddStaffScreen = () => {
                                 message: 'Please input your first name!',
                                 whitespace: true,
                             },
+
+
+
+                            {
+                                pattern: new RegExp('^[a-zA-Z ]*$'),
+                                message: 'First Name do not have number'
+                            }
                         ]}
                     >
                         <Input />
@@ -141,8 +192,14 @@ const AddStaffScreen = () => {
                         label="Last Name"
                         rules={[
                             {
+                                required: true,
+                                message: 'Please input your last name!',
                                 whitespace: true,
                             },
+                            {
+                                pattern: new RegExp('^[a-zA-Z ]*$'),
+                                message: 'Last Name do not have number'
+                            }
                         ]}
                     >
                         <Input />
@@ -156,6 +213,15 @@ const AddStaffScreen = () => {
                                 required: true,
                                 message: 'Please input your password!',
                             },
+                            {
+                                pattern: new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'),
+                                message: 'Password must contain at least one lowercase letter, uppercase letter, number, and special character'
+                            },
+                            {
+                                max: 12,
+                                message: 'Password not large than 12 word'
+                            }
+
                         ]}
                         hasFeedback
                     >
@@ -199,6 +265,10 @@ const AddStaffScreen = () => {
                                 message: 'Please input your user name!',
                                 whitespace: true,
                             },
+                            {
+                                pattern: new RegExp('^(?!.*\d_)(?!.*_\d)[a-zA-Z0-9_]+$'),
+                                message: 'User name must not have special character'
+                            }
                         ]}
                     >
                         <Input />
@@ -224,52 +294,51 @@ const AddStaffScreen = () => {
                             },
                         ]}
                     >
-                        <Select placeholder="select your gender" style={{ width: 200 }}>
-                            <Option value="male">Male</Option>
-                            <Option value="female">Female</Option>
-                            <Option value="other">Other</Option>
-                        </Select>
+                        <Select
+                            getOptionLabel={option => option.Label}
+                            getOptionValue={option => option.Value}
+                            options={genderOptions}
+                        />
                     </Form.Item>
 
                     <Form.Item
-                        name="country"
-                        label="Country"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your country!',
-                                whitespace: true,
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item layout="inline"
                         name="city"
-                        label="City"
+                        label="city"
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your city!',
-                                whitespace: true,
                             },
                         ]}
                     >
-                        <Input />
+                        <Select
+                            getOptionLabel={option => option.name}
+                            getOptionValue={option => option.code}
+                            onChange={handleProvinSelect}
+                            options={provin}
+                        />
                     </Form.Item>
-
                     <Form.Item
                         name="district"
                         label="District"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your district!',
-                                whitespace: true,
-                            },
-                        ]}
                     >
-                        <Input />
+                        <Select
+                            getOptionLabel={option => option.name}
+                            getOptionValue={option => option.code}
+                            onChange={handleDistrictSelect}
+                            options={district}
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="wards"
+                        label="Wards"
+                        Size="small "
+                    >
+                        <Select
+                            getOptionLabel={option => option.name}
+                            getOptionValue={option => option.code}
+                            options={wards}
+                        />
                     </Form.Item>
 
                     <Form.Item
@@ -281,7 +350,10 @@ const AddStaffScreen = () => {
                                 required: true,
                                 message: 'Please input your street!',
                                 whitespace: true,
-                            },
+                            }, {
+                                max: 20,
+                                message: 'please input not larger than 20 words!',
+                            }
                         ]}
                     >
                         <Input Size="small" />
@@ -294,11 +366,13 @@ const AddStaffScreen = () => {
                             {
                                 required: true,
                                 message: 'Please input your phone number!',
+                            }, {
+                                pattern: new RegExp('^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$'),
+                                message: 'Wrong phone number format'
                             },
                         ]}
                     >
                         <Input
-                            addonBefore={prefixSelector}
                             style={{
                                 width: '100%',
                             }}
@@ -309,12 +383,13 @@ const AddStaffScreen = () => {
                         <Button type="primary" htmlType="submit">
                             Add Account
                         </Button>
+                        {loading && <Loader />}
                     </Form.Item>
                 </Form>
             </Card>
 
 
-        </Row>
+        </Row >
 
     );
 };
