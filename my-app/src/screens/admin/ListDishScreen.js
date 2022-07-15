@@ -206,11 +206,11 @@ const ListDishScreen = () => {
                 <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>true</p> : <p style={{color:'red'}}>false</p>)}
                     filters={[{
                         text: 'True',
-                        value: '1',
+                        value: 1,
                     }, {
                         text: 'False',
-                        value: '0',
-                    },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
+                        value: 0,
+                    },]} onFilter={(value, record) => record.status === value}
                     key="status" />
                 <Column title="Created Time" dataIndex="createdTime" key="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} />
                 <Column title="Created By" dataIndex="createdBy" key="createdBy" render={(_, record) => (record.createdBy == null ? 'null' : record.createdBy)} />

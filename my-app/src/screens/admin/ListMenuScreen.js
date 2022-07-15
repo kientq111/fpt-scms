@@ -202,14 +202,14 @@ const ListMenuScreen = () => {
             {loading === false && <StyledTable dataSource={menus} className="table-striped-rows" >
                 <Column title="Menu Name" dataIndex="menuName" key="menuName" {...getColumnSearchProps('menuName')} />
                 <Column title="Description" dataIndex="description" key="description" />
-                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{color:"green"}}>Active</p> : <p style={{color:"red"}}>DeActive</p>)}
+                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{color:"green"}}>Active</p> : <p style={{color:"red"}}>InActive</p>)}
                     filters={[{
                         text: 'Active',
                         value: '1',
                     }, {
                         text: 'DeActive',
                         value: '0',
-                    },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
+                    },]} onFilter={(value, record) => record.status === value}
                     key="status" />
                 <Column title="Created Time" dataIndex="createdTime" key="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} />
                 <Column title="Created By" dataIndex="createdBy" key="createdBy" />

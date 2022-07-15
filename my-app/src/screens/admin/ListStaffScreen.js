@@ -230,7 +230,7 @@ const ListStaffScreen = () => {
         },]} onFilter={(value, record) => record.gender.indexOf(value) === 0} />
 
 
-        <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <Tag color="green">true</Tag> : <Tag color="error">false</Tag>)}
+        <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>true</p> : <p style={{ color: 'red' }}>false</p>)}
           filters={[{
             text: 'True',
             value: '1',
@@ -239,14 +239,14 @@ const ListStaffScreen = () => {
             value: '0',
           },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
           key="status" />
-        <Column title="is_active" dataIndex="is_active" render={(_, record) => (record.is_active == true ? <Tag color="green">true</Tag> : <Tag color="error">false</Tag>)}
+        <Column title="is_active" dataIndex="is_active" render={(_, record) => (record.is_active == true ? <p style={{ color: 'green' }}>Active</p> : <p style={{ color: 'red' }}>Inactive</p>)}
           filters={[{
             text: 'true',
-            value: 'true',
+            value: true,
           }, {
             text: 'false',
-            value: 'false',
-          },]} onFilter={(value, record) => record.is_active.indexOf(value) === 0}
+            value: false,
+          },]} onFilter={(value, record) => record.is_active === value}
           key="is_active" />
         <Column title="country" dataIndex="address" render={(_, record) => record.address.country} key="country" />
         <Column title="city" dataIndex="address" render={(_, record) => record.address.city} key="city" />

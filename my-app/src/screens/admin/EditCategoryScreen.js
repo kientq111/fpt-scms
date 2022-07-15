@@ -1,14 +1,10 @@
 import {
-  AutoComplete,
   Button,
-  Cascader,
-  Checkbox,
   Col,
   Form,
   Input,
-  InputNumber,
-  Row,
-  Select, Breadcrumb, Card, Divider
+  Row, Space,
+  Breadcrumb, Card, Divider
 } from 'antd';
 import Loader from '../../components/Loader';
 import { useState, useEffect } from 'react';
@@ -141,10 +137,15 @@ const EditCategoryScreen = () => {
           </Form.Item>
 
           <Form.Item {...tailFormItemLayout}>
-            {loading && <Loader />}
-            <Button type="primary" htmlType="submit">
-              Update Category
-            </Button>
+            <Space size={'large'}>
+              {loading && <Loader />}
+              <Button type="primary" htmlType="submit">
+                Update Category
+              </Button>
+              <Button onClick={() => navigate('/admin/listcategory')}>
+                Update Category
+              </Button>
+            </Space>
           </Form.Item>
         </Form>
 

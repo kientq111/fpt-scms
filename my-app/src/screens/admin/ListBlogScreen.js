@@ -207,7 +207,7 @@ const ListBlogScreen = () => {
                 </Row></>}
             {loading === false && <StyledTable dataSource={blogs} className="table-striped-rows">
                 <Column title="Blog Name" dataIndex="name" key="name" {...getColumnSearchProps('dishName')} />
-                <Column title="Content" dataIndex="content" key="content"
+                <Column title="Content" dataIndex="content" key="content"  {...getColumnSearchProps('content')}
                     render={(_, record) => (<LinesEllipsis
                         text={record.content}
                         maxLine='1'
@@ -219,11 +219,11 @@ const ListBlogScreen = () => {
                     render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>true</p> : <p style={{ color: 'red' }}>false</p>)}
                     filters={[{
                         text: 'True',
-                        value: '1',
+                        value: 1,
                     }, {
                         text: 'False',
-                        value: '0',
-                    },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
+                        value: 0,
+                    },]} onFilter={(value, record) => record.status === value}
                 />
                 <Column title="Created Time" dataIndex="created_time" key="created_time" render={(_, record) => (moment(record.created_time).format('DD/MM/YYYY'))} />
                 <Column title="Created Time" dataIndex="created_by" key="created_by" />
