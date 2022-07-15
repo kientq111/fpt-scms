@@ -50,7 +50,7 @@ const LoginScreen = () => {
             if (userInfo === "Bad credentials") {
                 SetMessage("Password Fail");
             } else {
-                navigate('/admin/listuser');
+                navigate('/admin/dashboard');
             }
         }
     }, [userInfo])

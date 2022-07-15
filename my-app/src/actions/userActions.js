@@ -1,6 +1,25 @@
 import axios from 'axios'
 import { userConstants, staffConstants } from '../constants/Constants'
 
+
+export const dashboardAction = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: userConstants.USER_CHECKACC_RESET,
+    })
+  } catch (error) {
+    dispatch({
+      type: userConstants.USER_LOGIN_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
+
+
 export const login = (username, password) => async (dispatch) => {
   try {
     dispatch({
@@ -25,7 +44,6 @@ export const login = (username, password) => async (dispatch) => {
     if (data.success === true) {
       localStorage.setItem('userInfo', JSON.stringify(data))
     }
-
 
   } catch (error) {
     dispatch({

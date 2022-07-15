@@ -11,9 +11,10 @@ import {
     dishListReducer, dishChangeStatusReducer,
     dishAddReducer, dishEditReducer, dishGetByIdReducer
 } from '../reducers/dishReduce';
-import { addCategoryReducer, listCategoryReducer, listSubCategoryReducer, editCategoryReducer, addSubCategoryReducer } from '../reducers/categoryReduce';
+import { addCategoryReducer, listCategoryReducer, listSubCategoryReducer, editCategoryReducer, addSubCategoryReducer, editSubCategoryReducer } from '../reducers/categoryReduce';
 import { menuListReducer, menuChangeStatusReducer, menuAddReducer, menuEditReducer, menuGetByIdReducer } from '../reducers/menuReducers';
 import { addBlogReducer, listBlogReducer, editBlogReducer, changeBlogStatusReducer, deleteBlogReducer, blogDetailReducer } from '../reducers/blogReducer';
+import { listTableReducer, addTableReducer } from '../reducers/tableReducers';
 const reducers = combineReducers({
     //ACCOUNT ZONEEE
     userCheckAcc: userCheckAccountReducer,
@@ -36,6 +37,7 @@ const reducers = combineReducers({
     categoryList: listCategoryReducer,
     subcategoryList: listSubCategoryReducer,
     subCategoryAdd: addSubCategoryReducer,
+    subCategoryEdit: editSubCategoryReducer,
     //MENU ZONEE
     menuList: menuListReducer,
     menuChangeStatus: menuChangeStatusReducer,
@@ -49,6 +51,9 @@ const reducers = combineReducers({
     blogChangeStatus: changeBlogStatusReducer,
     blogDelete: deleteBlogReducer,
     blogDetail: blogDetailReducer,
+    //TABLE ZONE
+    tableList: listTableReducer,
+    tableAdd: addTableReducer
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')

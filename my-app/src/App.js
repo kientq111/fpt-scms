@@ -31,6 +31,8 @@ import AuthorizedFailScreen from './screens/401';
 import ListBlogScreen from './screens/admin/ListBlogScreen';
 import EditBlogScreen from './screens/admin/EditBlogScreen';
 import BlogDetailScreen from './screens/admin/BlogDetailScreen';
+import DashboardScreen from './screens/admin/DashboardScreen';
+import EditSubCategoryScreen from './screens/admin/EditSubCategory';
 const { Header, Content, Sider } = Layout;
 
 
@@ -105,12 +107,14 @@ const App = () => {
             <Route path='/admin/listcategory' element={<ListCategoryScreen />} />
             <Route path='/admin/listsubcategory' element={<ListSubCategoryScreen />} />
             <Route path='/admin/addsubcategory' element={<AddSubCategoryScreen />} />
+            <Route path='/admin/editsubcategory' element={<EditSubCategoryScreen />} />
             {/* Blog */}
             <Route path='/admin/addblog' element={<AddBlogScreen />} />
             <Route path='/admin/listblog' element={<ListBlogScreen />} />
             <Route path='/admin/editblog' element={<EditBlogScreen />} />
             <Route path='/admin/blogdetail' element={<BlogDetailScreen />} />
             {/* Common */}
+            <Route path='/admin/dashboard' element={<DashboardScreen />} />
             <Route path='*' element={<ErrorScreen />} />
             <Route path='/authorizedfail' element={<AuthorizedFailScreen />} />
             <Route path='/test' element={<Test />} />

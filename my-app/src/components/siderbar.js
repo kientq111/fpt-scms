@@ -30,7 +30,7 @@ const items1 = ['1'].map((key) => ({
 }));
 
 const items = [
-    getItem('Dashboard', '', <PieChartOutlined />),
+    getItem('Dashboard', '/admin/dashboard', <PieChartOutlined />),
     getItem('Account Manager', '', <UserOutlined />, [
         // getItem('List User', '/admin/listuser'),
         getItem('Add User', '/admin/adduser'),

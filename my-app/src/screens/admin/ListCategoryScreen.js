@@ -76,6 +76,21 @@ const ListCategoryScreen = () => {
                 <Column title="categoryName" dataIndex="categoryName" key="categoryName" />
                 <Column title="description" dataIndex="description" key="description" />
                 <Column title="Status" dataIndex="status"
+               filters={[
+                {
+                    text: '1',
+                    value: 1,
+                },
+                {
+                    text: '2',
+                    value: 2,
+                },
+                {
+                    text: '3',
+                    value: 3,
+                },
+            ]}
+                onFilter={(value, record) => record.status === value}
                     key="status"
                 />
                 <Column title="Created Time" dataIndex="createdTime" key="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} />

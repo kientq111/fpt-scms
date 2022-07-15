@@ -148,13 +148,26 @@ const ListSubCategoryScreen = () => {
     const confirm = (id) => {
         console.log(id);
         message.success('Delete successful');
-  
+
     };
 
     const cancel = (e) => {
         console.log(e);
     };
 
+    const editSubCategoryHandle = (id, name, description, createdTime, createdBy, categoryID) => {
+        console.log(id, name, description, createdTime, createdBy, categoryID);
+        navigate('/admin/editsubcategory', {
+            state: {
+                id: id,
+                subCategoryName: name,
+                description: description,
+                createdBy: createdBy,
+                createdTime: createdTime,
+                categoryID: categoryID
+            }
+        })
+    }
 
 
 
@@ -181,7 +194,22 @@ const ListSubCategoryScreen = () => {
             {loading === false && <StyledTable dataSource={subcategoryInfo} className="table-striped-rows" >
                 <Column title="SubCategory Name" dataIndex="subCategoryName" key="subCategoryName" {...getColumnSearchProps('subCategoryName')} />
                 <Column title="Description" dataIndex="description" key="description" />
-                <Column title="Status" dataIndex="status" key="status" />
+                <Column title="Status" dataIndex="status" key="status" filters={[
+                    {
+                        text: '1',
+                        value: 1,
+                    },
+                    {
+                        text: '2',
+                        value: 2,
+                    },
+                    {
+                        text: '3',
+                        value: 3,
+                    },
+                ]}
+                    onFilter={(value, record) => record.status === value}
+                />
                 <Column title="Created Time" dataIndex="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} key="createdTime" />
                 <Column title="Created By" dataIndex="createdBy" key="createdBy" />
                 <Column title="Updated Time" dataIndex="updatedTime" render={(_, record) => (moment(record.updatedTime).format('DD/MM/YYYY'))} key="updatedTime" />
@@ -193,7 +221,9 @@ const ListSubCategoryScreen = () => {
                     key="action"
                     render={(_, record) => (
                         <Space size="middle">
-                            <a><EditOutlined style={{ fontSize: 17 }} /></a>
+                            <a onClick={() => editSubCategoryHandle(record.id, record.subCategoryName, record.description, record.createdTime, record.createdBy, record.category.id)}>
+                                <EditOutlined style={{ fontSize: 17 }} />
+                            </a>
                             <Popconfirm
                                 title="Are you sure to delete this task?"
                                 onConfirm={() => confirm(record.id)}
