@@ -155,8 +155,8 @@ const ListSubCategoryScreen = () => {
         console.log(e);
     };
 
-    const editSubCategoryHandle = (id, name, description, createdTime, createdBy, categoryID) => {
-        console.log(id, name, description, createdTime, createdBy, categoryID);
+    const editSubCategoryHandle = (id, name, description, createdTime, createdBy, category) => {
+        console.log(id, name, description, createdTime, createdBy, category);
         navigate('/admin/editsubcategory', {
             state: {
                 id: id,
@@ -164,7 +164,7 @@ const ListSubCategoryScreen = () => {
                 description: description,
                 createdBy: createdBy,
                 createdTime: createdTime,
-                categoryID: categoryID
+                category: category
             }
         })
     }
@@ -221,7 +221,7 @@ const ListSubCategoryScreen = () => {
                     key="action"
                     render={(_, record) => (
                         <Space size="middle">
-                            <a onClick={() => editSubCategoryHandle(record.id, record.subCategoryName, record.description, record.createdTime, record.createdBy, record.category.id)}>
+                            <a onClick={() => editSubCategoryHandle(record.id, record.subCategoryName, record.description, record.createdTime, record.createdBy, record.category)}>
                                 <EditOutlined style={{ fontSize: 17 }} />
                             </a>
                             <Popconfirm

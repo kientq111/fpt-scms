@@ -6,13 +6,14 @@ import {
     Input,
     InputNumber,
     Row,
-    Breadcrumb, Card, Divider
+    Breadcrumb, Card, Divider, Space
 } from 'antd';
 import Loader from '../../components/Loader';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
-import { addCategory, addSubCategory, listCategory } from '../../actions/categoryAction';
+import { editSubCategory, addSubCategory, listCategory } from '../../actions/categoryAction';
 import Select from 'react-select'
+import { useNavigate, useLocation } from 'react-router-dom';
 const formItemLayout = {
     labelCol: {
         xs: {
@@ -44,24 +45,54 @@ const tailFormItemLayout = {
     },
 };
 const EditSubCategoryScreen = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const categoryData = useSelector((state) => state.categoryList);
+    const subCategoryEditSelector = useSelector((state) => state.subCategoryEdit);
     const dispatch = useDispatch()
     let optionListSubCategoryMenu = [];
+    const [IsCategoryOptionChanged, setIsCategoryOptionChanged] = useState(false)
     const { loading, categoryInfo } = categoryData;
+    const editLoading = subCategoryEditSelector.loading;
+    const editSuccess = subCategoryEditSelector.success;
+
     const [form] = Form.useForm();
 
+    //To show label of category before
+    let oldCategoryIndex;
+
+
     const onFinish = (values) => {
-        dispatch(addSubCategory(values.subCategoryName, values.category, values.description));
-        console.log(categoryInfo);
+        let category = location.state.category
+        if (IsCategoryOptionChanged === true) {
+            category = values.category;
+        }
+        dispatch(editSubCategory(location.state.id, values.subCategoryName, category, values.description, location.state.createdBy, location.state.createdTime));
     };
 
 
     useEffect(() => {
         dispatch(listCategory())
+        form.setFieldsValue({
+            // menu: location.state.menuID,
+            subCategoryName: location.state.subCategoryName,
+            description: location.state.description,
+        })
     }, [])
+
+    useEffect(() => {
+        if (editSuccess === true) {
+            navigate('/admin/listsubcategory')
+        }
+    }, [editSuccess])
 
     if (loading === false) {
         optionListSubCategoryMenu = categoryInfo;
+        oldCategoryIndex = optionListSubCategoryMenu.findIndex(x => x.id === location.state.category.id);
+    }
+
+    const handleCategorySelect = () => {
+        setIsCategoryOptionChanged(true);
     }
 
     return (
@@ -74,7 +105,7 @@ const EditSubCategoryScreen = () => {
             </Breadcrumb>
             <Card
                 style={{ marginTop: 30, width: 1100, height: 700, borderRadius: 25 }}
-            >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>Add SubCategory</h1></Divider>
+            >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>EDIT SUBCATEGORY</h1></Divider>
 
                 <Form style={{ marginTop: 50, marginRight: 150 }}
                     {...formItemLayout}
@@ -108,6 +139,8 @@ const EditSubCategoryScreen = () => {
                             placeholder="Select category"
                             getOptionLabel={option => option.categoryName}
                             getOptionValue={option => option.id}
+                            onChange={handleCategorySelect}
+                            defaultValue={optionListSubCategoryMenu[oldCategoryIndex]}
                             isSearchable={true}
                         />
                     </Form.Item>
@@ -126,9 +159,16 @@ const EditSubCategoryScreen = () => {
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit">
-                            Add Category
-                        </Button>
+                        <Space size={'large'}>
+                            {editLoading && <Loader />}
+                            <Button type="primary" htmlType="submit">
+                                Edit SubCategory
+                            </Button>
+                            <Button onClick={() => navigate('/admin/listsubcategory')}>
+                                Cancel
+                            </Button>
+                        </Space>
+
                     </Form.Item>
                 </Form>
 
