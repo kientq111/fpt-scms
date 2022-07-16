@@ -111,7 +111,7 @@ export const listCategory = () => async (dispatch, getState) => {
 
             },
         }
-        const { data } = await axios.get(`/category/getListCategory?categoryName&status&startDate&endDate&createdBy&pageIndex=1&pageSize=10`, {}, config)
+        const { data } = await axios.get(`/category/getListCategory?categoryName&status&startDate&endDate&createdBy&pageIndex=1&pageSize=100`, {}, config)
         dispatch({
             type: categoryConstants.CATEGORY_LIST_SUCCESS,
             payload: data.data,
@@ -152,6 +152,9 @@ export const listSubcategory = () => async (dispatch, getState) => {
         dispatch({
             type: subCategoryConstatnts.SUB_CATEGORY_LIST_SUCCESS,
             payload: data.data,
+        })
+        dispatch({
+            type: subCategoryConstatnts.SUB_CATEGORY_EDIT_RESET,
         })
     } catch (error) {
         const message =
@@ -222,7 +225,7 @@ export const addSubCategory = (subCategoryName, rawCategory, description) => asy
 }
 
 
-export const editSubCategory = (id, subCategoryName, rawCategory, description) => async (dispatch, getState) => {
+export const editSubCategory = (id, subCategoryName, rawCategory, description, createdBy, createdTime) => async (dispatch, getState) => {
     try {
         dispatch({
             type: subCategoryConstatnts.SUB_CATEGORY_EDIT_REQUEST,
@@ -250,10 +253,9 @@ export const editSubCategory = (id, subCategoryName, rawCategory, description) =
             updatedBy: rawCategory.updatedBy,
             updatedTime: rawCategory.updatedTime
         }
+
         console.log(category);
-        const createdBy = userInfo.username;
         const updatedBy = userInfo.username;
-        const createdTime = new Date();
         const updatedTime = new Date();
         const { data } = await axios.post(
             '/subcategory/addOrUpdateCategory',
