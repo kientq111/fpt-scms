@@ -4,7 +4,7 @@ import {
 import { React, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import { listCategory } from '../../actions/categoryAction';
+import { changeCategoryStatus, listCategory } from '../../actions/categoryAction';
 import { LargeLoader } from '../../components/Loader';
 import moment from 'moment'
 import styled from 'styled-components';
@@ -22,13 +22,14 @@ thead > tr > th {
 const ListCategoryScreen = () => {
     const dispatch = useDispatch();
     const dataCategory = useSelector((state) => state.categoryList);
+    const categoryChangeStatusSelector = useSelector((state) => state.categoryChangeStatus);
+    const {success} = categoryChangeStatusSelector;
     const { loading, categoryInfo } = dataCategory
     const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(listCategory());
-        console.log(categoryInfo);
-    }, []);
+    }, [success]);
 
     const editCategoryHandle = (id, categoryName, description, createdBy, createdTime) => {
         navigate('/admin/editcategory', {
@@ -43,15 +44,10 @@ const ListCategoryScreen = () => {
         })
     }
 
-    //Delete Update Form
-    const confirm = (id) => {
-        console.log(id);
-        message.success('Delete successful');
-    };
-
-    const cancel = (e) => {
-        console.log(e);
-    };
+    const changeCategoryStatusHandle = (id, status) => {
+        message.success("change Category status success")
+        dispatch(changeCategoryStatus(id, status))
+    }
     return (
         <>
 
@@ -76,21 +72,21 @@ const ListCategoryScreen = () => {
                 <Column title="categoryName" dataIndex="categoryName" key="categoryName" />
                 <Column title="description" dataIndex="description" key="description" />
                 <Column title="Status" dataIndex="status"
-               filters={[
-                {
-                    text: '1',
-                    value: 1,
-                },
-                {
-                    text: '2',
-                    value: 2,
-                },
-                {
-                    text: '3',
-                    value: 3,
-                },
-            ]}
-                onFilter={(value, record) => record.status === value}
+                    filters={[
+                        {
+                            text: '1',
+                            value: 1,
+                        },
+                        {
+                            text: '2',
+                            value: 2,
+                        },
+                        {
+                            text: '3',
+                            value: 3,
+                        },
+                    ]}
+                    onFilter={(value, record) => record.status === value}
                     key="status"
                 />
                 <Column title="Created Time" dataIndex="createdTime" key="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} />
@@ -104,7 +100,7 @@ const ListCategoryScreen = () => {
                     key="action"
                     render={(_, record) => (
                         <Space size="middle">
-                            <a>Change Status</a>
+                            <a onClick={() => changeCategoryStatusHandle(record.id, record.status)}>Change Status</a>
                             <a onClick={() => editCategoryHandle(record.id, record.categoryName, record.description, record.createdBy, record.createdTime)}>Edit</a>
                         </Space>
                     )}

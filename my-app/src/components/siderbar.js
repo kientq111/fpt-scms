@@ -7,7 +7,8 @@ import {
     TeamOutlined,
     UserOutlined,
     LogoutOutlined,
-    FormOutlined
+    FormOutlined,
+    CoffeeOutlined
 } from '@ant-design/icons';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -48,12 +49,14 @@ const items = [
         getItem('List Category', '/admin/listcategory'),
         getItem('List Subcategory', '/admin/listsubcategory'),
     ]),
+    getItem('Table Manager', '', <CoffeeOutlined />, [
+    
+        getItem('List Table', '/admin/listtable'),
+    ]),
     getItem('Blog Manager', '', <FormOutlined />, [
         getItem('Add Blog', '/admin/addblog'),
         getItem('List Blog', '/admin/listblog'),
     ]),
-
-    // getItem('Dish Manager', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
     getItem('Logout', '/', <LogoutOutlined />),
 ];
 

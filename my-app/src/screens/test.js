@@ -46,10 +46,11 @@ const tailFormItemLayout = {
 
 export default function App() {
   const [form] = Form.useForm();
-  const [provin, setProvin] = useState([{ name: "", code: "" }]);
-  const [district, setDistrict] = useState([{ name: "", code: "" }]);
+  const [provin, setProvin] = useState([{ name: "Đà Lạt", code: "" }]);
+  const [district, setDistrict] = useState([{ name: "Đà Nẵng", code: "" }]);
   const [wards, setWards] = useState([{ name: "", code: "" }])
-
+  let optionDistrictFlag = false;
+  
   useEffect(() => {
     axios.get(`https://provinces.open-api.vn/api/p/`)
       .then(res => {
@@ -59,6 +60,19 @@ export default function App() {
       .catch(error => console.log(error));
   }, []);
 
+  useEffect(() => {
+    axios.get(`https://provinces.open-api.vn/api/p/search/?q='Tỉnh Bắc Kạn'`)
+      .then(res => {
+        const dataRes = res.data[0].code;
+        axios.get(`https://provinces.open-api.vn/api/p/${dataRes}?depth=3`)
+          .then(res => {
+            const dataDistric = res.data;
+            console.log(dataDistric);
+            setDistrict(dataDistric.districts);
+          })
+      })
+      .catch(error => console.log(error));
+  }, []);
 
 
   const onFinish = (values) => {
@@ -116,6 +130,7 @@ export default function App() {
             getOptionLabel={option => option.name}
             getOptionValue={option => option.code}
             onChange={handleProvinSelect}
+            defaultValue={provin[0]}
             options={provin}
           />
         </Form.Item>
@@ -127,6 +142,7 @@ export default function App() {
             getOptionLabel={option => option.name}
             getOptionValue={option => option.code}
             onChange={handleDistrictSelect}
+            defaultValue={[district[0]]}
             options={district}
           />
         </Form.Item>

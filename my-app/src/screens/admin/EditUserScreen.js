@@ -55,20 +55,64 @@ const EditUserScreen = () => {
     //get data from store
     const userUpdateSelector = useSelector((state) => state.userUpdate)
     const { success, loading } = userUpdateSelector;
-    const [provin, setProvin] = useState([{ name: "", code: "" }]);
-    const [district, setDistrict] = useState([{ name: "", code: "" }]);
-    const [wards, setWards] = useState([{ name: "", code: "" }])
+    const [provin, setProvin] = useState([{ name: location.state.city, code: "" }]);
+    const [district, setDistrict] = useState([{ name: location.state.district, code: "" }]);
     const streetSplit = location.state.street.split("-");
+    const [wards, setWards] = useState([{ name: streetSplit[1], code: "" }])
+    let [isProvinChance, setIsProvinChange] = useState(false);
+    let [isDistrictChance, setIsDistrictChange] = useState(false);
+    let [isWardChange, setIsWardChange] = useState(false);
     let wardsInitialIndex;
+
+
+
+    //INIT OLD USER PROFILE
     useEffect(() => {
+        const formatDob = moment(location.state.dob).format('YYYY-MM-DD')
+        form.setFieldsValue({
+            first_name: location.state.firstname,
+            last_name: location.state.lastname,
+            username: location.state.username,
+            email: location.state.email,
+            dob: `${formatDob}`,
+            street: streetSplit[0],
+            phone: location.state.phone,
+        })
+
         axios.get(`https://provinces.open-api.vn/api/p/`)
             .then(res => {
                 const dataRes = res.data;
                 setProvin(dataRes);
             })
             .catch(error => console.log(error));
-    }, []);
 
+    }, [])
+
+    useEffect(() => {
+        //Search previous province and get code to list wards
+        axios.get(`https://provinces.open-api.vn/api/p/search/?q=${location.state.city}`)
+            .then(res => {
+                const dataProvinceRes = res.data[0].code;
+                axios.get(`https://provinces.open-api.vn/api/p/${dataProvinceRes}?depth=3`)
+                    .then(res => {
+                        const dataDistric = res.data;
+                        setDistrict(dataDistric.districts);
+                    })
+            })
+            .catch(error => console.log(error));
+        //Search previous district and get code to list wards
+        axios.get(`https://provinces.open-api.vn/api/d/search/?q=${location.state.district}`)
+            .then(res => {
+                const dataDistrictRes = res.data[0].code;
+                axios.get(`https://provinces.open-api.vn/api/d/${dataDistrictRes}?depth=2`)
+                    .then(res => {
+                        const dataWard = res.data;
+                        console.log(dataWard);
+                        setWards(dataWard.wards);
+                    })
+            })
+            .catch(error => console.log(error));
+    }, []);
 
     // Function triggered on selection
     function handleProvinSelect(value) {
@@ -78,10 +122,12 @@ const EditUserScreen = () => {
                 setDistrict(dataRes.districts);
             })
             .catch(error => console.log(error));
+        //Clear select when province changed
         form.setFieldsValue({
             district: "",
             wards: ""
         })
+      setIsProvinChange(true)
     }
 
     function handleDistrictSelect(value) {
@@ -89,24 +135,47 @@ const EditUserScreen = () => {
             .then(res => {
                 const dataRes = res.data;
                 setWards(dataRes.wards);
-                wardsInitialIndex = wards.findIndex(x => x.name === streetSplit[1])
             })
             .catch(error => console.log(error));
+        //Clear select when district changed
         form.setFieldsValue({
             wards: "",
         })
+    setIsDistrictChange(true)
     }
+
+    function handleWardSelect() {
+        setIsWardChange(true);
+    }
+    //END OF INIT
 
     //Submit edit form to action
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
-        const address = {
-            street: `${values.street}-${values.wards.name}`,
-            district: values.district.name,
-            city: values.city.name,
-            country: 'VIET NAM',
+        let ward = streetSplit[1]
+        let district = location.state.district;
+        let city = location.state.city;
+
+        if (isProvinChance === true) {
+            city = values.city.name;
         }
-        dispatch(updateUser(location.state.id, values.username, values.email, values.dob, values.first_name, values.last_name, values.phone, address, values.gender));
+        if (isDistrictChance === true) {
+            district = values.district.name;
+        }
+        if (isWardChange === true) {
+            ward = values.wards.name;
+        }
+
+
+
+        const address = {
+            street: `${values.street}-${ward}`,
+            district: district,
+            city: city,
+            country: 'Việt Nam',
+        }
+        console.log(address);
+          dispatch(updateUser(location.state.id, values.username, values.email, values.dob, values.first_name, values.last_name, values.phone, address));
 
     };
 
@@ -120,25 +189,6 @@ const EditUserScreen = () => {
         }
 
     }, [success])
-
-    useEffect(() => {
-        const formatDob = moment(location.state.dob).format('YYYY-MM-DD')
-        form.setFieldsValue({
-            first_name: location.state.firstname,
-            last_name: location.state.lastname,
-            username: location.state.username,
-            email: location.state.email,
-            dob: `${formatDob}`,
-            country: location.state.country,
-            city: location.state.city,
-            district: location.state.district,
-            street: location.state.street,
-            phone: location.state.phone,
-            gender: 'Male'
-        })
-
-        console.log(streetSplit);
-    }, [])
 
 
     const handlerCancel = () => {
@@ -234,16 +284,12 @@ const EditUserScreen = () => {
                     <Form.Item
                         name="city"
                         label="city"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
                     >
                         <Select
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
                             onChange={handleProvinSelect}
+                            defaultValue={[provin[0]]}
                             options={provin}
                         />
                     </Form.Item>
@@ -255,6 +301,7 @@ const EditUserScreen = () => {
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
                             onChange={handleDistrictSelect}
+                            defaultValue={[district[0]]}
                             options={district}
                         />
                     </Form.Item>
@@ -267,7 +314,8 @@ const EditUserScreen = () => {
                         <Select
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
-                            defaultValue={'aaa'}
+                            onChange={handleWardSelect}
+                            defaultValue={[wards[0]]}
                             options={wards}
                         />
                     </Form.Item>

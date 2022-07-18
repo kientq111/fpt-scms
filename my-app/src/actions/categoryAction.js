@@ -96,11 +96,6 @@ export const listCategory = () => async (dispatch, getState) => {
             type: categoryConstants.CATEGORY_LIST_REQUEST,
         })
 
-        dispatch({
-            type: categoryConstants.CATEGORY_EDIT_RESET,
-        })
-
-
         const {
             userLogin: { userInfo },
         } = getState()
@@ -132,6 +127,57 @@ export const listCategory = () => async (dispatch, getState) => {
         })
     }
 }
+
+export const changeCategoryStatus = (id, status) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: categoryConstants.CATEGORY_CHANGE_STATUS_REQUEST,
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.accessToken}`,
+
+            },
+        }
+
+        switch (status) {
+            case 1:
+                status = 2
+                break;
+            case 2:
+                status = 3
+                break;
+            case 3:
+                status = 1
+                break;
+            default:
+                break;
+        }
+
+        console.log(status)
+        const { data } = await axios.put(`/category/changeCategoryStatus?status=${status}&categoryID=${id}`, {}, config)
+        dispatch({
+            type: categoryConstants.CATEGORY_CHANGE_STATUS_SUCCESS,
+            payload: data,
+        })
+
+    } catch (error) {
+        const message =
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        dispatch({
+            type: categoryConstants.CATEGORY_CHANGE_STATUS_FAIL,
+            payload: message,
+        })
+    }
+}
+
 //SUBCATEGORY ZONEEEE
 export const listSubcategory = () => async (dispatch, getState) => {
     try {
@@ -275,6 +321,57 @@ export const editSubCategory = (id, subCategoryName, rawCategory, description, c
                 error.response && error.response.data.message
                     ? error.response.data.message
                     : error.message,
+        })
+    }
+}
+
+
+export const changeSubCategoryStatus = (id, status) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: subCategoryConstatnts.SUB_CATEGORY_CHANGE_STATUS_REQUEST,
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.accessToken}`,
+
+            },
+        }
+
+        switch (status) {
+            case 1:
+                status = 2
+                break;
+            case 2:
+                status = 3
+                break;
+            case 3:
+                status = 1
+                break;
+            default:
+                break;
+        }
+
+
+        const { data } = await axios.put(`/subcategory/changeSubcategoryStatus?status=${status}&subcategoryId=${id}`, {}, config)
+        dispatch({
+            type: subCategoryConstatnts.SUB_CATEGORY_CHANGE_STATUS_SUCCESS,
+            payload: data,
+        })
+
+    } catch (error) {
+        const message =
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        dispatch({
+            type: subCategoryConstatnts.SUB_CATEGORY_CHANGE_STATUS_FAIL,
+            payload: message,
         })
     }
 }

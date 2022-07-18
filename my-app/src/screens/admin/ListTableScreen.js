@@ -1,5 +1,5 @@
 import {
-    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col
+    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col, DatePicker,
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,9 +10,13 @@ import styled from 'styled-components';
 import moment from 'moment'
 import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { Loader, LargeLoader } from '../../components/Loader';
-import { changeCategoryStatus, changeSubCategoryStatus, listSubcategory } from '../../actions/categoryAction';
+import { listSubcategory } from '../../actions/categoryAction';
+import { changeTableStatus, listTables } from '../../actions/tableAction';
 
 const { Column, ColumnGroup } = Table;
+const { RangePicker } = DatePicker;
+const { Search } = Input;
+
 
 const StyledTable = styled((props) => <Table {...props} />)`
   && tbody > tr:hover > td {
@@ -23,7 +27,7 @@ const StyledTable = styled((props) => <Table {...props} />)`
   }
   `;
 
-const ListSubCategoryScreen = () => {
+const ListTableScreen = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
@@ -126,10 +130,10 @@ const ListSubCategoryScreen = () => {
 
     //Get data from API
     const navigate = useNavigate();
-    const subCategoryData = useSelector((state) => state.subcategoryList);
-    const changeSubCategoryStatusSelector = useSelector((state) => state.subCategoryChangeStatus);
-    const { success } = changeSubCategoryStatusSelector;
-    const { loading, subcategoryInfo } = subCategoryData;
+    const listTableSelector = useSelector((state) => state.tableList);
+    const { loading, tables } = listTableSelector;
+    const tableStatusSelector = useSelector((state) => state.tableChangeStatus);
+    const tableChangeStatusSuccess = tableStatusSelector.success
     const [form] = Form.useForm();
 
 
@@ -137,8 +141,8 @@ const ListSubCategoryScreen = () => {
     //Called when when mounting
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(listSubcategory());
-    }, [success]);
+        dispatch(listTables());
+    }, [tableChangeStatusSuccess]);
 
 
 
@@ -167,9 +171,9 @@ const ListSubCategoryScreen = () => {
         })
     }
 
-    const changeSubCategoryStatusHandle = (id, status) => {
-        dispatch(changeSubCategoryStatus(id, status));
-        message.success("Change SubCategory Status Successful")
+    const changeTableStatusHandle = (id, status) => {
+       message.success('change Table Status Success')
+        dispatch(changeTableStatus(id, status))
     }
 
     return (
@@ -177,10 +181,10 @@ const ListSubCategoryScreen = () => {
             <Breadcrumb style={{ marginTop: 10 }}>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>
-                    <a href="">List SubCategory</a>
+                    <a href="">List Table</a>
                 </Breadcrumb.Item>
             </Breadcrumb>
-            <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/addsubcategory'} style={{ textDecoration: 'none' }}>Add SubCategory</Link></Button></Divider>
+            <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/addsubcategory'} style={{ textDecoration: 'none' }}>Add Table</Link></Button></Divider>
 
             {loading === true && <>
                 <br></br> <br /> <br />
@@ -191,10 +195,19 @@ const ListSubCategoryScreen = () => {
                     <Col span={5}><LargeLoader /></Col>
                     <Col span={5}></Col>
                 </Row></>}
+            {/* <div>
+                <Row>
+                    <Col span={6}>col-6</Col>
+                    <Col span={6}>col-6</Col>
+                    <Col span={6}> <RangePicker /></Col>
+                    <Col span={6}><Search placeholder="input search text" enterButton="Search" loading /></Col>
+                </Row>
+            </div> */}
+            {loading === false && <StyledTable dataSource={tables} className="table-striped-rows" >
+                <Column title="Table Number " dataIndex="tableNumber" key="tableNumber" {...getColumnSearchProps('tableNumber')}
 
-            {loading === false && <StyledTable dataSource={subcategoryInfo} className="table-striped-rows" >
-                <Column title="SubCategory Name" dataIndex="subCategoryName" key="subCategoryName" {...getColumnSearchProps('subCategoryName')} />
-                <Column title="Description" dataIndex="description" key="description" />
+                />
+                <Column title="Description" dataIndex="description" key="description" render={(_, record) => (record.description === null ? "null" : record.description)} />
                 <Column title="Status" dataIndex="status" key="status" filters={[
                     {
                         text: '1',
@@ -211,23 +224,23 @@ const ListSubCategoryScreen = () => {
                 ]}
                     onFilter={(value, record) => record.status === value}
                 />
-                <Column title="Created Time" dataIndex="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} key="createdTime" />
+                <Column title="Type" dataIndex="type" key="type"
+                />
+                <Column title="Created Date" dataIndex="createdDate" render={(_, record) => (moment(record.createdDate).format('DD/MM/YYYY'))} key="createdDate" />
                 <Column title="Created By" dataIndex="createdBy" key="createdBy" />
-                <Column title="Updated Time" dataIndex="updatedTime" render={(_, record) => (moment(record.updatedTime).format('DD/MM/YYYY'))} key="updatedTime" />
+                <Column title="Updated Date" dataIndex="updatedDate" render={(_, record) => (moment(record.updatedDate).format('DD/MM/YYYY'))} key="updatedTime" />
                 <Column title="Updated By" dataIndex="updatedBy" key="updatedBy" />
-                <Column title="Category" dataIndex="category" render={(_, record) => record.category.categoryName} key="category" />
+
 
                 <Column
                     title="Action"
                     key="action"
                     render={(_, record) => (
                         <Space size="middle">
-                            <a onClick={() => editSubCategoryHandle(record.id, record.subCategoryName, record.description, record.createdTime, record.createdBy, record.category)}>
+                            <a>
                                 <EditOutlined style={{ fontSize: 17 }} />
                             </a>
-
-                            <a onClick={() => changeSubCategoryStatusHandle(record.id, record.status)}>Change Status</a>
-
+                            <a onClick={() => changeTableStatusHandle(record.id, record.status)} style={{ color: 'blue' }} > Change Status</a>
 
                         </Space>
                     )}
@@ -239,4 +252,4 @@ const ListSubCategoryScreen = () => {
     );
 };
 
-export default ListSubCategoryScreen;
+export default ListTableScreen;
