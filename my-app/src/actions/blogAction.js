@@ -54,6 +54,7 @@ export const listBlog = () => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
+        console.log(userInfo.accessToken);
         const { data } = await axios.get(`/management/blogs/posts/search?name=&content=&status=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=100`, config)
         dispatch({
             type: blogConstants.BLOG_LIST_SUCCESS,

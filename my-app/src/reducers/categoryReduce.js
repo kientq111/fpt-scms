@@ -45,6 +45,21 @@ export const listCategoryReducer = (state = {}, action) => {
     }
 }
 
+export const changeCategoryStatusReducer = (state = {}, action) => {
+    switch (action.type) {
+        case categoryConstants.CATEGORY_CHANGE_STATUS_REQUEST:
+            return { loading: true }
+        case categoryConstants.CATEGORY_CHANGE_STATUS_SUCCESS:
+            return { loading: false, categoryInfo: action.payload, success: true }
+        case categoryConstants.CATEGORY_CHANGE_STATUS_FAIL:
+            return { loading: false, error: action.payload }
+        default:
+            return state
+    }
+}
+
+
+
 //Subcategory ZONEE
 export const listSubCategoryReducer = (state = {}, action) => {
     switch (action.type) {
@@ -85,6 +100,19 @@ export const editSubCategoryReducer = (state = {}, action) => {
             return { loading: false, error: action.payload }
         case subCategoryConstatnts.SUB_CATEGORY_EDIT_RESET:
             return {}
+        default:
+            return state
+    }
+}
+
+export const changeSubCategoryStatusReducer = (state = {}, action) => {
+    switch (action.type) {
+        case subCategoryConstatnts.SUB_CATEGORY_CHANGE_STATUS_REQUEST:
+            return { loading: true }
+        case subCategoryConstatnts.SUB_CATEGORY_CHANGE_STATUS_SUCCESS:
+            return { loading: false, subCategoryInfo: action.payload, success: true }
+        case subCategoryConstatnts.SUB_CATEGORY_CHANGE_STATUS_FAIL:
+            return { loading: false, error: action.payload }
         default:
             return state
     }
