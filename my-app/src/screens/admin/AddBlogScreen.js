@@ -102,7 +102,7 @@ const AddBlogScreen = () => {
                             <input type="file" onChange={ImageHandler} accept="image/png, image/gif, image/jpeg" />
 
                         </Form.Item>
-                        {success && <h6 style={{ marginLeft: 150, fontSize: 15, color: 'green' }}>ADD DISH SUCCESSFUL!</h6>}
+                        {success && <h6 style={{ marginLeft: 150, fontSize: 15, color: 'green' }}>ADD BLOG SUCCESSFUL!</h6>}
                         <Form.Item style={{ marginLeft: 230 }}>
                             <Space size={'large'}>
                                 {loading && <Loader />}

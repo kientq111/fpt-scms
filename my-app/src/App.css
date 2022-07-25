@@ -42,7 +42,7 @@ body {
 }
 
 .table-striped-rows tr:nth-child(2n) td {
-    background-color: rgba(223, 221, 221, 0.233);
+    background-color: rgb(245, 237, 237);
 }
 
 .table-striped-rows thead {

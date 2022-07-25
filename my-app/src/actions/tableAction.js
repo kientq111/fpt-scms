@@ -58,6 +58,38 @@ export const addTable = (tableNumber, description, canteen) => async (dispatch, 
         const updatedTime = new Date();
         const createdTime = new Date();
 
+        canteen = {
+            "id": 1,
+            "canteenName": "Canteen ABC",
+            "phone": "01234567",
+            "createdDate": "2022-06-26T17:00:00.000+00:00",
+            "updatedDate": "2022-06-26T17:00:00.000+00:00",
+            "logoUrl": "logo_url",
+            "userResponse": {
+                "id": 15,
+                "username": "admin",
+                "email": "admin@gmail.com",
+                "dob": "2022-06-05T17:00:00.000+00:00",
+                "first_name": "Admin",
+                "last_name": "Admin",
+                "phone": "012345678",
+                "status": "1",
+                "type": "1",
+                "create_date": "2022-06-08T17:00:00.000+00:00",
+                "create_by": "owner",
+                "updated_date": "2022-06-08T17:00:00.000+00:00",
+                "updated_by": "owner",
+                "is_active": true,
+                "address": {
+                    "id": 14,
+                    "street": "Dich Vong Hau",
+                    "district": "Cau Giay",
+                    "city": "Ha Noi",
+                    "country": "Viet Nam"
+                }
+            }
+        }
+
         const { data } = await axios.post(`/table/addOrUpdate`, { tableNumber, description, canteen, status, type, createdBy, createdTime, updatedBy, updatedTime }, config)
         dispatch({
             type: tableConstants.TABLE_ADD_SUCCESS,

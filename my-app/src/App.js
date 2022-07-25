@@ -34,6 +34,7 @@ import BlogDetailScreen from './screens/admin/BlogDetailScreen';
 import DashboardScreen from './screens/admin/DashboardScreen';
 import EditSubCategoryScreen from './screens/admin/EditSubCategory';
 import ListTableScreen from './screens/admin/ListTableScreen';
+import AddTableScreen from './screens/admin/AddTableScreen';
 const { Header, Content, Sider } = Layout;
 
 
@@ -116,6 +117,7 @@ const App = () => {
             <Route path='/admin/blogdetail' element={<BlogDetailScreen />} />
             {/* Table */}
             <Route path='/admin/listtable' element={<ListTableScreen />} />
+            <Route path='/admin/addtable' element={<AddTableScreen />} />
             {/* Common */}
             <Route path='/admin/dashboard' element={<DashboardScreen />} />
             <Route path='*' element={<ErrorScreen />} />

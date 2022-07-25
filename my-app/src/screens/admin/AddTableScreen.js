@@ -3,14 +3,13 @@ import {
     Form,
     Input,
     Row,
-    Breadcrumb, Card, Divider
+    Select, Breadcrumb, Card, Divider
 } from 'antd';
 import Loader from '../../components/Loader';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
-import { listDishes } from '../../actions/dishAction';
-import Select from 'react-select';
-import { addMenu } from '../../actions/menuAction';
+import { addCategory } from '../../actions/categoryAction';
+import { addTable } from '../../actions/tableAction';
 
 const formItemLayout = {
     labelCol: {
@@ -42,28 +41,21 @@ const tailFormItemLayout = {
         },
     },
 };
-const AddMenuScreen = () => {
+const AddTableScreen = () => {
+    const tableData = useSelector((state) => state.tableAdd);
     const dispatch = useDispatch()
+    const { loading, error, table } = tableData;
     const [form] = Form.useForm();
 
-
-    let listDishOption = [];
-    const getListDishSelector = useSelector((state) => state.dishList);
-    const { loading, dishes } = getListDishSelector;
     const onFinish = (values) => {
-        // console.log(values.dish);
-         dispatch(addMenu(values.menu, values.description, values.dish))
+        dispatch(addTable(values.tableName, values.description));
     };
 
 
     useEffect(() => {
-        dispatch(listDishes(1))
+        console.log(table);
+
     }, [])
-
-
-    if (loading === false) {
-        listDishOption = dishes;
-    }
 
     return (
         <Row>
@@ -71,28 +63,47 @@ const AddMenuScreen = () => {
             <Breadcrumb>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>
-                    Add Menu
+                    <a href="" >Add Table</a>
                 </Breadcrumb.Item>
+
             </Breadcrumb>
+
 
             <Card
                 style={{ marginTop: 30, width: 1100, height: 700, borderRadius: 25 }}
-            >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>Add Menu</h1></Divider>
+            >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>ADD TABLE</h1></Divider>
+                {error && <h1 style={{ color: 'red', fontSize: 20 }}>{error}</h1>}
+                {(() => {
+                    if (loading === false) {
+                        if (table.success === false) {
+                            return (
+                                <h2 style={{ color: 'red', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>{table.data}</h2>
+                            )
+                        } else if (table.success === true) {
+                            return (
+                                <h2 style={{ color: 'green', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>ADD TABLE SUCCESSFUL</h2>
+                            )
+                        }
 
-                <Form style={{ marginTop: 50, marginRight: 250 }}
+                    }
+                })()}
+                <Form style={{ marginTop: 50, marginRight: 100 }}
                     {...formItemLayout}
                     form={form}
                     name="register"
                     onFinish={onFinish}
+
                     scrollToFirstError
                 >
+
+
                     <Form.Item
-                        name="menu"
-                        label="Menu Name"
+                        name="tableName"
+                        label="Table Name"
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input menu name!',
+                                message: 'Please input Table name!',
                                 whitespace: true,
                             },
                         ]}
@@ -100,21 +111,10 @@ const AddMenuScreen = () => {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item
-                        name="dish"
-                        label="dish"
-                    >
-                        <Select
-                            getOptionLabel={option => option.dishName}
-                            getOptionValue={option => option.id}
-                            options={listDishOption}
-                            isMulti
-                        />
-                    </Form.Item>
 
                     <Form.Item
                         name="description"
-                        label="menu description"
+                        label="Description"
                         rules={[
                             {
                                 required: true,
@@ -126,8 +126,9 @@ const AddMenuScreen = () => {
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>
+                        {loading && <Loader />}
                         <Button type="primary" htmlType="submit">
-                            Add menu
+                            Add Table
                         </Button>
                     </Form.Item>
                 </Form>
@@ -139,4 +140,4 @@ const AddMenuScreen = () => {
     );
 };
 
-export default AddMenuScreen;
+export default AddTableScreen;

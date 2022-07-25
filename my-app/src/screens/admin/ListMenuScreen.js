@@ -205,10 +205,10 @@ const ListMenuScreen = () => {
                 <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{color:"green"}}>Active</p> : <p style={{color:"red"}}>InActive</p>)}
                     filters={[{
                         text: 'Active',
-                        value: '1',
+                        value: 1,
                     }, {
-                        text: 'DeActive',
-                        value: '0',
+                        text: 'InActive',
+                        value: 0,
                     },]} onFilter={(value, record) => record.status === value}
                     key="status" />
                 <Column title="Created Time" dataIndex="createdTime" key="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} />

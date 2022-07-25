@@ -50,7 +50,7 @@ const items = [
         getItem('List Subcategory', '/admin/listsubcategory'),
     ]),
     getItem('Table Manager', '', <CoffeeOutlined />, [
-    
+        getItem('Add Table', '/admin/addtable'),
         getItem('List Table', '/admin/listtable'),
     ]),
     getItem('Blog Manager', '', <FormOutlined />, [
