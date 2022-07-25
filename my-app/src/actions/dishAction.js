@@ -1,9 +1,9 @@
 import { dishConstants } from "../constants/Constants"
 import axios from "axios"
-import moment from "moment"
 
 
-export const listDishes = () => async (dispatch, getState) => {
+
+export const listDishes = (status) => async (dispatch, getState) => {
     try {
         dispatch({
             type: dishConstants.DISH_LIST_REQUEST,
@@ -16,10 +16,14 @@ export const listDishes = () => async (dispatch, getState) => {
         const config = {
             headers: {
                 Authorization: `Bearer ${userInfo.accessToken}`,
-
             },
         }
-        const { data } = await axios.get(`/dish/getListDish?dishName=&status=&subcategoryId=&startDate&endDate&createdBy&pageIndex=1&pageSize=100`, config)
+
+        if (status === undefined) {
+            status = "";
+        }
+
+        const { data } = await axios.get(`/dish/getListDish?dishName=&status=${status}&subcategoryId=&startDate&endDate&createdBy&pageIndex=1&pageSize=100`, config)
         dispatch({
             type: dishConstants.DISH_LIST_SUCCESS,
             payload: data.data,

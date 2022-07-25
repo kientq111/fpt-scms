@@ -136,7 +136,6 @@ const ListUserScreen = () => {
   const [form] = Form.useForm();
   const location = useLocation();
   const editUser = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street) => {
-    console.log(id);
 
     navigate('/admin/edituser', {
       state:
@@ -164,7 +163,6 @@ const ListUserScreen = () => {
       message.success('Update successful');
     }
     dispatch(listUsers());
-    console.log(deleteSuccess)
   }, [success]);
 
 
@@ -224,74 +222,84 @@ const ListUserScreen = () => {
           <Col span={5}></Col>
         </Row></>}
 
-      {loading === false && <StyledTable dataSource={data.users} className="table-striped-rows" >
-        <Column title="UserName" dataIndex="username" key="username" {...getColumnSearchProps('username')} />
-        <Column title="First Name" dataIndex="first_name" key="first_name" />
-        <Column title="Last Name" dataIndex="last_name" key="last_name" />
-        <Column title="Date of Birth" dataIndex="dob" render={(_, record) => (moment(record.dob).format('DD/MM/YYYY'))} key="dob" />
-        <Column title="Email" dataIndex="email" key="email" {...getColumnSearchProps('email')} />
-        <Column title="Phone Number" dataIndex="phone" key="phone" />
-        <Column title="Gender" dataIndex="gender" key="gender" filters={[{
-          text: 'Male',
-          value: 'Male',
-        }, {
-          text: 'Female',
-          value: 'Female',
-        },]} onFilter={(value, record) => record.gender.indexOf(value) === 0} />
-
-
-        <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>true</p> : <p style={{ color: 'red' }}>false</p>)}
-          filters={[{
-            text: 'True',
-            value: 1,
+      {loading === false &&
+        <StyledTable dataSource={data.users} className="table-striped-rows"
+          scroll={{
+            x: '200vw',
+          }}
+        >
+          <Column title="UserName" dataIndex="username" key="username" {...getColumnSearchProps('username')} fixed={"left"} />
+          <Column title="First Name" dataIndex="first_name" key="first_name" />
+          <Column title="Last Name" dataIndex="last_name" key="last_name" />
+          <Column title="Date of Birth" dataIndex="dob" render={(_, record) => (moment(record.dob).format('DD/MM/YYYY'))} key="dob" />
+          <Column title="Email" dataIndex="email" key="email" {...getColumnSearchProps('email')} />
+          <Column title="Phone Number" dataIndex="phone" key="phone" />
+          <Column title="Gender" dataIndex="gender" key="gender" filters={[{
+            text: 'Male',
+            value: 'Male',
           }, {
-            text: 'False',
-            value: 0,
-          },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
-          key="status" />
-        <Column title="is_active" dataIndex="is_active" render={(_, record) => (record.is_active == true ? <p style={{ color: 'green' }}>Active</p> : <p style={{ color: 'red' }}>Inactive</p>)}
-          filters={[{
-            text: 'true',
-            value: true,
-          }, {
-            text: 'false',
-            value: false,
-          },]} onFilter={(value, record) => record.is_active === value}
-          key="is_active" />
-        <Column title="country" dataIndex="address" render={(_, record) => record.address.country} key="country" />
-        <Column title="city" dataIndex="address" render={(_, record) => record.address.city} key="city" />
-        <Column title="district" dataIndex="address" render={(_, record) => record.address.district} key="district" />
-        <Column title="street" dataIndex="address" render={(_, record) => <LinesEllipsis
-          text={record.address.street}
-          maxLine='1'
-          ellipsis='...'
-          trimRight
-          basedOn='letters'
-        />} key="street" />
+            text: 'Female',
+            value: 'Female',
+          },]} onFilter={(value, record) => record.gender.indexOf(value) === 0} />
 
-        <Column
-          title="Action"
-          key="action"
-          render={(_, record) => (
-            <Space size="middle">
-              <a><EyeOutlined onClick={() => userDetailHandler(record.id, record.username, record['first_name'], record['last_name'],
-                record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street)} /></a>
-              <a onClick={() => editUser(record.id, record.username, record['first_name'], record['last_name'],
-                record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street)}><EditOutlined style={{ fontSize: 17 }} /></a>
-              <Popconfirm
-                title="Are you sure to delete this task?"
-                onConfirm={() => confirm(record.id)}
-                onCancel={cancel}
-                okText="Yes"
-                cancelText="No"
-              >
-                <a><DeleteOutlined style={{ fontSize: 17 }} /></a>
-              </Popconfirm>
 
-            </Space>
-          )}
-        />
-      </StyledTable>}
+          <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>true</p> : <p style={{ color: 'red' }}>false</p>)}
+            filters={[{
+              text: 'True',
+              value: 1,
+            }, {
+              text: 'False',
+              value: 0,
+            },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
+            key="status" />
+          <Column title="is_active" dataIndex="is_active" render={(_, record) => (record.is_active == true ? <p style={{ color: 'green' }}>Active</p> : <p style={{ color: 'red' }}>Inactive</p>)}
+            filters={[{
+              text: 'active',
+              value: true,
+            }, {
+              text: 'inactive',
+              value: false,
+            },]} onFilter={(value, record) => record.is_active === value}
+            key="is_active" />
+          <Column title="country" dataIndex="address" render={(_, record) => record.address.country} key="country" />
+          <Column title="city" dataIndex="address" render={(_, record) => record.address.city} key="city" />
+          <Column title="district" dataIndex="address" render={(_, record) => record.address.district} key="district" />
+          <Column title="street" dataIndex="address" render={(_, record) => <LinesEllipsis
+            text={record.address.street}
+            maxLine='1'
+            ellipsis='...'
+            trimRight
+            basedOn='letters'
+          />} key="street" />
+          <Column title="Created By" dataIndex="create_by" key="create_by" />
+          <Column title="Created Time" dataIndex="create_date" render={(_, record) => (moment(record.create_date).format('DD/MM/YYYY'))} key="create_date" />
+          <Column title="Updated By" updated_by="updated_by" render={(_, record) => record.updated_by === null ? "Null" : record.updated_by} key="updated_by" />
+          <Column title="Updated Time" dataIndex="updated_date" render={(_, record) => (moment(record.updated_date).format('DD/MM/YYYY'))} key="updated_date" />
+
+          <Column
+            title="Action"
+            key="action"
+            render={(_, record) => (
+              <Space size="middle">
+                <a><EyeOutlined onClick={() => userDetailHandler(record.id, record.username, record['first_name'], record['last_name'],
+                  record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street)} /></a>
+                <a onClick={() => editUser(record.id, record.username, record['first_name'], record['last_name'],
+                  record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street)}><EditOutlined style={{ fontSize: 17 }} /></a>
+                <Popconfirm
+                  title="Are you sure to delete this task?"
+                  onConfirm={() => confirm(record.id)}
+                  onCancel={cancel}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <a><DeleteOutlined style={{ fontSize: 17 }} /></a>
+                </Popconfirm>
+
+              </Space>
+            )}
+            fixed={"right"}
+          />
+        </StyledTable>}
 
     </>
 

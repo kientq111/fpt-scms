@@ -94,9 +94,14 @@ export const addMenu = (menuName, description, listDish) => async (dispatch, get
         const updatedBy = userInfo.username;
         const updatedTime = new Date();
         const createdTime = new Date();
+        let listDishId = [];
+        listDish.forEach(e => {
+            listDishId.push(e.id)
+        });
+        console.log(listDishId);
         const { data } = await axios.post(
             '/menu/addOrUpdate',
-            { menuName, description, listDish, createdBy, updatedBy, updatedTime, createdTime },
+            { menuName, description, listDishId, createdBy, updatedBy, updatedTime, createdTime },
             config
         )
 
@@ -135,9 +140,13 @@ export const editMenu = (id, menuName, description, listDish, createdBy, created
         }
         const updatedBy = userInfo.username;
         const updatedTime = new Date();
+        let listDishId = [];
+        listDish.forEach(e => {
+            listDishId.push(e.id)
+        });
         const { data } = await axios.post(
             '/menu/addOrUpdate',
-            { id, menuName, description, listDish, createdBy, updatedBy, updatedTime, createdTime },
+            { id, menuName, description, listDishId, createdBy, updatedBy, updatedTime, createdTime },
             config
         )
 

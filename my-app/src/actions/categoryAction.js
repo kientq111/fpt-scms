@@ -90,7 +90,7 @@ export const editCategory = (id, categoryName, description, createdTime, created
 }
 
 
-export const listCategory = () => async (dispatch, getState) => {
+export const listCategory = (status) => async (dispatch, getState) => {
     try {
         dispatch({
             type: categoryConstants.CATEGORY_LIST_REQUEST,
@@ -103,10 +103,14 @@ export const listCategory = () => async (dispatch, getState) => {
         const config = {
             headers: {
                 Authorization: `Bearer ${userInfo.accessToken}`,
-
             },
         }
-        const { data } = await axios.get(`/category/getListCategory?categoryName&status&startDate&endDate&createdBy&pageIndex=1&pageSize=100`, {}, config)
+
+        if(status === undefined) {
+            status = ""
+        }
+
+        const { data } = await axios.get(`/category/getListCategory?categoryName&status=${status}&startDate&endDate&createdBy&pageIndex=1&pageSize=100`, {}, config)
         dispatch({
             type: categoryConstants.CATEGORY_LIST_SUCCESS,
             payload: data.data,

@@ -212,7 +212,7 @@ export const getBlogDetail = (id) => async (dispatch, getState) => {
         }
 
         const { data } = await axios.get(
-            `/management/blogs/detail/posts/392`,
+            `/management/blogs/detail/posts/${id}`,
             config
         );
         dispatch({
