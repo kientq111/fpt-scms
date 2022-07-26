@@ -35,11 +35,8 @@ import DashboardScreen from './screens/admin/DashboardScreen';
 import EditSubCategoryScreen from './screens/admin/EditSubCategory';
 import ListTableScreen from './screens/admin/ListTableScreen';
 import AddTableScreen from './screens/admin/AddTableScreen';
+import ListFeedBackScreen from './screens/admin/ListFeedBackScreen';
 const { Header, Content, Sider } = Layout;
-
-
-
-
 
 const App = () => {
   const userLogin = useSelector((state) => state.userLogin)
@@ -118,6 +115,8 @@ const App = () => {
             {/* Table */}
             <Route path='/admin/listtable' element={<ListTableScreen />} />
             <Route path='/admin/addtable' element={<AddTableScreen />} />
+            {/* feedback */}
+            <Route path='/admin/listfeedback' element={<ListFeedBackScreen />} />
             {/* Common */}
             <Route path='/admin/dashboard' element={<DashboardScreen />} />
             <Route path='*' element={<ErrorScreen />} />

@@ -57,3 +57,7 @@ body {
 .ant-page-header-heading-title {
     font-size: 30px;
 }
+
+.ant-table-thead .ant-table-cell {
+    background-color: rgb(204, 241, 187);
+}

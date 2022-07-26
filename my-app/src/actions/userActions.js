@@ -151,7 +151,7 @@ export const listUsers = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.accessToken}`,
       },
     }
-    const { data } = await axios.get(`/getListUser?username=&email=&phone=&status=&createBy=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=100`, config)
+    const { data } = await axios.get(`/getListUser?username=&email=&phone=&status=&createBy=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=200`, config)
     dispatch({
       type: userConstants.USER_LIST_SUCCESS,
       payload: data.data,
@@ -212,11 +212,13 @@ export const updateUser = (id, username, email, dob, first_name, last_name, phon
     dispatch({
       type: userConstants.USER_UPDATE_REQUEST,
     })
-    const createdBy = "";
-    const updatedBy = "";
+
     const {
       userLogin: { userInfo },
     } = getState()
+
+    const createdBy = "";
+    const updatedBy = userInfo.username;
 
     const config = {
       headers: {
@@ -261,7 +263,7 @@ export const listStaff = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.accessToken}`,
       },
     }
-    const { data } = await axios.get(`/getListStaff?username=&email=&phone=&status=1&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=`, config)
+    const { data } = await axios.get(`/getListStaff?username=&email=&phone=&status=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=`, config)
     dispatch({
       type: staffConstants.STAFF_LIST_SUCCESS,
       payload: data.data,
