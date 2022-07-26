@@ -15,6 +15,8 @@ import { addCategoryReducer, listCategoryReducer, listSubCategoryReducer, editCa
 import { menuListReducer, menuChangeStatusReducer, menuAddReducer, menuEditReducer, menuGetByIdReducer } from '../reducers/menuReducers';
 import { addBlogReducer, listBlogReducer, editBlogReducer, changeBlogStatusReducer, deleteBlogReducer, blogDetailReducer } from '../reducers/blogReducer';
 import { listTableReducer, addTableReducer, changeTableStatusReducer } from '../reducers/tableReducers';
+import { listFeedBackReducer, deleteFeedBackReducer } from '../reducers/feedbackReducers';
+
 const reducers = combineReducers({
     //ACCOUNT ZONEEE
     userCheckAcc: userCheckAccountReducer,
@@ -39,7 +41,7 @@ const reducers = combineReducers({
     subcategoryList: listSubCategoryReducer,
     subCategoryAdd: addSubCategoryReducer,
     subCategoryEdit: editSubCategoryReducer,
-    subCategoryChangeStatus:changeSubCategoryStatusReducer,
+    subCategoryChangeStatus: changeSubCategoryStatusReducer,
     //MENU ZONEE
     menuList: menuListReducer,
     menuChangeStatus: menuChangeStatusReducer,
@@ -56,7 +58,10 @@ const reducers = combineReducers({
     //TABLE ZONE
     tableList: listTableReducer,
     tableAdd: addTableReducer,
-    tableChangeStatus: changeTableStatusReducer
+    tableChangeStatus: changeTableStatusReducer,
+    //FEEDBACK ZONE
+    feedbackList: listFeedBackReducer,
+    feedbackDelete: deleteFeedBackReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')

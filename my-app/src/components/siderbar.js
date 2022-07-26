@@ -10,8 +10,7 @@ import {
     FormOutlined,
     CoffeeOutlined
 } from '@ant-design/icons';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../actions/userActions';
 
@@ -25,10 +24,6 @@ function getItem(label, key, icon, children) {
     };
 }
 
-const items1 = ['1'].map((key) => ({
-    key,
-    label: `nav ${key}`,
-}));
 
 const items = [
     getItem('Dashboard', '/admin/dashboard', <PieChartOutlined />),
@@ -57,6 +52,7 @@ const items = [
         getItem('Add Blog', '/admin/addblog'),
         getItem('List Blog', '/admin/listblog'),
     ]),
+    getItem("User's Feedback", '/admin/listfeedback', <FormOutlined />),
     getItem('Logout', '/', <LogoutOutlined />),
 ];
 
@@ -64,7 +60,7 @@ const SiderBar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const handleSiderClick = (e) => {
-        if (e.key == '/') {
+        if (e.key === '/') {
             dispatch(logout());
         }
         console.log(e.key);
