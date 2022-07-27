@@ -49,9 +49,7 @@ const UserDetailScreen = () => {
     const location = useLocation();
     //get data from store
 
-
     //Submit register form to action
-
 
     const onFinish = (values) => {
 
@@ -72,8 +70,6 @@ const UserDetailScreen = () => {
             gender: 'Male'
         })
         console.log('phone: ', location.state.phone);
-
-
     }, []);
 
     return (
@@ -90,7 +86,7 @@ const UserDetailScreen = () => {
             </Breadcrumb>
             <Card
                 style={{
-                    width: 900, height: 900, marginTop: 20, marginLeft: 100
+                    width: 900, height: 900, marginTop: 20, marginLeft: 100,
                 }}
             >
                 <Divider plain>     <h1 style={{ fontSize: 30 }}>User Detail Profile</h1></Divider>
@@ -120,8 +116,6 @@ const UserDetailScreen = () => {
                         <Input readOnly />
                     </Form.Item>
                     <Form.Item
-
-
                         name="last_name"
                         label="Last Name"
                         rules={[
@@ -215,7 +209,7 @@ const UserDetailScreen = () => {
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>
-                     
+
                     </Form.Item>
                 </Form>
             </Card>
