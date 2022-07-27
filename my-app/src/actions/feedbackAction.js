@@ -36,7 +36,6 @@ export const listFeedBack = () => async (dispatch, getState) => {
     }
 }
 
-
 export const deleteFeedBack = (id) => async (dispatch, getState) => {
     try {
         dispatch({
@@ -52,7 +51,6 @@ export const deleteFeedBack = (id) => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-
         const { data } = await axios.delete(`/management/delete/feedbacks/${id}`, config)
 
         dispatch({
