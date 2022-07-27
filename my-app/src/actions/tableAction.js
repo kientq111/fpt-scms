@@ -37,7 +37,7 @@ export const listTables = () => async (dispatch, getState) => {
 
 
 
-export const addTable = (tableNumber, description, canteen) => async (dispatch, getState) => {
+export const addTable = (description, canteenId) => async (dispatch, getState) => {
     try {
         dispatch({
             type: tableConstants.TABLE_ADD_REQUEST,
@@ -58,44 +58,13 @@ export const addTable = (tableNumber, description, canteen) => async (dispatch, 
         const updatedTime = new Date();
         const createdTime = new Date();
 
-        canteen = {
-            "id": 1,
-            "canteenName": "Canteen ABC",
-            "phone": "01234567",
-            "createdDate": "2022-06-26T17:00:00.000+00:00",
-            "updatedDate": "2022-06-26T17:00:00.000+00:00",
-            "logoUrl": "logo_url",
-            "userResponse": {
-                "id": 15,
-                "username": "admin",
-                "email": "admin@gmail.com",
-                "dob": "2022-06-05T17:00:00.000+00:00",
-                "first_name": "Admin",
-                "last_name": "Admin",
-                "phone": "012345678",
-                "status": "1",
-                "type": "1",
-                "create_date": "2022-06-08T17:00:00.000+00:00",
-                "create_by": "owner",
-                "updated_date": "2022-06-08T17:00:00.000+00:00",
-                "updated_by": "owner",
-                "is_active": true,
-                "address": {
-                    "id": 14,
-                    "street": "Dich Vong Hau",
-                    "district": "Cau Giay",
-                    "city": "Ha Noi",
-                    "country": "Viet Nam"
-                }
-            }
-        }
+        canteenId = 1;
 
-        const { data } = await axios.post(`/table/addOrUpdate`, { tableNumber, description, canteen, status, type, createdBy, createdTime, updatedBy, updatedTime }, config)
+        const { data } = await axios.post(`/table/addOrUpdate`, {description, canteenId, status, type, createdBy, createdTime, updatedBy, updatedTime }, config)
         dispatch({
             type: tableConstants.TABLE_ADD_SUCCESS,
             payload: data,
         })
-        dispatch({ type: tableConstants.TABLE_EDIT_RESET })
 
     } catch (error) {
         const message =
@@ -109,6 +78,46 @@ export const addTable = (tableNumber, description, canteen) => async (dispatch, 
     }
 }
 
+
+export const editTable = (id, description, canteenId, status, type, createdTime, createdBy) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: tableConstants.TABLE_EDIT_REQUEST,
+        })
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.accessToken}`,
+            },
+        }
+
+        const updatedBy = userInfo.username;
+        const updatedTime = new Date();
+
+
+        canteenId = 1;
+
+        const { data } = await axios.post(`/table/addOrUpdate`, { id, description, canteenId, status, type, createdBy, createdTime, updatedBy, updatedTime }, config)
+        dispatch({
+            type: tableConstants.TABLE_EDIT_SUCCESS,
+            payload: data,
+        })
+
+
+    } catch (error) {
+        const message =
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        dispatch({
+            type: tableConstants.TABLE_EDIT_FAIL,
+            payload: message,
+        })
+    }
+}
 
 export const changeTableStatus = (id, status) => async (dispatch, getState) => {
     try {
@@ -130,9 +139,9 @@ export const changeTableStatus = (id, status) => async (dispatch, getState) => {
                 status = 2
                 break;
             case 2:
-                status = 3
+                status = 4
                 break;
-            case 3:
+            case 4:
                 status = 1
                 break;
             default:

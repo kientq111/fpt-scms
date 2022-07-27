@@ -12,7 +12,7 @@ import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { Loader, LargeLoader } from '../../components/Loader';
 import { listSubcategory } from '../../actions/categoryAction';
 import { changeTableStatus, listTables } from '../../actions/tableAction';
-
+import LinesEllipsis from 'react-lines-ellipsis'
 const { Column, ColumnGroup } = Table;
 const { RangePicker } = DatePicker;
 const { Search } = Input;
@@ -157,23 +157,25 @@ const ListTableScreen = () => {
         console.log(e);
     };
 
-    const editSubCategoryHandle = (id, name, description, createdTime, createdBy, category) => {
-        console.log(id, name, description, createdTime, createdBy, category);
-        navigate('/admin/editsubcategory', {
-            state: {
-                id: id,
-                subCategoryName: name,
-                description: description,
-                createdBy: createdBy,
-                createdTime: createdTime,
-                category: category
-            }
-        })
-    }
+
 
     const changeTableStatusHandle = (id, status) => {
-       message.success('change Table Status Success')
+        message.success('change Table Status Success')
         dispatch(changeTableStatus(id, status))
+    }
+
+    const editTableHandle = (table) => {
+        navigate('/admin/edittable', {
+            state: {
+                id: table.id,
+                tableNumber: table.tableNumber,
+                description: table.description,
+                type: table.type,
+                status: table.status,
+                createdBy: table.createdBy,
+                createdDate: table.createdDate,
+            }
+        })
     }
 
     return (
@@ -184,7 +186,7 @@ const ListTableScreen = () => {
                     <a href="">List Table</a>
                 </Breadcrumb.Item>
             </Breadcrumb>
-            <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/addsubcategory'} style={{ textDecoration: 'none' }}>Add Table</Link></Button></Divider>
+            <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/addtable'} style={{ textDecoration: 'none' }}>Add Table</Link></Button></Divider>
 
             {loading === true && <>
                 <br></br> <br /> <br />
@@ -207,7 +209,13 @@ const ListTableScreen = () => {
                 <Column title="Table Number " dataIndex="tableNumber" key="tableNumber" {...getColumnSearchProps('tableNumber')}
 
                 />
-                <Column title="Description" dataIndex="description" key="description" render={(_, record) => (record.description === null ? "null" : record.description)} />
+                <Column title="Description" dataIndex="description" key="description" render={(_, record) => (<LinesEllipsis
+                    text={record.description}
+                    maxLine='1'
+                    ellipsis='...'
+                    trimRight
+                    basedOn='letters'
+                />)} />
                 <Column title="Status" dataIndex="status" key="status" filters={[
                     {
                         text: '1',
@@ -237,7 +245,7 @@ const ListTableScreen = () => {
                     key="action"
                     render={(_, record) => (
                         <Space size="middle">
-                            <a>
+                            <a onClick={() => editTableHandle(record)}>
                                 <EditOutlined style={{ fontSize: 17 }} />
                             </a>
                             <a onClick={() => changeTableStatusHandle(record.id, record.status)} style={{ color: 'blue' }} > Change Status</a>

@@ -122,7 +122,7 @@ export const addMenu = (menuName, description, listDish) => async (dispatch, get
 }
 
 
-export const editMenu = (id, menuName, description, listDish, createdBy, createdTime) => async (dispatch, getState) => {
+export const editMenu = (id, menuName, description, status, listDish, createdBy, createdTime) => async (dispatch, getState) => {
     try {
         dispatch({
             type: menuConstants.MENU_EDIT_REQUEST,
@@ -146,7 +146,7 @@ export const editMenu = (id, menuName, description, listDish, createdBy, created
         });
         const { data } = await axios.post(
             '/menu/addOrUpdate',
-            { id, menuName, description, listDishId, createdBy, updatedBy, updatedTime, createdTime },
+            { id, menuName, description, status, listDishId, createdBy, updatedBy, updatedTime, createdTime },
             config
         )
 

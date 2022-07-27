@@ -226,7 +226,7 @@ const ListBlogScreen = () => {
                     },]} onFilter={(value, record) => record.status === value}
                 />
                 <Column title="Created Time" dataIndex="created_time" key="created_time" render={(_, record) => (moment(record.created_time).format('DD/MM/YYYY'))} />
-                <Column title="Created Time" dataIndex="created_by" key="created_by" />
+                <Column title="Created By" dataIndex="created_by" key="created_by" />
                 <Column title="Updated Time" dataIndex="updated_time" key="updated_time" render={(_, record) => (moment(record.updated_time).format('DD/MM/YYYY'))} />
                 <Column title="Updated By" dataIndex="updated_by" key="updated_by" />
 

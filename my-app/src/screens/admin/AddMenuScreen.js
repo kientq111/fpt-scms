@@ -122,7 +122,7 @@ const AddMenuScreen = () => {
                             },
                         ]}
                     >
-                        <Input.TextArea showCount maxLength={100} />
+                        <Input.TextArea showCount maxLength={100} style={{height:150}} />
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>

@@ -9,7 +9,8 @@ import Loader from '../../components/Loader';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { addCategory } from '../../actions/categoryAction';
-import { addTable } from '../../actions/tableAction';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { addTable, editTable } from '../../actions/tableAction';
 
 const formItemLayout = {
     labelCol: {
@@ -41,20 +42,25 @@ const tailFormItemLayout = {
         },
     },
 };
-const AddTableScreen = () => {
+const EditTableScreen = () => {
     const tableData = useSelector((state) => state.tableAdd);
     const dispatch = useDispatch()
     const { loading, error, table } = tableData;
     const [form] = Form.useForm();
-
+    const location = useLocation();
+    const navigate = useNavigate();
     const onFinish = (values) => {
-        dispatch(addTable(values.description));
+        dispatch(editTable(location.state.id, values.description, 1,
+            location.state.status, location.state.type, location.state.createdTime, location.state.createdBy));
     };
 
 
     useEffect(() => {
-        console.log(table);
+        form.setFieldsValue({
+            tableName: location.state.tableNumber,
+            description: location.state.description,
 
+        })
     }, [])
 
     return (
@@ -63,7 +69,7 @@ const AddTableScreen = () => {
             <Breadcrumb>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>
-                    <a href="" >Add Table</a>
+                    <a href="" >Update Table</a>
                 </Breadcrumb.Item>
 
             </Breadcrumb>
@@ -71,7 +77,7 @@ const AddTableScreen = () => {
 
             <Card
                 style={{ marginTop: 30, width: 1100, height: 700, borderRadius: 25 }}
-            >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>ADD TABLE</h1></Divider>
+            >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>UPDATE TABLE</h1></Divider>
                 {error && <h1 style={{ color: 'red', fontSize: 20 }}>{error}</h1>}
                 {(() => {
                     if (loading === false) {
@@ -81,7 +87,7 @@ const AddTableScreen = () => {
                             )
                         } else if (table.success === true) {
                             return (
-                                <h2 style={{ color: 'green', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>ADD TABLE SUCCESSFUL</h2>
+                                <h2 style={{ color: 'green', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>UPDATE TABLE SUCCESSFUL</h2>
                             )
                         }
 
@@ -105,13 +111,13 @@ const AddTableScreen = () => {
                             },
                         ]}
                     >
-                        <Input.TextArea showCount maxLength={100} style={{height:200}} />
+                        <Input.TextArea showCount maxLength={1000} style={{ height: 200 }} />
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>
                         {loading && <Loader />}
                         <Button type="primary" htmlType="submit">
-                            Add Table
+                            Update Table
                         </Button>
                     </Form.Item>
                 </Form>
@@ -123,4 +129,4 @@ const AddTableScreen = () => {
     );
 };
 
-export default AddTableScreen;
+export default EditTableScreen;

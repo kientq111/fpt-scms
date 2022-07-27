@@ -122,7 +122,7 @@ const AddSubCategoryScreen = () => {
               },
             ]}
           >
-            <Input.TextArea showCount maxLength={100} />
+            <Input.TextArea showCount maxLength={100} style={{height:200}} />
           </Form.Item>
 
           <Form.Item {...tailFormItemLayout}>
