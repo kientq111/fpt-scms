@@ -226,7 +226,7 @@ const ListSubCategoryScreen = () => {
                                 <EditOutlined style={{ fontSize: 17 }} />
                             </a>
 
-                            <a onClick={() => changeSubCategoryStatusHandle(record.id, record.status)}>Change Status</a>
+                            <a onClick={() => changeSubCategoryStatusHandle(record.id, record.status)} style={{ color: 'blue' }}>Change Status</a>
 
 
                         </Space>

@@ -100,7 +100,7 @@ const ListCategoryScreen = () => {
                     key="action"
                     render={(_, record) => (
                         <Space size="middle">
-                            <a onClick={() => changeCategoryStatusHandle(record.id, record.status)}>Change Status</a>
+                            <a onClick={() => changeCategoryStatusHandle(record.id, record.status)} style={{ color: 'blue' }}>Change Status</a>
                             <a onClick={() => editCategoryHandle(record.id, record.categoryName, record.description, record.createdBy, record.createdTime)}>Edit</a>
                         </Space>
                     )}

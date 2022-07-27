@@ -34,6 +34,22 @@ export const addTableReducer = (state = {}, action) => {
 }
 
 
+export const editTableReducer = (state = {}, action) => {
+    switch (action.type) {
+        case tableConstants.TABLE_EDIT_REQUEST:
+            return { loading: true }
+        case tableConstants.TABLE_EDIT_SUCCESS:
+            return { loading: false, table: action.payload, success: true }
+        case tableConstants.TABLE_EDIT_FAIL:
+            return { loading: false, error: action.payload }
+        case tableConstants.TABLE_EDIT_RESET:
+            return {}
+        default:
+            return state
+    }
+}
+
+
 export const changeTableStatusReducer = (state = {}, action) => {
     switch (action.type) {
         case tableConstants.TABLE_CHANGE_STATUS_REQUEST:
@@ -46,3 +62,4 @@ export const changeTableStatusReducer = (state = {}, action) => {
             return state
     }
 }
+

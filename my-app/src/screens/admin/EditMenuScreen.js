@@ -67,7 +67,7 @@ const EditMenuScreen = () => {
     const onFinish = (values) => {
         console.log(values);
 
-        dispatch(editMenu(location.state.id, values.menu, values.description, values.dish, location.state.createdBy, location.state.createdTime))
+        dispatch(editMenu(location.state.id, values.menu, values.description, location.state.status, values.dish, location.state.createdBy, location.state.createdTime))
     };
 
 

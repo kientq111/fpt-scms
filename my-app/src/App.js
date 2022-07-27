@@ -36,7 +36,8 @@ import EditSubCategoryScreen from './screens/admin/EditSubCategory';
 import ListTableScreen from './screens/admin/ListTableScreen';
 import AddTableScreen from './screens/admin/AddTableScreen';
 import ListFeedBackScreen from './screens/admin/ListFeedBackScreen';
-const { Header, Content, Sider } = Layout;
+import EditTableScreen from './screens/admin/EditTableScreen';
+const { Header, Content, Sider, Footer } = Layout;
 
 const App = () => {
   const userLogin = useSelector((state) => state.userLogin)
@@ -115,6 +116,7 @@ const App = () => {
             {/* Table */}
             <Route path='/admin/listtable' element={<ListTableScreen />} />
             <Route path='/admin/addtable' element={<AddTableScreen />} />
+            <Route path='/admin/edittable' element={<EditTableScreen />} />
             {/* feedback */}
             <Route path='/admin/listfeedback' element={<ListFeedBackScreen />} />
             {/* Common */}
@@ -126,7 +128,13 @@ const App = () => {
 
           </Routes>
         </Content>
-
+        <Footer
+          style={{
+            textAlign: 'center',
+          }}
+        >
+          Smart Canteen Management System
+        </Footer>
       </Layout>
     </Layout >
   );

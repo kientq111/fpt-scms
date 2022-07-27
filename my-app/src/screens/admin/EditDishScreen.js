@@ -191,18 +191,19 @@ const EditDishScreen = () => {
           <a href="">List Dish</a>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <a href="">Edit Dish</a>
+          <a href="">Update Dish</a>
         </Breadcrumb.Item>
       </Breadcrumb>
         <div className="site-card-border-less-wrapper">
           <Card
             bordered={false}
             style={{
+              borderRadius: 15,
               marginTop: 20, marginLeft: 150,
               width: 1000, height: 700
             }}
           >
-            <Divider plain>     <h1 style={{ fontSize: 30 }}>Update Dish</h1></Divider>
+            <Divider plain>     <h1 style={{ fontSize: 30 }}>UPDATE DISH</h1></Divider>
             <Form style={{ marginLeft: 100 }}
               labelCol={{
                 span: 4,
@@ -251,7 +252,7 @@ const EditDishScreen = () => {
                 <Space size={'large'}>
                   {editDishLoading && <Loader />}
                   <Button type='primary' htmlType="submit">Update Dish</Button>
-                  <Button>Cancel</Button>
+                  <Button onClick={() => navigate('/admin/listdish')}>Cancel</Button>
                 </Space>
 
               </Form.Item>

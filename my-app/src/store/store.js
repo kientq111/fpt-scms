@@ -14,7 +14,7 @@ import {
 import { addCategoryReducer, listCategoryReducer, listSubCategoryReducer, editCategoryReducer, addSubCategoryReducer, editSubCategoryReducer, changeCategoryStatusReducer, changeSubCategoryStatusReducer } from '../reducers/categoryReduce';
 import { menuListReducer, menuChangeStatusReducer, menuAddReducer, menuEditReducer, menuGetByIdReducer } from '../reducers/menuReducers';
 import { addBlogReducer, listBlogReducer, editBlogReducer, changeBlogStatusReducer, deleteBlogReducer, blogDetailReducer } from '../reducers/blogReducer';
-import { listTableReducer, addTableReducer, changeTableStatusReducer } from '../reducers/tableReducers';
+import { listTableReducer, addTableReducer, changeTableStatusReducer, editTableReducer } from '../reducers/tableReducers';
 import { listFeedBackReducer, deleteFeedBackReducer } from '../reducers/feedbackReducers';
 
 const reducers = combineReducers({
@@ -59,6 +59,7 @@ const reducers = combineReducers({
     tableList: listTableReducer,
     tableAdd: addTableReducer,
     tableChangeStatus: changeTableStatusReducer,
+    tableEdit: editTableReducer,
     //FEEDBACK ZONE
     feedbackList: listFeedBackReducer,
     feedbackDelete: deleteFeedBackReducer,

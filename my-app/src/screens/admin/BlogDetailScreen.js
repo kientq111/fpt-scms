@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getBlogDetail } from '../../actions/blogAction';
 import { useLocation } from 'react-router-dom';
 import moment from 'moment';
+import Loader from '../../components/Loader';
 
 const BlogDetailScreen = () => {
     const location = useLocation();
@@ -37,7 +38,7 @@ const BlogDetailScreen = () => {
                 <Col span={18}>
                     <Card style={{ height: 800 }}>
                         <>
-
+                            {loading && <Loader/>}
                             {loading === false && <div style={{ marginLeft: 20, marginTop: 20 }}>
                                 <h2>{blogTitle}</h2>
                                 <Divider orientation="right" plain>

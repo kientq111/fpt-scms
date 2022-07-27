@@ -133,6 +133,9 @@ const ListUserScreen = () => {
   const { success } = deleteSuccess;
   const [userData, setUserData] = useState(data)
   const { loading } = data;
+  const [pagination, setPagination] = useState({
+    pageSize: 9,
+  });
   const [form] = Form.useForm();
   const location = useLocation();
   const editUser = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street) => {
@@ -227,6 +230,7 @@ const ListUserScreen = () => {
           scroll={{
             x: '200vw',
           }}
+          pagination={pagination}
         >
           <Column title="UserName" dataIndex="username" key="username" {...getColumnSearchProps('username')} fixed={"left"} />
           <Column title="First Name" dataIndex="first_name" key="first_name" />

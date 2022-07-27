@@ -167,12 +167,13 @@ const ListMenuScreen = () => {
         })
     }
 
-    const editMenuHandle = (id, menuName, description, createdBy, createdTime) => {
+    const editMenuHandle = (id, menuName, description, status, createdBy, createdTime) => {
         navigate('/admin/editmenu', {
             state: {
                 id: id,
                 menuName: menuName,
                 description: description,
+                status: status,
                 createdBy: createdBy,
                 createdTime: createdTime
             }
@@ -202,7 +203,7 @@ const ListMenuScreen = () => {
             {loading === false && <StyledTable dataSource={menus} className="table-striped-rows" >
                 <Column title="Menu Name" dataIndex="menuName" key="menuName" {...getColumnSearchProps('menuName')} />
                 <Column title="Description" dataIndex="description" key="description" />
-                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{color:"green"}}>Active</p> : <p style={{color:"red"}}>InActive</p>)}
+                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: "green" }}>Active</p> : <p style={{ color: "red" }}>InActive</p>)}
                     filters={[{
                         text: 'Active',
                         value: 1,
@@ -224,7 +225,7 @@ const ListMenuScreen = () => {
                         <Space size="middle">
                             <a onClick={() => { changeStatusHandle(record.id, record.status) }}>{record.status == 1 ? <Tag color="error">Change Status</Tag> : <Tag color="green">Change Status</Tag>}</a>
                             <a onClick={() => { menuDetailHandler(record.id) }}><EyeOutlined /></a>
-                            <a onClick={() => { editMenuHandle(record.id, record.menuName, record.description, record.createdBy, record.createdTime) }}><EditOutlined style={{ fontSize: 17 }} /></a>
+                            <a onClick={() => { editMenuHandle(record.id, record.menuName, record.description, record.status, record.createdBy, record.createdTime) }}><EditOutlined style={{ fontSize: 17 }} /></a>
                         </Space>
                     )}
                 />
