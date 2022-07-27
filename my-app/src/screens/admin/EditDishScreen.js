@@ -184,7 +184,7 @@ const EditDishScreen = () => {
 
   return (
     <>
-      {loadingDishGetById === true && loadingMenu === true && loadingSubcategory === true && <Loader />}
+      {loadingMenu === true && <Loader />}
       {loadingDishGetById === false && loadingMenu === false && loadingSubcategory === false && <><Breadcrumb style={{ marginTop: 10 }}>
         <Breadcrumb.Item>Home</Breadcrumb.Item>
         <Breadcrumb.Item>

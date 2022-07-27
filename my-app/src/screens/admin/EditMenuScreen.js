@@ -109,7 +109,7 @@ const EditMenuScreen = () => {
     return (
 
         <Row>
-            {loading && menuLoading && <Loader />}
+            {loading && <Loader />}
             {loading === false && menuLoading === false && <><Breadcrumb>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>
