@@ -256,7 +256,7 @@ const ListUserScreen = () => {
               value: 0,
             },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
             key="status" />
-          <Column title="is_active" dataIndex="is_active" render={(_, record) => (record.is_active == true ? <p style={{ color: 'green' }}>Active</p> : <p style={{ color: 'red' }}>Inactive</p>)}
+          <Column title="Email Active" dataIndex="is_active" render={(_, record) => (record.is_active == true ? <p style={{ color: 'green' }}>Active</p> : <p style={{ color: 'red' }}>Inactive</p>)}
             filters={[{
               text: 'active',
               value: true,
@@ -265,10 +265,10 @@ const ListUserScreen = () => {
               value: false,
             },]} onFilter={(value, record) => record.is_active === value}
             key="is_active" />
-          <Column title="country" dataIndex="address" render={(_, record) => record.address.country} key="country" />
-          <Column title="city" dataIndex="address" render={(_, record) => record.address.city} key="city" />
-          <Column title="district" dataIndex="address" render={(_, record) => record.address.district} key="district" />
-          <Column title="street" dataIndex="address" render={(_, record) => <LinesEllipsis
+          <Column title="Country" dataIndex="address" render={(_, record) => record.address.country} key="country" />
+          <Column title="City" dataIndex="address" render={(_, record) => record.address.city} key="city" />
+          <Column title="District" dataIndex="address" render={(_, record) => record.address.district} key="district" />
+          <Column title="Street" dataIndex="address" render={(_, record) => <LinesEllipsis
             text={record.address.street}
             maxLine='1'
             ellipsis='...'

@@ -43,25 +43,31 @@ const tailFormItemLayout = {
     },
 };
 const EditTableScreen = () => {
-    const tableData = useSelector((state) => state.tableAdd);
+    const tableData = useSelector((state) => state.tableEdit);
     const dispatch = useDispatch()
-    const { loading, error, table } = tableData;
+    const { loading, error, table, success } = tableData;
     const [form] = Form.useForm();
     const location = useLocation();
     const navigate = useNavigate();
     const onFinish = (values) => {
-        dispatch(editTable(location.state.id, values.description, 1,
+        dispatch(editTable(location.state.id, location.state.tableNumber, values.description, 1,
             location.state.status, location.state.type, location.state.createdTime, location.state.createdBy));
     };
 
 
     useEffect(() => {
         form.setFieldsValue({
-            tableName: location.state.tableNumber,
+            tableNumber: location.state.tableNumber,
             description: location.state.description,
-
         })
     }, [])
+
+
+    useEffect(() => {
+        if (success === true) {
+            navigate('/admin/listtable');
+        }
+    }, [success])
 
     return (
         <Row>
@@ -100,7 +106,12 @@ const EditTableScreen = () => {
                     onFinish={onFinish}
                     scrollToFirstError
                 >
-
+                    <Form.Item
+                        name="tableNumber"
+                        label="Table Number"
+                    >
+                        <Input readOnly disabled />
+                    </Form.Item>
                     <Form.Item
                         name="description"
                         label="Description"

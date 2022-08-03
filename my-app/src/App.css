@@ -61,3 +61,10 @@ body {
 .ant-table-thead .ant-table-cell {
     background-color: rgb(204, 241, 187);
 }
+
+.logo {
+    width: 100%;
+    max-width: 96%;
+    margin-left: 2%;
+    height: 50px;
+}

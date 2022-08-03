@@ -345,7 +345,6 @@ export const changeSubCategoryStatus = (id, status) => async (dispatch, getState
                 break;
         }
 
-
         const { data } = await axios.put(`/subcategory/changeSubcategoryStatus?status=${status}&subcategoryId=${id}`, {}, config)
         dispatch({
             type: subCategoryConstatnts.SUB_CATEGORY_CHANGE_STATUS_SUCCESS,

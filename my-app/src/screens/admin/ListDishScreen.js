@@ -194,16 +194,17 @@ const ListDishScreen = () => {
                 </Row></>}
             {loading === false && <StyledTable dataSource={dishes} className="table-striped-rows">
                 <Column title="Dish Name" dataIndex="dishName" key="dishName" {...getColumnSearchProps('dishName')} />
-                <Column title="Description" dataIndex="description" render={(_, record) => (<LinesEllipsis
+                <Column title="Description" dataIndex="description" width={'20%'} render={(_, record) => (<LinesEllipsis
                     text={record.description}
-                    maxLine='3'
+                    maxLine='1'
                     ellipsis='...'
                     trimRight
                     basedOn='letters'
                 />)} key="description" />
 
                 <Column title="Sub Category" dataIndex="subCategory" render={(_, record) => record.subCategory.subCategoryName} key="subCategory" />
-                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>true</p> : <p style={{color:'red'}}>false</p>)}
+                <Column title="Price" dataIndex="price" render={(_, record) => record.price === null ? "null" : record.price} key="price" sorter={(a, b) => a.price - b.price} />
+                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>true</p> : <p style={{ color: 'red' }}>false</p>)}
                     filters={[{
                         text: 'True',
                         value: 1,

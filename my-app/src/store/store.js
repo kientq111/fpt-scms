@@ -16,6 +16,7 @@ import { menuListReducer, menuChangeStatusReducer, menuAddReducer, menuEditReduc
 import { addBlogReducer, listBlogReducer, editBlogReducer, changeBlogStatusReducer, deleteBlogReducer, blogDetailReducer } from '../reducers/blogReducer';
 import { listTableReducer, addTableReducer, changeTableStatusReducer, editTableReducer } from '../reducers/tableReducers';
 import { listFeedBackReducer, deleteFeedBackReducer } from '../reducers/feedbackReducers';
+import { listOrderReducer, getOrderByIdReducer } from '../reducers/orderReducers';
 
 const reducers = combineReducers({
     //ACCOUNT ZONEEE
@@ -63,6 +64,10 @@ const reducers = combineReducers({
     //FEEDBACK ZONE
     feedbackList: listFeedBackReducer,
     feedbackDelete: deleteFeedBackReducer,
+    //ORDER ZONEE
+    orderList: listOrderReducer,
+    orderGetById: getOrderByIdReducer,
+
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
