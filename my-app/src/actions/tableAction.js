@@ -60,7 +60,7 @@ export const addTable = (description, canteenId) => async (dispatch, getState) =
 
         canteenId = 1;
 
-        const { data } = await axios.post(`/table/addOrUpdate`, {description, canteenId, status, type, createdBy, createdTime, updatedBy, updatedTime }, config)
+        const { data } = await axios.post(`/table/addOrUpdate`, { description, canteenId, status, type, createdBy, createdTime, updatedBy, updatedTime }, config)
         dispatch({
             type: tableConstants.TABLE_ADD_SUCCESS,
             payload: data,
@@ -79,7 +79,7 @@ export const addTable = (description, canteenId) => async (dispatch, getState) =
 }
 
 
-export const editTable = (id, description, canteenId, status, type, createdTime, createdBy) => async (dispatch, getState) => {
+export const editTable = (id, tableNumber, description, canteenId, status, type, createdTime, createdBy) => async (dispatch, getState) => {
     try {
         dispatch({
             type: tableConstants.TABLE_EDIT_REQUEST,
@@ -96,11 +96,8 @@ export const editTable = (id, description, canteenId, status, type, createdTime,
 
         const updatedBy = userInfo.username;
         const updatedTime = new Date();
-
-
         canteenId = 1;
-
-        const { data } = await axios.post(`/table/addOrUpdate`, { id, description, canteenId, status, type, createdBy, createdTime, updatedBy, updatedTime }, config)
+        const { data } = await axios.post(`/table/addOrUpdate`, { id, tableNumber, description, canteenId, status, type, createdBy, createdTime, updatedBy, updatedTime }, config)
         dispatch({
             type: tableConstants.TABLE_EDIT_SUCCESS,
             payload: data,

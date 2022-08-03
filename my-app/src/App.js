@@ -37,6 +37,8 @@ import ListTableScreen from './screens/admin/ListTableScreen';
 import AddTableScreen from './screens/admin/AddTableScreen';
 import ListFeedBackScreen from './screens/admin/ListFeedBackScreen';
 import EditTableScreen from './screens/admin/EditTableScreen';
+import ListOrderScreen from './screens/admin/ListOrderScreen';
+import HeaderBar from './components/HeaderBar';
 const { Header, Content, Sider, Footer } = Layout;
 
 const App = () => {
@@ -44,10 +46,16 @@ const App = () => {
   const { userInfo } = userLogin
   const [collapsed, setCollapsed] = useState(false);
 
-  const items1 = ['1'].map((key) => ({
-    key,
+  const items1 = [{
+    key: '',
+    label: ``,
+  },
+  {
+    key: '',
     label: `Hello ${userInfo && userInfo.username}`,
-  }));
+  }]
+
+
 
   return (
     <Layout
@@ -57,7 +65,12 @@ const App = () => {
     >
 
       {userInfo && userInfo !== "Bad credentials" && <Sider Sider collapsible collapsed={collapsed} className="site-layout-background" onCollapse={(value) => setCollapsed(value)}>
-        <div className="logo" />
+        <div className="logo">
+          <img
+            className="logo"
+            src='/images/logo.png' alt='image'
+          />
+        </div>
         {/* add onclick to menu */}
         <SiderBar />
       </Sider>}
@@ -69,8 +82,7 @@ const App = () => {
             padding: 0,
           }}
         >
-
-          <Menu theme="light" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
+          <HeaderBar />
         </Header>}
 
         <Content
@@ -119,6 +131,8 @@ const App = () => {
             <Route path='/admin/edittable' element={<EditTableScreen />} />
             {/* feedback */}
             <Route path='/admin/listfeedback' element={<ListFeedBackScreen />} />
+            {/* Order */}
+            <Route path='/admin/listorder' element={<ListOrderScreen />} />
             {/* Common */}
             <Route path='/admin/dashboard' element={<DashboardScreen />} />
             <Route path='*' element={<ErrorScreen />} />
@@ -133,7 +147,7 @@ const App = () => {
             textAlign: 'center',
           }}
         >
-          Smart Canteen Management System
+          @Smart Canteen
         </Footer>
       </Layout>
     </Layout >

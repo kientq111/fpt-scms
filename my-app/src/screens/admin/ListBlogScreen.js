@@ -207,7 +207,7 @@ const ListBlogScreen = () => {
                 </Row></>}
             {loading === false && <StyledTable dataSource={blogs} className="table-striped-rows">
                 <Column title="Blog Name" dataIndex="name" key="name" {...getColumnSearchProps('dishName')} />
-                <Column title="Content" dataIndex="content" key="content"  {...getColumnSearchProps('content')}
+                <Column title="Content" dataIndex="content" key="content" width={'25%'} {...getColumnSearchProps('content')}
                     render={(_, record) => (<LinesEllipsis
                         text={record.content}
                         maxLine='1'

@@ -18,7 +18,7 @@ export const listDishes = (status) => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-
+        
         if (status === undefined) {
             status = "";
         }
@@ -129,29 +129,13 @@ export const addDish = (dishName, description, rawMenu, rawSubCategory) => async
             },
         }
         //Rename key of obj block
-        const menu = [];
+        const listMenuId = [];
         rawMenu.forEach(element => {
-            menu.push({
-                id: element.value,
-                menuName: element.label,
-                description: element.description,
-                status: element.status,
-                createdTime: element.createdTime,
-                createdBy: element.createdBy,
-                updatedTime: element.updatedTime,
-                updatedBy: element.updatedBy
-            })
+            listMenuId.push(
+                element.value
+            )
         });
-        const subcategory = {
-            id: rawSubCategory.value,
-            subCategoryName: rawSubCategory.label,
-            description: rawSubCategory.description,
-            status: rawSubCategory.status,
-            createdTime: rawSubCategory.createdTime,
-            createdBy: rawSubCategory.createdBy,
-            updatedBy: rawSubCategory.updatedBy,
-            updatedTime: rawSubCategory.updatedTime
-        };
+        const subcategoryId = rawSubCategory.value;
 
         //End of rename key block
         const createdTime = new Date();
@@ -159,7 +143,7 @@ export const addDish = (dishName, description, rawMenu, rawSubCategory) => async
 
         const createdBy = userInfo.username;
         const updatedBy = userInfo.username;
-        const { data } = await axios.post(`/dish/addOrUpdate`, { dishName, description, createdBy, menu, subcategory, updatedBy, createdTime, updatedTime }, config)
+        const { data } = await axios.post(`/dish/addOrUpdate`, { dishName, description, createdBy, listMenuId, subcategoryId, updatedBy, createdTime, updatedTime }, config)
 
         dispatch({ type: dishConstants.DISH_ADD_SUCCESS, payload: data })
     } catch (error) {
@@ -194,34 +178,19 @@ export const editDish = (id, dishName, description, rawMenu, rawSubCategory, cre
             },
         }
         //Rename value  of obj block
-        const menu = [];
+        const listMenuId = [];
         rawMenu.forEach(element => {
-            menu.push({
-                id: element.value,
-                menuName: element.label,
-                description: element.description,
-                status: element.status,
-                createdTime: element.createdTime,
-                createdBy: element.createdBy,
-                updatedTime: element.updatedTime,
-                updatedBy: element.updatedBy
-            })
+            listMenuId.push(
+                element.value
+            )
         });
-        const subcategory = {
-            id: rawSubCategory.value,
-            subCategoryName: rawSubCategory.label,
-            description: rawSubCategory.description,
-            status: rawSubCategory.status,
-            createdTime: rawSubCategory.createdTime,
-            createdBy: rawSubCategory.createdBy,
-            updatedBy: rawSubCategory.updatedBy,
-            updatedTime: rawSubCategory.updatedTime
-        };
+        const subcategoryId = rawSubCategory.value
+
 
         //End of rename key block
         const updatedTime = new Date();
         const updatedBy = userInfo.username;
-        const { data } = await axios.post(`/dish/addOrUpdate`, { id, dishName, description, createdBy, menu, subcategory, updatedBy, createdTime, updatedTime }, config)
+        const { data } = await axios.post(`/dish/addOrUpdate`, { id, dishName, description, createdBy, listMenuId, subcategoryId, updatedBy, createdTime, updatedTime }, config)
 
         dispatch({ type: dishConstants.DISH_EDIT_SUCCESS, payload: data })
     } catch (error) {

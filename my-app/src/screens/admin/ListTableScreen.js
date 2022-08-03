@@ -209,7 +209,7 @@ const ListTableScreen = () => {
                 <Column title="Table Number " dataIndex="tableNumber" key="tableNumber" {...getColumnSearchProps('tableNumber')}
 
                 />
-                <Column title="Description" dataIndex="description" key="description" render={(_, record) => (<LinesEllipsis
+                <Column title="Description" dataIndex="description" key="description" width={'20%'} render={(_, record) => (<LinesEllipsis
                     text={record.description}
                     maxLine='1'
                     ellipsis='...'

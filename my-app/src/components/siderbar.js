@@ -8,7 +8,8 @@ import {
     UserOutlined,
     LogoutOutlined,
     FormOutlined,
-    CoffeeOutlined
+    CoffeeOutlined,
+    TagOutlined
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -27,14 +28,18 @@ function getItem(label, key, icon, children) {
 
 const items = [
     getItem('Dashboard', '/admin/dashboard', <PieChartOutlined />),
-    getItem('Account Manager', '', <UserOutlined />, [
+    getItem('Account Manager', '1', <UserOutlined />, [
         // getItem('List User', '/admin/listuser'),
         getItem('Add User', '/admin/adduser'),
         getItem('Add Staff', '/admin/addstaff'),
         getItem('List Staff', '/admin/liststaff'),
         getItem('List User', '/admin/listuser')
     ]),
-    getItem('Menu Manager', '', <DesktopOutlined />, [
+    getItem('Order Manager', '2', <TagOutlined />, [
+        // getItem('List User', '/admin/listuser'),
+        getItem('List Order', '/admin/listorder'),
+    ]),
+    getItem('Menu Manager', '3', <DesktopOutlined />, [
         getItem('Add Menu', '/admin/addmenu'),
         getItem('List Menu', '/admin/listmenu'),
         getItem('Add Dish', '/admin/adddish'),
@@ -44,11 +49,11 @@ const items = [
         getItem('List Category', '/admin/listcategory'),
         getItem('List Subcategory', '/admin/listsubcategory'),
     ]),
-    getItem('Table Manager', '', <CoffeeOutlined />, [
+    getItem('Table Manager', '4', <CoffeeOutlined />, [
         getItem('Add Table', '/admin/addtable'),
         getItem('List Table', '/admin/listtable'),
     ]),
-    getItem('Blog Manager', '', <FormOutlined />, [
+    getItem('Blog Manager', '5', <FormOutlined />, [
         getItem('Add Blog', '/admin/addblog'),
         getItem('List Blog', '/admin/listblog'),
     ]),

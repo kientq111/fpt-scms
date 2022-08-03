@@ -47,6 +47,7 @@ const UserDetailScreen = () => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
     const location = useLocation();
+    const navigate = useNavigate();
     //get data from store
 
     //Submit register form to action
@@ -209,7 +210,7 @@ const UserDetailScreen = () => {
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>
-
+                        <Button onClick={() => navigate('/admin/listuser')} type='primary'>Back</Button>
                     </Form.Item>
                 </Form>
             </Card>
