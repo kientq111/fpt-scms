@@ -27,3 +27,16 @@ export const getOrderByIdReducer = (state = {}, action) => {
             return state
     }
 }
+
+export const changeOrderStatusReducer = (state = {}, action) => {
+    switch (action.type) {
+        case orderConstants.ORDER_CHANGE_STATUS_REQUEST:
+            return { loading: true }
+        case orderConstants.ORDER_CHANGE_STATUS_SUCCESS:
+            return { loading: false, orderStatus: action.payload, success: true }
+        case orderConstants.ORDER_CHANGE_STATUS_FAIL:
+            return { loading: false, error: action.payload }
+        default:
+            return state
+    }
+}

@@ -16,8 +16,8 @@ import { menuListReducer, menuChangeStatusReducer, menuAddReducer, menuEditReduc
 import { addBlogReducer, listBlogReducer, editBlogReducer, changeBlogStatusReducer, deleteBlogReducer, blogDetailReducer } from '../reducers/blogReducer';
 import { listTableReducer, addTableReducer, changeTableStatusReducer, editTableReducer } from '../reducers/tableReducers';
 import { listFeedBackReducer, deleteFeedBackReducer } from '../reducers/feedbackReducers';
-import { listOrderReducer, getOrderByIdReducer } from '../reducers/orderReducers';
-
+import { listOrderReducer, getOrderByIdReducer, changeOrderStatusReducer } from '../reducers/orderReducers';
+import { listBookingTableReducer, changeBookingTableStatusReducer } from '../reducers/bookingTableReducers';
 const reducers = combineReducers({
     //ACCOUNT ZONEEE
     userCheckAcc: userCheckAccountReducer,
@@ -67,7 +67,10 @@ const reducers = combineReducers({
     //ORDER ZONEE
     orderList: listOrderReducer,
     orderGetById: getOrderByIdReducer,
-
+    orderChangeStatus: changeOrderStatusReducer,
+    //Booking table ZONEE
+    bookingTableList: listBookingTableReducer,
+    bookingTableChangeStatus: changeBookingTableStatusReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')

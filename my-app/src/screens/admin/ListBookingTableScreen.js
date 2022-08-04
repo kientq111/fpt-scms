@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import { changeOrderStatus, listOrders } from '../../actions/orderAction';
 import LinesEllipsis from 'react-lines-ellipsis'
 import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
+import { listBookingTables } from '../../actions/bookingTableAction';
 const { Column } = Table;
 
 const StyledTable = styled((props) => <Table {...props} />)`
@@ -23,17 +24,17 @@ thead > tr > th {
 }
 `;
 
-const ListOrderScreen = () => {
+const ListBookingTableScreen = () => {
     const [searchText, setSearchText] = useState('');
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [visible, setVisible] = useState(false);
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
     const dispatch = useDispatch();
-    const dataOrder = useSelector((state) => state.orderList);
+    const dataBookingTable = useSelector((state) => state.bookingTableList);
     const orderChangeStatusSelector = useSelector((state) => state.orderChangeStatus);
     const { success } = orderChangeStatusSelector;
-    const { loading, orders } = dataOrder
+    const { loading, bookingTables } = dataBookingTable
     const [orderDetailModal, setOrderDetailModal] = useState({
         orderNumber: "",
         description: "",
@@ -60,8 +61,8 @@ const ListOrderScreen = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        dispatch(listOrders());
-    }, [success]);
+        dispatch(listBookingTables());
+    }, []);
 
     const showModal = (order) => {
         setIsModalVisible(true);
@@ -96,7 +97,7 @@ const ListOrderScreen = () => {
     };
 
     const changeOrderStatusHandle = (id, status) => {
-        dispatch(changeOrderStatus(id, status))
+        // dispatch(changeOrderStatus(id, status))
         message.success(`Order change id: ${id} to status: ${status}`)
     }
     const getColumnSearchProps = (dataIndex) => ({
@@ -191,10 +192,10 @@ const ListOrderScreen = () => {
             <Breadcrumb style={{ marginTop: 10 }}>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>
-                    <a href="">List Order</a>
+                    <a href="">List Booking</a>
                 </Breadcrumb.Item>
             </Breadcrumb>
-            <Divider orientation="right">  <Button type="" size="middle" disabled><Link to={''} style={{ textDecoration: 'none' }}>Add Order</Link></Button></Divider>
+            <Divider orientation="right">  <Button type="" size="middle" disabled><Link to={''} style={{ textDecoration: 'none' }}>Add Booking Table</Link></Button></Divider>
             {loading === true && <>
                 <br></br> <br /> <br />
                 <br></br> <br /> <br />
@@ -204,8 +205,8 @@ const ListOrderScreen = () => {
                     <Col span={5}><LargeLoader /></Col>
                     <Col span={5}></Col>
                 </Row></>}
-            {loading === false && <StyledTable dataSource={orders} className="table-striped-rows">
-                <Column title="Order Number" dataIndex="orderNumber" key="orderNumber" {...getColumnSearchProps('orderNumber')} />
+            {loading === false && <StyledTable dataSource={bookingTables} className="table-striped-rows">
+                <Column title="User's Booked" dataIndex="createdBy" render={(_, record) => `${record.user.first_name} ${record.user.last_name}`} key="createdBy" />
                 <Column title="description" dataIndex="description" key="description" width={'20%'}
                     render={(_, record) => (<LinesEllipsis
                         text={record.description}
@@ -215,7 +216,7 @@ const ListOrderScreen = () => {
                         basedOn='letters'
                     />)}
                 />
-                <Column title="Order Status" dataIndex="status"
+                <Column title="Booking Table Status" dataIndex="status"
                     filters={[
                         {
                             text: 'Order Pending',
@@ -231,14 +232,12 @@ const ListOrderScreen = () => {
                         },
                     ]}
                     onFilter={(value, record) => record.status === value}
-                    render={(_, record) => (record.status === 1 ? "Order Pending" : record.status === 2 ? "Order Success" : "Order Cancel")}
+                    render={(_, record) => (record.status === 1 ? "Table Booked" : record.status === 2 ? "Table Free" : record.status === 4 ? "Table Cancel" : "Table Unvailable")}
                     key="status"
                 />
-                <Column title="Total Price" dataIndex="total" key="total" sorter={(a, b) => a.total - b.total} />
-                <Column title="User's Order" dataIndex="createdBy" render={(_, record) => `${record.user.first_name} ${record.user.last_name}`} key="createdBy" />
-                <Column title="Order Created Time" dataIndex="createdTimme" render={(_, record) => (moment(record.createdTimme).format('LLLL'))} key="created_time" />
+                <Column title="Order Created Time" dataIndex="createdTime" render={(_, record) => (moment(record.createdTime).format('LLLL'))} key="created_time" />
                 <Column title="Table Booked" dataIndex="bookTable"
-                    render={(_, record) => record.bookTable.listTable.map(e => (
+                    render={(_, record) => record.listTable.map(e => (
                         e.tableNumber + ', '
                     )
                     )
@@ -298,4 +297,4 @@ const ListOrderScreen = () => {
     )
 }
 
-export default ListOrderScreen;
+export default ListBookingTableScreen;
