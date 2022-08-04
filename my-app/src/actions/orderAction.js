@@ -68,3 +68,37 @@ export const getOrderByID = (id) => async (dispatch, getState) => {
         })
     }
 }
+
+export const changeOrderStatus = (id, status) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: orderConstants.ORDER_CHANGE_STATUS_REQUEST,
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.accessToken}`,
+            },
+        }
+
+        const { data } = await axios.put(`/order/changeStatusOrder?status=${status}&orderId=${id}`, {},config)
+        dispatch({
+            type: orderConstants.ORDER_CHANGE_STATUS_SUCCESS,
+            payload: data,
+        })
+
+    } catch (error) {
+        const message =
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        dispatch({
+            type: orderConstants.ORDER_CHANGE_STATUS_FAIL,
+            payload: message,
+        })
+    }
+}

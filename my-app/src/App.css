@@ -68,3 +68,11 @@ body {
     margin-left: 2%;
     height: 50px;
 }
+
+.txtLink {
+    color: blue;
+}
+
+.txtLink:hover {
+    color: green;
+}

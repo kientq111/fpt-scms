@@ -39,6 +39,7 @@ import ListFeedBackScreen from './screens/admin/ListFeedBackScreen';
 import EditTableScreen from './screens/admin/EditTableScreen';
 import ListOrderScreen from './screens/admin/ListOrderScreen';
 import HeaderBar from './components/HeaderBar';
+import ListBookingTableScreen from './screens/admin/ListBookingTableScreen';
 const { Header, Content, Sider, Footer } = Layout;
 
 const App = () => {
@@ -133,6 +134,9 @@ const App = () => {
             <Route path='/admin/listfeedback' element={<ListFeedBackScreen />} />
             {/* Order */}
             <Route path='/admin/listorder' element={<ListOrderScreen />} />
+
+            {/* BookingTable */}
+            <Route path='/admin/listbookingtable' element={<ListBookingTableScreen />} />
             {/* Common */}
             <Route path='/admin/dashboard' element={<DashboardScreen />} />
             <Route path='*' element={<ErrorScreen />} />
