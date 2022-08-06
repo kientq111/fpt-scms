@@ -132,9 +132,13 @@ export const register = (username, email, password, dob, first_name, last_name, 
 }
 
 export const logout = () => (dispatch) => {
+  dispatch({
+    type: userConstants.USER_CHECKACC_RESET,
+  })
   localStorage.removeItem('userInfo')
   dispatch({ type: userConstants.USER_LOGOUT })
   dispatch({ type: userConstants.USER_DETAILS_RESET })
+  window.location.href = '/';
 }
 
 export const listUsers = () => async (dispatch, getState) => {
