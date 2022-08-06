@@ -17,7 +17,7 @@ export const listOrders = () => async (dispatch, getState) => {
             },
         }
 
-        const { data } = await axios.get(`/order/getListOrderDish?orderNumber&userId&status&bookId&startDate&endDate&createdBy&orderId&pageSize=6&pageIndex=1`, config)
+        const { data } = await axios.get(`/order/getListOrderDish?orderNumber&userId&status&bookId&startDate&endDate&createdBy&orderId&pageSize=100&pageIndex=0`, config)
         dispatch({
             type: orderConstants.ORDER_LIST_SUCCESS,
             payload: data.data,
