@@ -18,7 +18,7 @@ export const listBookingTables = () => async (dispatch, getState) => {
             },
         }
 
-        const { data } = await axios.get(`/bookingTable/getListBookedTable?status&fromEstimateReceiveTime&toEstimateReceiveTime&fromCreatedTime&toCreatedTime&createdBy&canteenId&startFromDate&endFromDate&startToDate&endToDate&userID&pageSize=10&pageIndex=1&type`, config)
+        const { data } = await axios.get(`/bookingTable/getListBookedTable?status&fromEstimateReceiveTime&toEstimateReceiveTime&fromCreatedTime&toCreatedTime&createdBy&canteenId&startFromDate&endFromDate&startToDate&endToDate&userID&pageSize=100&pageIndex=0&type`, config)
         dispatch({
             type: bookingTableConstants.BOOKING_TABLE_LIST_SUCCESS,
             payload: data.data,
