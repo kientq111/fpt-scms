@@ -88,6 +88,81 @@ export const checkAccount = (username) => async (dispatch) => {
   }
 }
 
+// export const changeUserStatus = (username, status) => async (dispatch, getState) => {
+//   try {
+//     dispatch({
+//       type: userConstants.USER_CHANGE_STATUS_REQUEST,
+//     })
+
+//     const {
+//       userLogin: { userInfo },
+//     } = getState()
+
+//     const config = {
+//       headers: {
+//         'Content-Type': 'application/json',
+//         Authorization: `Bearer ${userInfo.accessToken}`
+//       },
+//     }
+//     //if current status = 1 => block account
+//     const { data } = await axios.put(
+//       `${status == 1 ? "blockByStatus" : "unBlockByStatus"}/user?username=${username}`, {},
+//       config
+//     );
+//     dispatch({
+//       type: userConstants.USER_CHANGE_STATUS_SUCCESS,
+//       payload: data,
+//     })
+
+//   } catch (error) {
+//     dispatch({
+//       type: userConstants.USER_CHANGE_STATUS_FAIL,
+//       payload:
+//         error.response && error.response.data.message
+//           ? error.response.data.message
+//           : error.message,
+//     })
+//   }
+// }
+
+
+
+export const changeUserStatus = (username, status) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: userConstants.USER_CHANGE_STATUS_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.accessToken}`,
+      },
+    }
+
+    const { data } = await axios.put(
+      `${status == 1 ? "/blockByStatus" : "/unBlockByStatus"}/user?username=${username}`, {},
+      config
+    );
+    dispatch({
+      type: userConstants.USER_CHANGE_STATUS_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    dispatch({
+      type: userConstants.USER_DELETE_FAIL,
+      payload: message,
+    })
+  }
+}
+
 export const register = (username, email, password, dob, first_name, last_name, gender, phone, address) => async (dispatch, getState) => {
   try {
     dispatch({
@@ -132,9 +207,13 @@ export const register = (username, email, password, dob, first_name, last_name, 
 }
 
 export const logout = () => (dispatch) => {
+  dispatch({
+    type: userConstants.USER_CHECKACC_RESET,
+  })
   localStorage.removeItem('userInfo')
   dispatch({ type: userConstants.USER_LOGOUT })
   dispatch({ type: userConstants.USER_DETAILS_RESET })
+  window.location.href = '/';
 }
 
 export const listUsers = () => async (dispatch, getState) => {

@@ -14,7 +14,7 @@ const BlogDetailScreen = () => {
     let blogTitle = '';
     let blogContent = '';
     let blogDate = '';
-
+    let blogImg = '';
 
     useEffect(() => {
         dispatch(getBlogDetail(location.state.id));
@@ -24,10 +24,11 @@ const BlogDetailScreen = () => {
         blogTitle = blog.name
         blogContent = blog.content
         blogDate = moment(blog.created_time).format('DD/MM/YYYY')
+        blogImg = blog.image
     }
 
     return (
-        <Card style={{ height: 1000, marginTop: 10, backgroundColor: "rgba(238,238,238,0.8)" }}>
+        <Card style={{ height: 'auto', marginTop: 10, backgroundColor: "rgba(238,238,238,0.8)" }}>
             <PageHeader
                 className="site-page-header"
                 onBack={() => window.history.back()}
@@ -36,16 +37,18 @@ const BlogDetailScreen = () => {
             <Row>
                 <Col span={3}></Col>
                 <Col span={18}>
-                    <Card style={{ height: 800 }}>
+                    <Card style={{ height: 'auto' }}>
                         <>
-                            {loading && <Loader/>}
+                            {loading && <Loader />}
                             {loading === false && <div style={{ marginLeft: 20, marginTop: 20 }}>
                                 <h2>{blogTitle}</h2>
                                 <Divider orientation="right" plain>
                                     {blogDate}
                                 </Divider>
+                                <div><img src={`${blogImg}`} alt="" width={'60%'} height={'50%'} /></div>
                                 <div dangerouslySetInnerHTML={{ __html: blogContent }} style={{ marginRight: 350, marginTop: 30 }}>
                                 </div>
+                                <div style={{ height:200}}></div>
                             </div>}
                         </>
                     </Card></Col>

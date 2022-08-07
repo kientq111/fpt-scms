@@ -5,7 +5,8 @@ import {
     userLoginReducer, userRegisterReducer,
     userListReducer, userDeleteReducer,
     userUpdateReducer, staffListReducer,
-    userCheckAccountReducer, AddStaffReducer
+    userCheckAccountReducer, AddStaffReducer,
+    ChangeUserStatusReducer
 } from '../reducers/userReducers';
 import {
     dishListReducer, dishChangeStatusReducer,
@@ -18,6 +19,7 @@ import { listTableReducer, addTableReducer, changeTableStatusReducer, editTableR
 import { listFeedBackReducer, deleteFeedBackReducer } from '../reducers/feedbackReducers';
 import { listOrderReducer, getOrderByIdReducer, changeOrderStatusReducer } from '../reducers/orderReducers';
 import { listBookingTableReducer, changeBookingTableStatusReducer } from '../reducers/bookingTableReducers';
+import { listDashboardReducer } from '../reducers/dashboardReducers';
 const reducers = combineReducers({
     //ACCOUNT ZONEEE
     userCheckAcc: userCheckAccountReducer,
@@ -28,6 +30,7 @@ const reducers = combineReducers({
     userUpdate: userUpdateReducer,
     staffList: staffListReducer,
     staffAdd: AddStaffReducer,
+    userChangeStatus: ChangeUserStatusReducer,
     //DISH ZONEEEEE
     dishList: dishListReducer,
     dishAdd: dishAddReducer,
@@ -71,6 +74,8 @@ const reducers = combineReducers({
     //Booking table ZONEE
     bookingTableList: listBookingTableReducer,
     bookingTableChangeStatus: changeBookingTableStatusReducer,
+    //Dashboard Zonee
+    dashboardList: listDashboardReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')

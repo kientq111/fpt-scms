@@ -162,6 +162,7 @@ const EditDishScreen = () => {
       })
     });
 
+    //Dong nay bi loi
     getDishByIdSelector.dish.menu.forEach(e => {
       let rawMenuIndex = optionListMenu.findIndex(x => x.value === e.id);
       indexMenuDish.push(rawMenuIndex)
