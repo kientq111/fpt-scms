@@ -5,7 +5,7 @@ export const userCheckAccountReducer = (state = {}, action) => {
     case userConstants.USER_CHECKACC_REQUEST:
       return { loading: true }
     case userConstants.USER_CHECKACC_SUCCESS:
-      return { loading: false, userCheckAccount: action.payload }
+      return { loading: false, userCheckAccount: action.payload, success: true }
     case userConstants.USER_CHECKACC_FAIL:
       return { loading: false, error: action.payload }
     case userConstants.USER_CHECKACC_RESET:
@@ -110,6 +110,20 @@ export const AddStaffReducer = (state = { users: [] }, action) => {
     case staffConstants.STAFF_ADD_SUCCESS:
       return { loading: false, userInfo: action.payload }
     case staffConstants.STAFF_ADD_FAIL:
+      return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
+
+export const ChangeUserStatusReducer = (state = { users: [] }, action) => {
+  switch (action.type) {
+    case userConstants.USER_CHANGE_STATUS_REQUEST:
+      return { loading: true }
+    case userConstants.USER_CHANGE_STATUS_SUCCESS:
+      return { loading: false, userInfo: action.payload, success: true }
+    case userConstants.USER_CHANGE_STATUS_FAIL:
       return { loading: false, error: action.payload }
     default:
       return state

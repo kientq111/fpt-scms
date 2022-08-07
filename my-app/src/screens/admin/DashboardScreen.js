@@ -1,4 +1,4 @@
-import { Card, Row, Col, Statistic, PageHeader, List, Avatar } from 'antd';
+import { Card, Row, Col, Statistic, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { Doughnut, Pie, Line, Bar } from 'react-chartjs-2';
@@ -42,12 +42,23 @@ const dataList = [
     },
 ];
 
+const openNotificationWithIcon = (type) => {
+    notification[type]({
+        message: 'Login Success',
+    });
+};
+
 const DashboardScreen = () => {
     const dispatch = useDispatch();
     let listDashboard;
     const listDashboardSelector = useSelector((state) => state.dashboardList);
+    const userCheckAccountSelector = useSelector((state) => state.userCheckAcc);
+    const checkAccSuccess = userCheckAccountSelector.success;
     const { loading, error, success, dashboardInfo } = listDashboardSelector;
     useEffect(() => {
+        if (checkAccSuccess === true) {
+            openNotificationWithIcon('success');
+        }
         dispatch(getListDashboard())
         // console.log(listDashboardSelector)
         if (loading === false) {
@@ -68,6 +79,7 @@ const DashboardScreen = () => {
             }
         }
     }
+
 
 
     return (

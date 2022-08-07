@@ -12,7 +12,7 @@ import {
     TagOutlined
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../actions/userActions';
 
 
@@ -26,7 +26,7 @@ function getItem(label, key, icon, children) {
 }
 
 
-const items = [
+const itemsAdmin = [
     getItem('Dashboard', '/admin/dashboard', <PieChartOutlined />),
     getItem('Account Manager', '1', <UserOutlined />, [
         // getItem('List User', '/admin/listuser'),
@@ -65,9 +65,49 @@ const items = [
     getItem('Logout', '/', <LogoutOutlined />),
 ];
 
+
+const itemsStaff = [
+    getItem('Dashboard', '/admin/dashboard', <PieChartOutlined />),
+    getItem('Order Manager', '2', <TagOutlined />, [
+        getItem('List Order', '/admin/listorder'),
+    ]),
+    getItem('Booking Table Manager', '7', <TagOutlined />, [
+        // getItem('List User', '/admin/listuser'),
+        getItem('List Booking Table', '/admin/listbookingtable'),
+    ]),
+    getItem('Menu Manager', '3', <DesktopOutlined />, [
+        getItem('Add Menu', '/admin/addmenu'),
+        getItem('List Menu', '/admin/listmenu'),
+        getItem('Add Dish', '/admin/adddish'),
+        getItem('List Dish', '/admin/listdish'),
+        getItem('Add Category', '/admin/addcategory'),
+        getItem('Add SubCategory', '/admin/addsubcategory'),
+        getItem('List Category', '/admin/listcategory'),
+        getItem('List Subcategory', '/admin/listsubcategory'),
+    ]),
+    getItem('Table Manager', '4', <CoffeeOutlined />, [
+        getItem('Add Table', '/admin/addtable'),
+        getItem('List Table', '/admin/listtable'),
+    ]),
+    getItem('Blog Manager', '5', <FormOutlined />, [
+        getItem('Add Blog', '/admin/addblog'),
+        getItem('List Blog', '/admin/listblog'),
+    ]),
+    getItem("User's Feedback", '/admin/listfeedback', <FormOutlined />),
+    getItem('Logout', '/', <LogoutOutlined />),
+];
+
 const SiderBar = () => {
+    let items;
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const userLogin = useSelector((state) => state.userLogin)
+    const { userInfo } = userLogin
+    if (userInfo.role[0].authority === "ROLE_ADMIN") {
+        items = itemsAdmin
+    } else {
+        items = itemsStaff
+    }
     const handleSiderClick = (e) => {
         if (e.key === '/') {
             dispatch(logout());

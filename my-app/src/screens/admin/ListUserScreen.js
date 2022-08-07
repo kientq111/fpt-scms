@@ -2,7 +2,7 @@ import {
   Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
-import { deleteUser, listUsers } from '../../actions/userActions';
+import { changeUserStatus, deleteUser, listUsers } from '../../actions/userActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { SearchOutlined } from '@ant-design/icons';
@@ -129,7 +129,9 @@ const ListUserScreen = () => {
   const data = useSelector((state) => state.userList);
   const deleteSuccess = useSelector((state) => state.userDelete);
   const updateSelector = useSelector((state) => state.userUpdate);
+  const changeUserStatusSelector = useSelector((state) => state.userChangeStatus);
   const updateSuccess = updateSelector.success
+  const isChangeStatusSuccess = changeUserStatusSelector.success
   const { success } = deleteSuccess;
   const [userData, setUserData] = useState(data)
   const { loading } = data;
@@ -163,10 +165,13 @@ const ListUserScreen = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     if (updateSuccess === true) {
-      message.success('Update successful');
+      message.success('Update Successful');
+    }
+    if (isChangeStatusSuccess === true) {
+      message.success('Change Status Successful');
     }
     dispatch(listUsers());
-  }, [success]);
+  }, [success, isChangeStatusSuccess]);
 
 
 
@@ -202,6 +207,11 @@ const ListUserScreen = () => {
         history: location.pathname
       }
     })
+  }
+
+  const changeUserStatusHandle = (username, status) => {
+    console.log(username, status);
+    dispatch(changeUserStatus(username, status));
   }
 
 
@@ -247,12 +257,12 @@ const ListUserScreen = () => {
           },]} onFilter={(value, record) => record.gender.indexOf(value) === 0} />
 
 
-          <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>true</p> : <p style={{ color: 'red' }}>false</p>)}
+          <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>UnBlock</p> : <p style={{ color: 'red' }}>Block</p>)}
             filters={[{
-              text: 'True',
+              text: 'Unblock',
               value: 1,
             }, {
-              text: 'False',
+              text: 'Block',
               value: 0,
             },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
             key="status" />
@@ -298,7 +308,7 @@ const ListUserScreen = () => {
                 >
                   <a><DeleteOutlined style={{ fontSize: 17 }} /></a>
                 </Popconfirm>
-
+                <a onClick={() => changeUserStatusHandle(record.username, record.status)}>{record.status == 1 ? "Block" : "Unblock"}</a>
               </Space>
             )}
             fixed={"right"}

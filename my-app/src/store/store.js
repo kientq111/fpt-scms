@@ -5,7 +5,8 @@ import {
     userLoginReducer, userRegisterReducer,
     userListReducer, userDeleteReducer,
     userUpdateReducer, staffListReducer,
-    userCheckAccountReducer, AddStaffReducer
+    userCheckAccountReducer, AddStaffReducer,
+    ChangeUserStatusReducer
 } from '../reducers/userReducers';
 import {
     dishListReducer, dishChangeStatusReducer,
@@ -29,6 +30,7 @@ const reducers = combineReducers({
     userUpdate: userUpdateReducer,
     staffList: staffListReducer,
     staffAdd: AddStaffReducer,
+    userChangeStatus: ChangeUserStatusReducer,
     //DISH ZONEEEEE
     dishList: dishListReducer,
     dishAdd: dishAddReducer,

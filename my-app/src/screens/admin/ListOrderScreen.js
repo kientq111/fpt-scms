@@ -184,6 +184,9 @@ const ListOrderScreen = () => {
             ),
     });
 
+    const refreshListOrder = () => {
+        dispatch(listOrders())
+    }
 
     return (
         <>
@@ -194,7 +197,7 @@ const ListOrderScreen = () => {
                     <a href="">List Order</a>
                 </Breadcrumb.Item>
             </Breadcrumb>
-            <Divider orientation="right">  <Button type="" size="middle" disabled><Link to={''} style={{ textDecoration: 'none' }}>Add Order</Link></Button></Divider>
+            <Divider orientation="right">  <Button type="" size="middle" onClick={refreshListOrder}>Refresh</Button></Divider>
             {loading === true && <>
                 <br></br> <br /> <br />
                 <br></br> <br /> <br />
