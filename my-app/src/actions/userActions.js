@@ -33,7 +33,7 @@ export const login = (username, password) => async (dispatch) => {
     }
 
     const { data } = await axios.post(
-      '/api/login',
+      'api/login',
       { username, password },
       config
     );
