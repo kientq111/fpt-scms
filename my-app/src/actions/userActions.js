@@ -33,7 +33,7 @@ export const login = (username, password) => async (dispatch) => {
     }
 
     const { data } = await axios.post(
-      'https://backend-edu-scms.herokuapp.com/api/login',
+      '/login',
       { username, password },
       config
     );
