@@ -18,7 +18,7 @@ export const listDishes = (status) => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-        
+
         if (status === undefined) {
             status = "";
         }
@@ -112,7 +112,7 @@ export const changeDishStatus = (id, status) => async (dispatch, getState) => {
     }
 }
 
-export const addDish = (dishName, description, rawMenu, rawSubCategory) => async (dispatch, getState) => {
+export const addDish = (dishName, price, description, rawMenu, rawSubCategory, dishImage) => async (dispatch, getState) => {
     try {
         dispatch({
 
@@ -143,7 +143,7 @@ export const addDish = (dishName, description, rawMenu, rawSubCategory) => async
 
         const createdBy = userInfo.username;
         const updatedBy = userInfo.username;
-        const { data } = await axios.post(`/dish/addOrUpdate`, { dishName, description, createdBy, listMenuId, subcategoryId, updatedBy, createdTime, updatedTime }, config)
+        const { data } = await axios.post(`/dish/addOrUpdate`, { dishName, description, createdBy, listMenuId, subcategoryId, updatedBy, createdTime, updatedTime, price, dishImage }, config)
 
         dispatch({ type: dishConstants.DISH_ADD_SUCCESS, payload: data })
     } catch (error) {
