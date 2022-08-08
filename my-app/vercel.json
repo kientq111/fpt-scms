@@ -1,6 +1,6 @@
 {
     "rewrites": [{
-        "source": "/api",
-        "destination": "https://backend-edu-scms.herokuapp.com"
+        "source": "/api/:path*",
+        "destination": "https://backend-edu-scms.herokuapp.com/:path*"
     }]
 }
