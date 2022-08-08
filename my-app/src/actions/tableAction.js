@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { tableConstants } from '../constants/Constants'
-
+import { base_url } from '../api/api'
 
 export const listTables = () => async (dispatch, getState) => {
     try {
@@ -16,7 +16,7 @@ export const listTables = () => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-        const { data } = await axios.get(`/table/getListTable?tableNumber=&canteenID=&startDate=&endDate=&status=&type=&pageNumber=1&pageSize=100`, config)
+        const { data } = await axios.get(`${base_url}/table/getListTable?tableNumber=&canteenID=&startDate=&endDate=&status=&type=&pageNumber=1&pageSize=100`, config)
         dispatch({
             type: tableConstants.TABLE_LIST_SUCCESS,
             payload: data.data,
@@ -60,7 +60,7 @@ export const addTable = (description, canteenId) => async (dispatch, getState) =
 
         canteenId = 1;
 
-        const { data } = await axios.post(`/table/addOrUpdate`, { description, canteenId, status, type, createdBy, createdTime, updatedBy, updatedTime }, config)
+        const { data } = await axios.post(`${base_url}/table/addOrUpdate`, { description, canteenId, status, type, createdBy, createdTime, updatedBy, updatedTime }, config)
         dispatch({
             type: tableConstants.TABLE_ADD_SUCCESS,
             payload: data,
@@ -97,7 +97,7 @@ export const editTable = (id, tableNumber, description, canteenId, status, type,
         const updatedBy = userInfo.username;
         const updatedTime = new Date();
         canteenId = 1;
-        const { data } = await axios.post(`/table/addOrUpdate`, { id, tableNumber, description, canteenId, status, type, createdBy, createdTime, updatedBy, updatedTime }, config)
+        const { data } = await axios.post(`${base_url}/table/addOrUpdate`, { id, tableNumber, description, canteenId, status, type, createdBy, createdTime, updatedBy, updatedTime }, config)
         dispatch({
             type: tableConstants.TABLE_EDIT_SUCCESS,
             payload: data,
@@ -145,7 +145,7 @@ export const changeTableStatus = (id, status) => async (dispatch, getState) => {
                 break;
         }
 
-        const { data } = await axios.put(`/table/changeStatusTable?status=${status}&tableId=${id}`, {}, config)
+        const { data } = await axios.put(`${base_url}/table/changeStatusTable?status=${status}&tableId=${id}`, {}, config)
         dispatch({
             type: tableConstants.TABLE_CHANGE_STATUS_SUCCESS,
             payload: data,

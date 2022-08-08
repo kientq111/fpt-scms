@@ -1,5 +1,6 @@
 import axios from "axios";
 import { orderConstants } from "../constants/Constants";
+import { base_url } from "../api/api";
 
 export const listOrders = () => async (dispatch, getState) => {
     try {
@@ -17,7 +18,7 @@ export const listOrders = () => async (dispatch, getState) => {
             },
         }
 
-        const { data } = await axios.get(`/order/getListOrderDish?orderNumber&userId&status&bookId&startDate&endDate&createdBy&orderId&pageSize=100&pageIndex=0`, config)
+        const { data } = await axios.get(`${base_url}/order/getListOrderDish?orderNumber&userId&status&bookId&startDate&endDate&createdBy&orderId&pageSize=100&pageIndex=0`, config)
         dispatch({
             type: orderConstants.ORDER_LIST_SUCCESS,
             payload: data.data,
@@ -51,7 +52,7 @@ export const getOrderByID = (id) => async (dispatch, getState) => {
             },
         }
 
-        const { data } = await axios.get(`/order/getOrderDishById/${id}`, config)
+        const { data } = await axios.get(`${base_url}/order/getOrderDishById/${id}`, config)
         dispatch({
             type: orderConstants.ORDER_GET_BY_ID_SUCCESS,
             payload: data.data,
@@ -85,7 +86,7 @@ export const changeOrderStatus = (id, status) => async (dispatch, getState) => {
             },
         }
 
-        const { data } = await axios.put(`/order/changeStatusOrder?status=${status}&orderId=${id}`, {},config)
+        const { data } = await axios.put(`${base_url}/order/changeStatusOrder?status=${status}&orderId=${id}`, {},config)
         dispatch({
             type: orderConstants.ORDER_CHANGE_STATUS_SUCCESS,
             payload: data,

@@ -1,7 +1,7 @@
 import { feedbackConstants } from "../constants/Constants"
 import axios from "axios"
 import { logout } from "./userActions"
-
+import { base_url } from "../api/api"
 export const listFeedBack = () => async (dispatch, getState) => {
     try {
         dispatch({
@@ -15,7 +15,7 @@ export const listFeedBack = () => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-        const { data } = await axios.get(`/management/view/feedbacks?content=&createdBy=&dateFrom&dateUntil&page&pageSize`, config)
+        const { data } = await axios.get(`${base_url}/management/view/feedbacks?content=&createdBy=&dateFrom&dateUntil&page&pageSize`, config)
         dispatch({
             type: feedbackConstants.FB_LIST_SUCCESS,
             payload: data.data,
@@ -51,7 +51,7 @@ export const deleteFeedBack = (id) => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-        const { data } = await axios.delete(`/management/delete/feedbacks/${id}`, config)
+        const { data } = await axios.delete(`${base_url}/management/delete/feedbacks/${id}`, config)
 
         dispatch({
             type: feedbackConstants.FB_DELETE_SUCCESS,

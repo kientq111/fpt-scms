@@ -1,6 +1,6 @@
 import { dishConstants } from "../constants/Constants"
 import axios from "axios"
-
+import { base_url } from "../api/api"
 
 
 export const listDishes = (status) => async (dispatch, getState) => {
@@ -23,7 +23,7 @@ export const listDishes = (status) => async (dispatch, getState) => {
             status = "";
         }
 
-        const { data } = await axios.get(`/dish/getListDish?dishName=&status=${status}&subcategoryId=&startDate&endDate&createdBy&pageIndex=1&pageSize=100`, config)
+        const { data } = await axios.get(`${base_url}/dish/getListDish?dishName=&status=${status}&subcategoryId=&startDate&endDate&createdBy&pageIndex=1&pageSize=100`, config)
         dispatch({
             type: dishConstants.DISH_LIST_SUCCESS,
             payload: data.data,
@@ -59,7 +59,7 @@ export const getDishById = (id) => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-        const { data } = await axios.get(`/dish/getDishById/${id}`, config)
+        const { data } = await axios.get(`${base_url}/dish/getDishById/${id}`, config)
         dispatch({
             type: dishConstants.DISH_GET_BY_ID_SUCCESS,
             payload: data.data,
@@ -94,7 +94,7 @@ export const changeDishStatus = (id, status) => async (dispatch, getState) => {
             },
         }
 
-        await axios.put(`/dish/changeDishStatus?status=${status === 1 ? 0 : 1}&dishID=${id}`, {}, config)
+        await axios.put(`${base_url}/dish/changeDishStatus?status=${status === 1 ? 0 : 1}&dishID=${id}`, {}, config)
 
         dispatch({ type: dishConstants.DISH_CHANGE_STATUS_SUCCESS })
     } catch (error) {
@@ -143,7 +143,7 @@ export const addDish = (dishName, price, description, rawMenu, rawSubCategory, d
 
         const createdBy = userInfo.username;
         const updatedBy = userInfo.username;
-        const { data } = await axios.post(`/dish/addOrUpdate`, { dishName, description, createdBy, listMenuId, subcategoryId, updatedBy, createdTime, updatedTime, price, dishImage }, config)
+        const { data } = await axios.post(`${base_url}/dish/addOrUpdate`, { dishName, description, createdBy, listMenuId, subcategoryId, updatedBy, createdTime, updatedTime, price, dishImage }, config)
 
         dispatch({ type: dishConstants.DISH_ADD_SUCCESS, payload: data })
     } catch (error) {
@@ -190,7 +190,7 @@ export const editDish = (id, dishName, description, rawMenu, rawSubCategory, cre
         //End of rename key block
         const updatedTime = new Date();
         const updatedBy = userInfo.username;
-        const { data } = await axios.post(`/dish/addOrUpdate`, { id, dishName, description, createdBy, listMenuId, subcategoryId, updatedBy, createdTime, updatedTime }, config)
+        const { data } = await axios.post(`${base_url}/dish/addOrUpdate`, { id, dishName, description, createdBy, listMenuId, subcategoryId, updatedBy, createdTime, updatedTime }, config)
 
         dispatch({ type: dishConstants.DISH_EDIT_SUCCESS, payload: data })
     } catch (error) {

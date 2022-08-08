@@ -1,10 +1,10 @@
 {
     "rewrites": [{
-            "source": "/api/:path*",
+            "source": "/:path*",
             "destination": "https://backend-edu-scms.herokuapp.com/:path*"
         },
         {
-            "source": "/api/:path*/",
+            "source": "/:path*/",
             "destination": "https://backend-edu-scms.herokuapp.com/:path*/"
         }
     ]

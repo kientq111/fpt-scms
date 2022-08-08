@@ -1,5 +1,6 @@
 import { menuConstants } from "../constants/Constants"
 import axios from "axios"
+import { base_url } from "../api/api"
 
 export const listMenus = () => async (dispatch, getState) => {
     try {
@@ -16,7 +17,7 @@ export const listMenus = () => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-        const { data } = await axios.get(`/menu/getListMenu?menuName&startDate&endDate&createdBy&pageIndex=1&pageSize=100`, config)
+        const { data } = await axios.get(`${base_url}/menu/getListMenu?menuName&startDate&endDate&createdBy&pageIndex=1&pageSize=100`, config)
         dispatch({
             type: menuConstants.MENU_LIST_SUCCESS,
             payload: data.data,
@@ -55,7 +56,7 @@ export const changeMenuStatus = (id, status) => async (dispatch, getState) => {
             },
         }
 
-        await axios.put(`/menu/updateMenuStatus?status=${status === 1 ? 0 : 1}&menuId=${id}`, {}, config)
+        await axios.put(`${base_url}/menu/updateMenuStatus?status=${status === 1 ? 0 : 1}&menuId=${id}`, {}, config)
 
         dispatch({ type: menuConstants.MENU_CHANGE_STATUS_SUCCESS })
     } catch (error) {
@@ -100,7 +101,7 @@ export const addMenu = (menuName, description, listDish) => async (dispatch, get
         });
         console.log(listDishId);
         const { data } = await axios.post(
-            '/menu/addOrUpdate',
+            `${base_url}/menu/addOrUpdate`,
             { menuName, description, listDishId, createdBy, updatedBy, updatedTime, createdTime },
             config
         )
@@ -145,7 +146,7 @@ export const editMenu = (id, menuName, description, status, listDish, createdBy,
             listDishId.push(e.id)
         });
         const { data } = await axios.post(
-            '/menu/addOrUpdate',
+            `${base_url}/menu/addOrUpdate`,
             { id, menuName, description, status, listDishId, createdBy, updatedBy, updatedTime, createdTime },
             config
         )
@@ -181,7 +182,7 @@ export const getMenuById = (id) => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-        const { data } = await axios.get(`/menu/getMenuById/${id}`, config)
+        const { data } = await axios.get(`${base_url}/menu/getMenuById/${id}`, config)
         dispatch({
             type: menuConstants.MENU_GET_BY_ID_SUCCESS,
             payload: data.data,

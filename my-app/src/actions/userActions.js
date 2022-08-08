@@ -1,23 +1,6 @@
 import axios from 'axios'
 import { userConstants, staffConstants } from '../constants/Constants'
-
-
-export const dashboardAction = () => async (dispatch) => {
-  try {
-    dispatch({
-      type: userConstants.USER_CHECKACC_RESET,
-    })
-  } catch (error) {
-    dispatch({
-      type: userConstants.USER_LOGIN_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    })
-  }
-}
-
+import { base_url } from '../api/api'
 
 
 export const login = (username, password) => async (dispatch) => {
@@ -33,7 +16,7 @@ export const login = (username, password) => async (dispatch) => {
     }
 
     const { data } = await axios.post(
-      '/api/login',
+      `${base_url}/login`,
       { username, password },
       config
     );
@@ -69,7 +52,7 @@ export const checkAccount = (username) => async (dispatch) => {
     }
 
     const { data } = await axios.get(
-      `/getInfoByUserName?username=${username}`,
+      `${base_url}/getInfoByUserName?username=${username}`,
       config
     );
     dispatch({
@@ -87,44 +70,6 @@ export const checkAccount = (username) => async (dispatch) => {
     })
   }
 }
-
-// export const changeUserStatus = (username, status) => async (dispatch, getState) => {
-//   try {
-//     dispatch({
-//       type: userConstants.USER_CHANGE_STATUS_REQUEST,
-//     })
-
-//     const {
-//       userLogin: { userInfo },
-//     } = getState()
-
-//     const config = {
-//       headers: {
-//         'Content-Type': 'application/json',
-//         Authorization: `Bearer ${userInfo.accessToken}`
-//       },
-//     }
-//     //if current status = 1 => block account
-//     const { data } = await axios.put(
-//       `${status == 1 ? "blockByStatus" : "unBlockByStatus"}/user?username=${username}`, {},
-//       config
-//     );
-//     dispatch({
-//       type: userConstants.USER_CHANGE_STATUS_SUCCESS,
-//       payload: data,
-//     })
-
-//   } catch (error) {
-//     dispatch({
-//       type: userConstants.USER_CHANGE_STATUS_FAIL,
-//       payload:
-//         error.response && error.response.data.message
-//           ? error.response.data.message
-//           : error.message,
-//     })
-//   }
-// }
-
 
 
 export const changeUserStatus = (username, status) => async (dispatch, getState) => {
@@ -144,7 +89,7 @@ export const changeUserStatus = (username, status) => async (dispatch, getState)
     }
 
     const { data } = await axios.put(
-      `${status == 1 ? "/blockByStatus" : "/unBlockByStatus"}/user?username=${username}`, {},
+      `${base_url}${status == 1 ? "/blockByStatus" : "/unBlockByStatus"}/user?username=${username}`, {},
       config
     );
     dispatch({
@@ -185,7 +130,7 @@ export const register = (username, email, password, dob, first_name, last_name, 
     }
 
     const { data } = await axios.post(
-      '/createUser',
+      `${base_url}/createUser`,
       { username, email, password, dob, createdBy, first_name, last_name, gender, phone, address, status, type },
       config
     )
@@ -230,7 +175,7 @@ export const listUsers = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.accessToken}`,
       },
     }
-    const { data } = await axios.get(`/getListUser?username=&email=&phone=&status=&createBy=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=200`, config)
+    const { data } = await axios.get(`${base_url}/getListUser?username=&email=&phone=&status=&createBy=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=200`, config)
     dispatch({
       type: userConstants.USER_LIST_SUCCESS,
       payload: data.data,
@@ -268,7 +213,7 @@ export const deleteUser = (id) => async (dispatch, getState) => {
       },
     }
 
-    await axios.delete(`/deleteUser/${id}`, config)
+    await axios.delete(`${base_url}/deleteUser/${id}`, config)
 
     dispatch({ type: userConstants.USER_DELETE_SUCCESS })
   } catch (error) {
@@ -307,7 +252,7 @@ export const updateUser = (id, username, email, dob, first_name, last_name, phon
       },
     }
 
-    const { data } = await axios.put(`/updateUser/${id}`, { username, email, dob, first_name, last_name, createdBy, updatedBy, phone, address }, config)
+    const { data } = await axios.put(`${base_url}/updateUser/${id}`, { username, email, dob, first_name, last_name, createdBy, updatedBy, phone, address }, config)
 
     dispatch({ type: userConstants.USER_UPDATE_SUCCESS, payload: data })
 
@@ -342,7 +287,7 @@ export const listStaff = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.accessToken}`,
       },
     }
-    const { data } = await axios.get(`/getListStaff?username=&email=&phone=&status=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=`, config)
+    const { data } = await axios.get(`${base_url}/getListStaff?username=&email=&phone=&status=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=`, config)
     dispatch({
       type: staffConstants.STAFF_LIST_SUCCESS,
       payload: data.data,
@@ -378,14 +323,13 @@ export const addStaff = (username, email, password, dob, first_name, last_name, 
     const createdBy = userInfo.username;
     const config = {
       headers: {
-
         'Content-Type': 'application/json',
         Authorization: `Bearer ${userInfo.accessToken}`
       },
     }
 
     const { data } = await axios.post(
-      '/createStaff',
+      `${base_url}/createStaff`,
       { username, email, password, dob, first_name, last_name, createdBy, phone, address, status, type, gender },
       config
     )
