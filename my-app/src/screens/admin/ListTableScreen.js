@@ -1,5 +1,5 @@
 import {
-    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col, DatePicker,
+    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col, DatePicker, Popover, notification
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,6 +26,14 @@ const StyledTable = styled((props) => <Table {...props} />)`
     background-color: rgba(202, 235, 199);
   }
   `;
+
+
+const openNotificationWithIcon = (type, description) => {
+    notification[type]({
+        message: 'Notification Title',
+        description: description
+    });
+};
 
 const ListTableScreen = () => {
     const [searchText, setSearchText] = useState('');
@@ -159,9 +167,20 @@ const ListTableScreen = () => {
 
 
 
-    const changeTableStatusHandle = (id, status) => {
-        message.success('change Table Status Success')
-        dispatch(changeTableStatus(id, status))
+    const changeTableStatusHandle = (id, previousStatus, statusChange) => {
+    
+        if ((previousStatus === 1 && statusChange === 8) || (previousStatus === 8 && statusChange === 1)) {
+            openNotificationWithIcon("error", "Can not Book a Table Unavailable or Unavailable a Table Booked!")
+            return
+        }
+
+        if (previousStatus === 8 && statusChange === 4) {
+            openNotificationWithIcon("error", "Can not cancel a Table Unavailable!")
+            return
+        }
+        console.log("Change")
+        openNotificationWithIcon("success", "Change Status Table Successful!")
+         dispatch(changeTableStatus(id, statusChange))
     }
 
     const editTableHandle = (table) => {
@@ -216,20 +235,26 @@ const ListTableScreen = () => {
                     trimRight
                     basedOn='letters'
                 />)} />
-                <Column title="Status" dataIndex="status" key="status" filters={[
-                    {
-                        text: '1',
-                        value: 1,
-                    },
-                    {
-                        text: '2',
-                        value: 2,
-                    },
-                    {
-                        text: '3',
-                        value: 3,
-                    },
-                ]}
+                <Column title="Status" dataIndex="status" key="status"
+                    render={(_, record) => (record.status === 1 ? "Table Booked" : record.status === 2 ? "Table Free" : record.status === 4 ? "Table Cancel" : "Table Unavailable")}
+                    filters={[
+                        {
+                            text: 'Table Booked',
+                            value: 1,
+                        },
+                        {
+                            text: 'Table Free',
+                            value: 2,
+                        },
+                        {
+                            text: 'Table Cancel',
+                            value: 4,
+                        },
+                        {
+                            text: 'Table Unavailable',
+                            value: 8,
+                        },
+                    ]}
                     onFilter={(value, record) => record.status === value}
                 />
                 <Column title="Type" dataIndex="type" key="type"
@@ -248,8 +273,22 @@ const ListTableScreen = () => {
                             <a onClick={() => editTableHandle(record)}>
                                 <EditOutlined style={{ fontSize: 17 }} />
                             </a>
-                            <a onClick={() => changeTableStatusHandle(record.id, record.status)} style={{ color: 'blue' }} > Change Status</a>
-
+                            <Popover content={<div>
+                                <Space
+                                    direction="vertical"
+                                    size="small"
+                                    style={{
+                                        display: 'flex',
+                                    }}
+                                >
+                                    <a className='txtLink' onClick={() => { changeTableStatusHandle(record.id, record.status, 1) }}>Table Booked</a>
+                                    <a className='txtLink' onClick={() => { changeTableStatusHandle(record.id, record.status, 2) }}>Table Free</a>
+                                    <a className='txtLink' onClick={() => { changeTableStatusHandle(record.id, record.status, 4) }}>Table Cancel</a>
+                                    <a className='txtLink' onClick={() => { changeTableStatusHandle(record.id, record.status, 8) }}>Table Unavailable</a>
+                                </Space>
+                            </div>} title="Change Status" trigger="click">
+                                <a style={{ color: 'blue' }}>Change Status</a>
+                            </Popover>
                         </Space>
                     )}
                 />

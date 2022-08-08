@@ -225,7 +225,7 @@ const EditUserScreen = () => {
                         name="email"
                         label="E-mail"
                     >
-                        <Input readOnly />
+                        <Input readOnly disabled/>
                     </Form.Item>
 
                     <Form.Item
