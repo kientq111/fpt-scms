@@ -1,6 +1,6 @@
 import { categoryConstants, subCategoryConstatnts } from "../constants/Constants";
 import axios from "axios";
-
+import { base_url } from "../api/api";
 
 export const addCategory = (categoryName, description) => async (dispatch, getState) => {
     try {
@@ -25,7 +25,7 @@ export const addCategory = (categoryName, description) => async (dispatch, getSt
         const createdTime = new Date();
         const updatedTime = new Date();
         const { data } = await axios.post(
-            '/category/addOrUpdateCategory',
+            `${base_url}/category/addOrUpdateCategory`,
             { categoryName, description, status, createdBy, createdTime, updatedBy, updatedTime },
             config
         )
@@ -69,7 +69,7 @@ export const editCategory = (id, categoryName, description, createdTime, created
         const updatedBy = userInfo.userName
         const updatedTime = new Date();
         const { data } = await axios.post(
-            '/category/addOrUpdateCategory',
+            `${base_url}/category/addOrUpdateCategory`,
             { id, categoryName, description, status, createdTime, createdBy, updatedTime, updatedBy },
             config
         )
@@ -113,7 +113,7 @@ export const listCategory = (status) => async (dispatch, getState) => {
             status = ""
         }
 
-        const { data } = await axios.get(`/category/getListCategory?categoryName&status=${status}&startDate&endDate&createdBy&pageIndex=1&pageSize=100`, {}, config)
+        const { data } = await axios.get(`${base_url}/category/getListCategory?categoryName&status=${status}&startDate&endDate&createdBy&pageIndex=1&pageSize=100`, {}, config)
         dispatch({
             type: categoryConstants.CATEGORY_LIST_SUCCESS,
             payload: data.data,
@@ -167,7 +167,7 @@ export const changeCategoryStatus = (id, status) => async (dispatch, getState) =
         }
 
         console.log(status)
-        const { data } = await axios.put(`/category/changeCategoryStatus?status=${status}&categoryID=${id}`, {}, config)
+        const { data } = await axios.put(`${base_url}/category/changeCategoryStatus?status=${status}&categoryID=${id}`, {}, config)
         dispatch({
             type: categoryConstants.CATEGORY_CHANGE_STATUS_SUCCESS,
             payload: data,
@@ -201,7 +201,7 @@ export const listSubcategory = () => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-        const { data } = await axios.get(`/subcategory/getListSubCategory?subcategoryName=&status=&startDate=&endDate=&categoryID=&pageIndex=&pageSize=100`, {}, config)
+        const { data } = await axios.get(`${base_url}/subcategory/getListSubCategory?subcategoryName=&status=&startDate=&endDate=&categoryID=&pageIndex=&pageSize=100`, {}, config)
         dispatch({
             type: subCategoryConstatnts.SUB_CATEGORY_LIST_SUCCESS,
             payload: data.data,
@@ -247,7 +247,7 @@ export const addSubCategory = (subCategoryName, rawCategory, description) => asy
         const createdTime = new Date();
         const updatedTime = new Date();
         const { data } = await axios.post(
-            '/subcategory/addOrUpdateCategory',
+            `${base_url}/subcategory/addOrUpdateCategory`,
             { subCategoryName, categoryId, description, status, createdBy, updatedBy, createdTime, updatedTime },
             config
         )
@@ -292,7 +292,7 @@ export const editSubCategory = (id, subCategoryName, rawCategory, description, c
         const updatedBy = userInfo.username;
         const updatedTime = new Date();
         const { data } = await axios.post(
-            '/subcategory/addOrUpdateCategory',
+            `${base_url}/subcategory/addOrUpdateCategory`,
             { id, subCategoryName, categoryId, description, status, createdBy, updatedBy, createdTime, updatedTime },
             config
         )
@@ -345,7 +345,7 @@ export const changeSubCategoryStatus = (id, status) => async (dispatch, getState
                 break;
         }
 
-        const { data } = await axios.put(`/subcategory/changeSubcategoryStatus?status=${status}&subcategoryId=${id}`, {}, config)
+        const { data } = await axios.put(`${base_url}/subcategory/changeSubcategoryStatus?status=${status}&subcategoryId=${id}`, {}, config)
         dispatch({
             type: subCategoryConstatnts.SUB_CATEGORY_CHANGE_STATUS_SUCCESS,
             payload: data,

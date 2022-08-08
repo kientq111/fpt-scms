@@ -1,6 +1,6 @@
 import axios from "axios";
 import { blogConstants } from "../constants/Constants";
-
+import { base_url } from "../api/api";
 
 export const addBlog = (name, content, image) => async (dispatch, getState) => {
     try {
@@ -19,7 +19,7 @@ export const addBlog = (name, content, image) => async (dispatch, getState) => {
             },
         }
         const { data } = await axios.post(
-            '/management/blogs/createPost',
+            `${base_url}/management/blogs/createPost`,
             { name, content, image },
             config
         );
@@ -55,7 +55,7 @@ export const listBlog = () => async (dispatch, getState) => {
             },
         }
         console.log(userInfo.accessToken);
-        const { data } = await axios.get(`/management/blogs/posts/search?name=&content=&status=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=100`, config)
+        const { data } = await axios.get(`${base_url}/management/blogs/posts/search?name=&content=&status=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=100`, config)
         dispatch({
             type: blogConstants.BLOG_LIST_SUCCESS,
             payload: data.data,
@@ -94,7 +94,7 @@ export const editBlog = (id, name, content, image) => async (dispatch, getState)
             },
         }
         const { data } = await axios.post(
-            '/management/blogs/createPost',
+            `${base_url}/management/blogs/createPost`,
             { id, name, content, image },
             config
         );
@@ -134,7 +134,7 @@ export const changeBlogStatus = (id, status) => async (dispatch, getState) => {
         }
 
         const { data } = await axios.put(
-            `/management/blogs/post/${status === 1 ? "disable" : "active"}/${id}`,
+            `${base_url}/management/blogs/post/${status === 1 ? "disable" : "active"}/${id}`,
             {},
             config
         );
@@ -174,7 +174,7 @@ export const deleteBlog = (id) => async (dispatch, getState) => {
         }
 
         const { data } = await axios.delete(
-            `/management/blogs/delete/post/${id}`,
+            `${base_url}/management/blogs/delete/post/${id}`,
             config
         );
         dispatch({
@@ -212,7 +212,7 @@ export const getBlogDetail = (id) => async (dispatch, getState) => {
         }
 
         const { data } = await axios.get(
-            `/management/blogs/detail/posts/${id}`,
+            `${base_url}/management/blogs/detail/posts/${id}`,
             config
         );
         dispatch({

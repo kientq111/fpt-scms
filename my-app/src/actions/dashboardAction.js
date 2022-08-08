@@ -2,7 +2,7 @@ import axios from "axios"
 import { dashboardConstants } from "../constants/Constants"
 import { userConstants } from "../constants/Constants"
 import { logout } from "./userActions"
-
+import { base_url } from "../api/api"
 
 //SUBCATEGORY ZONEEEE
 export const getListDashboard = () => async (dispatch, getState) => {
@@ -25,7 +25,7 @@ export const getListDashboard = () => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-        const { data } = await axios.get(`/dashboard/getDashboardData`, config)
+        const { data } = await axios.get(`${base_url}/dashboard/getDashboardData`, config)
         dispatch({
             type: dashboardConstants.GET_DASHBOARD_SUCCESS,
             payload: data.data,
