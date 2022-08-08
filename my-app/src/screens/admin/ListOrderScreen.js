@@ -240,11 +240,8 @@ const ListOrderScreen = () => {
                 <Column title="Total Price" dataIndex="total" key="total" sorter={(a, b) => a.total - b.total} />
                 <Column title="User's Order" dataIndex="createdBy" render={(_, record) => `${record.user.first_name} ${record.user.last_name}`} key="createdBy" />
                 <Column title="Order Created Time" dataIndex="createdTimme" render={(_, record) => (moment(record.createdTimme).format('LLLL'))} key="created_time" />
-                <Column title="Table Booked" dataIndex="bookTable"
-                    render={(_, record) => record.bookTable.listTable.map(e => (
-                        e.tableNumber + ', '
-                    )
-                    )
+                <Column title="Total Table Booked" dataIndex="bookTable"
+                    render={(_, record) => record.bookTable.listTable.length
                     }
                     key="createdBy" />
                 <Column

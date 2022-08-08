@@ -2,7 +2,7 @@ import {
   Button,
   Form,
   Input,
-  Switch, Card, Space, Divider
+  Switch, Card, Space, Divider, InputNumber
 } from 'antd';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,7 +25,7 @@ const AddDishScreen = () => {
   const [message, setMessage] = useState();
   // const [menuState, setmenuState] = useState();
   // const [subCategoryState, SetSubCategoryState] = useState();
-
+  const [dishImg, setDishImg] = useState('');
   const dispatch = useDispatch();
 
 
@@ -85,7 +85,7 @@ const AddDishScreen = () => {
   //CALL API ZONEEE
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
-    dispatch(addDish(values.dishname, values.description, values.menu, values.subcategory));
+    dispatch(addDish(values.dishname, values.price, values.description, values.menu, values.subcategory, dishImg));
   };
 
 
@@ -99,6 +99,7 @@ const AddDishScreen = () => {
 
   const onLoad = fileString => {
     console.log(fileString);
+    setDishImg(fileString);
   };
 
   const getBase64 = file => {
@@ -115,7 +116,7 @@ const AddDishScreen = () => {
           bordered={false}
           style={{
             marginTop: 20, marginLeft: 150,
-            width: 1000, height: 700,borderRadius: 25
+            width: 1000, height: 700, borderRadius: 25
           }}
         >
           <Divider plain>     <h1 style={{ fontSize: 30 }}>Add Dish</h1></Divider>
@@ -142,6 +143,17 @@ const AddDishScreen = () => {
               ]}
             >
               <Input />
+            </Form.Item>
+
+            <Form.Item label="Price" name="price"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input Price!',
+                },
+              ]}
+            >
+              <InputNumber min={0} defaultValue={0} style={{ width: 250 }} />
             </Form.Item>
             <Form.Item label="Menu" name="menu">
               <Select
