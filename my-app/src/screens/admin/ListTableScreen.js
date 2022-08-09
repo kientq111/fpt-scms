@@ -30,7 +30,7 @@ const StyledTable = styled((props) => <Table {...props} />)`
 
 const openNotificationWithIcon = (type, description) => {
     notification[type]({
-        message: 'Notification Title',
+        message: 'Opp!',
         description: description
     });
 };

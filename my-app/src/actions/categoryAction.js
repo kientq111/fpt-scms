@@ -35,7 +35,6 @@ export const addCategory = (categoryName, description) => async (dispatch, getSt
             payload: data,
         })
 
-        dispatch({ type: categoryConstants.CATEGORY_ADD_RESET })
 
     } catch (error) {
         dispatch({

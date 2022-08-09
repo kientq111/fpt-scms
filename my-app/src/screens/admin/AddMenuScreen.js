@@ -3,7 +3,7 @@ import {
     Form,
     Input,
     Row,
-    Breadcrumb, Card, Divider
+    Breadcrumb, Card, Divider, Space
 } from 'antd';
 import Loader from '../../components/Loader';
 import { useState, useEffect } from 'react';
@@ -49,10 +49,13 @@ const AddMenuScreen = () => {
 
     let listDishOption = [];
     const getListDishSelector = useSelector((state) => state.dishList);
+    const addMenuSelector = useSelector((state) => state.menuAdd);
+    const addMenuSuccess = addMenuSelector.success
+    const addMenuLoading = addMenuSelector.loading
     const { loading, dishes } = getListDishSelector;
     const onFinish = (values) => {
         // console.log(values.dish);
-         dispatch(addMenu(values.menu, values.description, values.dish))
+        dispatch(addMenu(values.menu, values.description, values.dish))
     };
 
 
@@ -86,6 +89,7 @@ const AddMenuScreen = () => {
                     onFinish={onFinish}
                     scrollToFirstError
                 >
+                    {addMenuSuccess && <div style={{ textAlign: 'center' }}><h5 style={{ color: 'green' }}>ADD MENU SUCCESS</h5></div>}
                     <Form.Item
                         name="menu"
                         label="Menu Name"
@@ -122,13 +126,16 @@ const AddMenuScreen = () => {
                             },
                         ]}
                     >
-                        <Input.TextArea showCount maxLength={100} style={{height:150}} />
+                        <Input.TextArea showCount maxLength={100} style={{ height: 150 }} />
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit">
-                            Add menu
-                        </Button>
+                        <Space size={'middle'}>
+                            <Button type="primary" htmlType="submit">
+                                Add menu
+                            </Button>
+                            {addMenuLoading && <Loader />}
+                        </Space>
                     </Form.Item>
                 </Form>
 

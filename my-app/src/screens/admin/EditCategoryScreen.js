@@ -89,11 +89,11 @@ const EditCategoryScreen = () => {
         {error && <h1 style={{ color: 'red', fontSize: 20 }}>{error}</h1>}
         {(() => {
           if (loading === false) {
-            if (categoryInfo.isSuccess === false) {
+            if (categoryInfo.success === false) {
               return (
                 <h2 style={{ color: 'red', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>{categoryInfo.data}</h2>
               )
-            } else if (categoryInfo.isSuccess === true) {
+            } else if (categoryInfo.success === true) {
               return (
                 <h2 style={{ color: 'green', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>update category successfull</h2>
               )
@@ -143,7 +143,7 @@ const EditCategoryScreen = () => {
                 Update Category
               </Button>
               <Button onClick={() => navigate('/admin/listcategory')}>
-                Update Category
+                Cancel
               </Button>
             </Space>
           </Form.Item>

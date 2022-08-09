@@ -140,7 +140,7 @@ const ListUserScreen = () => {
   });
   const [form] = Form.useForm();
   const location = useLocation();
-  const editUser = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street) => {
+  const editUser = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street, gender) => {
 
     navigate('/admin/edituser', {
       state:
@@ -150,6 +150,7 @@ const ListUserScreen = () => {
         firstname: firstname,
         lastname: lastname,
         dob: dob,
+        gender: gender,
         email: email,
         phone: phone,
         status: status,
@@ -298,7 +299,7 @@ const ListUserScreen = () => {
                 <a><EyeOutlined onClick={() => userDetailHandler(record.id, record.username, record['first_name'], record['last_name'],
                   record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street)} /></a>
                 <a onClick={() => editUser(record.id, record.username, record['first_name'], record['last_name'],
-                  record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street)}><EditOutlined style={{ fontSize: 17 }} /></a>
+                  record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street, record.gender)}><EditOutlined style={{ fontSize: 17 }} /></a>
                 <Popconfirm
                   title="Are you sure to delete this task?"
                   onConfirm={() => confirm(record.id)}

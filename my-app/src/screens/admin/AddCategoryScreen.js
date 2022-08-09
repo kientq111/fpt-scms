@@ -51,10 +51,10 @@ const AddCateScreen = () => {
   };
 
 
-  useEffect(() => {
-    console.log(categoryInfo);
+  // useEffect(() => {
+  //   console.log(categoryData);
 
-  }, [])
+  // }, [])
 
   return (
     <Row>
@@ -74,11 +74,11 @@ const AddCateScreen = () => {
         {error && <h1 style={{ color: 'red', fontSize: 20 }}>{error}</h1>}
         {(() => {
           if (loading === false) {
-            if (categoryInfo.isSuccess === false) {
+            if (categoryInfo.success === false) {
               return (
                 <h2 style={{ color: 'red', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>{categoryInfo.data}</h2>
               )
-            } else if (categoryInfo.isSuccess === true) {
+            } else if (categoryInfo.success === true) {
               return (
                 <h2 style={{ color: 'green', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>Add category successfull</h2>
               )

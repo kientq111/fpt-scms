@@ -96,9 +96,11 @@ export const addMenu = (menuName, description, listDish) => async (dispatch, get
         const updatedTime = new Date();
         const createdTime = new Date();
         let listDishId = [];
-        listDish.forEach(e => {
-            listDishId.push(e.id)
-        });
+        if (listDish !== undefined) {
+            listDish.forEach(e => {
+                listDishId.push(e.id)
+            });
+        }
         console.log(listDishId);
         const { data } = await axios.post(
             `${base_url}/menu/addOrUpdate`,

@@ -231,7 +231,7 @@ export const deleteUser = (id) => async (dispatch, getState) => {
   }
 }
 
-export const updateUser = (id, username, email, dob, first_name, last_name, phone, address) => async (dispatch, getState) => {
+export const updateUser = (id, username, email, dob, first_name, last_name, phone, address, gender) => async (dispatch, getState) => {
   try {
     dispatch({
       type: userConstants.USER_UPDATE_REQUEST,
@@ -241,7 +241,7 @@ export const updateUser = (id, username, email, dob, first_name, last_name, phon
       userLogin: { userInfo },
     } = getState()
 
-    const createdBy = "";
+    const createdBy = "admin";
     const updatedBy = userInfo.username;
 
     const config = {
@@ -252,7 +252,7 @@ export const updateUser = (id, username, email, dob, first_name, last_name, phon
       },
     }
 
-    const { data } = await axios.put(`${base_url}/updateUser/${id}`, { username, email, dob, first_name, last_name, createdBy, updatedBy, phone, address }, config)
+    const { data } = await axios.put(`${base_url}/updateUser/${id}`, { username, email, dob, first_name, last_name, createdBy, updatedBy, phone, address, gender }, config)
 
     dispatch({ type: userConstants.USER_UPDATE_SUCCESS, payload: data })
 

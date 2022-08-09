@@ -49,6 +49,7 @@ const tailFormItemLayout = {
 const EditUserScreen = () => {
     const [form] = Form.useForm();
     //useLocation to get state from previous screen
+
     const location = useLocation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -63,12 +64,13 @@ const EditUserScreen = () => {
     let [isDistrictChance, setIsDistrictChange] = useState(false);
     let [isWardChange, setIsWardChange] = useState(false);
     let wardsInitialIndex;
-
-
+    let oldGender = (location.state.gender === "Male" ? 0 : 1);
+    let isOptionGenderChange = false;
 
     //INIT OLD USER PROFILE
     useEffect(() => {
         const formatDob = moment(location.state.dob).format('YYYY-MM-DD')
+        console.log(location.state.gender);
         form.setFieldsValue({
             first_name: location.state.firstname,
             last_name: location.state.lastname,
@@ -127,7 +129,7 @@ const EditUserScreen = () => {
             district: "",
             wards: ""
         })
-      setIsProvinChange(true)
+        setIsProvinChange(true)
     }
 
     function handleDistrictSelect(value) {
@@ -141,7 +143,7 @@ const EditUserScreen = () => {
         form.setFieldsValue({
             wards: "",
         })
-    setIsDistrictChange(true)
+        setIsDistrictChange(true)
     }
 
     function handleWardSelect() {
@@ -151,7 +153,7 @@ const EditUserScreen = () => {
 
     //Submit edit form to action
     const onFinish = (values) => {
-        console.log('Received values of form: ', values);
+        let gender;
         let ward = streetSplit[1]
         let district = location.state.district;
         let city = location.state.city;
@@ -166,7 +168,11 @@ const EditUserScreen = () => {
             ward = values.wards.name;
         }
 
+        gender = (oldGender === 0 ? false : true)
 
+        if (isOptionGenderChange === true) {
+            gender = values.gender.value
+        }
 
         const address = {
             street: `${values.street}-${ward}`,
@@ -174,8 +180,8 @@ const EditUserScreen = () => {
             city: city,
             country: 'Việt Nam',
         }
-        console.log(address);
-          dispatch(updateUser(location.state.id, values.username, values.email, values.dob, values.first_name, values.last_name, values.phone, address));
+        console.log(gender);
+        dispatch(updateUser(location.state.id, values.username, values.email, values.dob, values.first_name, values.last_name, values.phone, address, gender));
 
     };
 
@@ -198,6 +204,20 @@ const EditUserScreen = () => {
             navigate('/admin/listuser')
         }
     }
+
+    const optionGenderChangeHandle = () => {
+        isOptionGenderChange = true;
+    }
+
+    const optionGender = [{
+        value: false,
+        label: "Male"
+    },
+    {
+        value: true,
+        label: "Female"
+    }
+    ]
 
     return (
         <Row>
@@ -225,7 +245,7 @@ const EditUserScreen = () => {
                         name="email"
                         label="E-mail"
                     >
-                        <Input readOnly disabled/>
+                        <Input readOnly disabled />
                     </Form.Item>
 
                     <Form.Item
@@ -270,7 +290,16 @@ const EditUserScreen = () => {
                         <Input />
                     </Form.Item>
 
-
+                    <Form.Item
+                        name="gender"
+                        label="Gender"
+                    >
+                        <Select
+                            onChange={optionGenderChangeHandle}
+                            defaultValue={[optionGender[oldGender]]}
+                            options={optionGender}
+                        />
+                    </Form.Item>
                     <Form.Item name="dob" label="Date of Birth" rules={[
                         {
                             required: true,
