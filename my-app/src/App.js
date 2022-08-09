@@ -151,7 +151,7 @@ const App = () => {
             textAlign: 'center',
           }}
         >
-          @Smart Canteen
+          @Smart Canteen version 2
         </Footer>
       </Layout>
     </Layout >
