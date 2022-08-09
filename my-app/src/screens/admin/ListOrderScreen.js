@@ -1,10 +1,9 @@
 import {
-    Space, Table, Breadcrumb, message, Popconfirm, Form, Divider, Button, Col, Row, Input, Modal, Badge, Descriptions, Popover
+    Space, Table, Breadcrumb, message, Popconfirm, Form, Divider, Button, Col, Row, Input, Modal, Badge, Descriptions, Popover, DatePicker
 } from 'antd';
 import { React, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link, useLocation } from "react-router-dom";
-import { changeCategoryStatus } from '../../actions/categoryAction';
+import { useNavigate, useLocation } from "react-router-dom";
 import { LargeLoader } from '../../components/Loader';
 import moment from 'moment'
 import Highlighter from 'react-highlight-words';
@@ -183,11 +182,18 @@ const ListOrderScreen = () => {
                 text
             ),
     });
-
+    const { RangePicker } = DatePicker;
     const refreshListOrder = () => {
         dispatch(listOrders())
     }
-
+    const dateOnchangeHandle = (value) => {
+        if (value === null) {
+            return
+        }
+        console.log(value[0]['_d'])
+        console.log('========');
+        console.log(value[1]['_d'])
+    }
     return (
         <>
 
@@ -198,6 +204,13 @@ const ListOrderScreen = () => {
                 </Breadcrumb.Item>
             </Breadcrumb>
             <Divider orientation="right">  <Button type="" size="middle" onClick={refreshListOrder}>Refresh</Button></Divider>
+            <div>
+                <Row>
+                    <Col span={8}></Col>
+                    <Col span={8}></Col>
+                    <Col span={8}> <RangePicker onChange={(value) => dateOnchangeHandle(value)} /></Col>
+                </Row>
+            </div>
             {loading === true && <>
                 <br></br> <br /> <br />
                 <br></br> <br /> <br />
@@ -207,71 +220,97 @@ const ListOrderScreen = () => {
                     <Col span={5}><LargeLoader /></Col>
                     <Col span={5}></Col>
                 </Row></>}
-            {loading === false && <StyledTable dataSource={orders} className="table-striped-rows">
-                <Column title="Order Number" dataIndex="orderNumber" key="orderNumber" {...getColumnSearchProps('orderNumber')} />
-                <Column title="description" dataIndex="description" key="description" width={'20%'}
-                    render={(_, record) => (<LinesEllipsis
-                        text={record.description}
-                        maxLine='1'
-                        ellipsis='...'
-                        trimRight
-                        basedOn='letters'
-                    />)}
-                />
-                <Column title="Order Status" dataIndex="status"
-                    filters={[
-                        {
-                            text: 'Order Pending',
-                            value: 1,
-                        },
-                        {
-                            text: 'Order Success',
-                            value: 2,
-                        },
-                        {
-                            text: 'Order Cancel',
-                            value: 4,
-                        },
-                    ]}
-                    onFilter={(value, record) => record.status === value}
-                    render={(_, record) => (record.status === 1 ? "Order Pending" : record.status === 2 ? "Order Success" : "Order Cancel")}
-                    key="status"
-                />
-                <Column title="Total Price" dataIndex="total" key="total" sorter={(a, b) => a.total - b.total} />
-                <Column title="User's Order" dataIndex="createdBy" render={(_, record) => `${record.user.first_name} ${record.user.last_name}`} key="createdBy" />
-                <Column title="Order Created Time" dataIndex="createdTimme" render={(_, record) => (moment(record.createdTimme).format('LLLL'))} key="created_time" />
-                <Column title="Total Table Booked" dataIndex="bookTable"
-                    render={(_, record) => record.bookTable.listTable.length
-                    }
-                    key="createdBy" />
-                <Column
-                    title="Action"
-                    key="action"
-                    render={(_, record) => (
-                        <Space size="middle">
-                            <a ><EyeOutlined onClick={() => showModal(record)} /></a>
-                            <Popover content={<div>
-                                <Space
-                                    direction="vertical"
-                                    size="small"
-                                    style={{
-                                        display: 'flex',
-                                    }}
-                                >
-                                    <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, 2) }}>Change to OrderSuccess</a>
-                                    <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, 1) }}>Change to OrderPending</a>
-                                    <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, 4) }}>Change to OrderCancel</a>
-                                </Space>
-                            </div>} title="Change Status" trigger="click">
-                                <a style={{ color: 'blue' }}>Change Status</a>
-                            </Popover>
-                        </Space>
-                    )}
-                />
-            </StyledTable>}
+            {loading === false &&
+                <StyledTable dataSource={orders} className="table-striped-rows">
+                    <Column title="Order Number" dataIndex="orderNumber" key="orderNumber" {...getColumnSearchProps('orderNumber')} />
+                    <Column title="description" dataIndex="description" key="description" width={'20%'}
+                        render={(_, record) => (<LinesEllipsis
+                            text={record.description}
+                            maxLine='1'
+                            ellipsis='...'
+                            trimRight
+                            basedOn='letters'
+                        />)}
+                    />
+                    <Column title="Order Status" dataIndex="status"
+                        filters={[
+                            {
+                                text: 'Order Pending',
+                                value: 1,
+                            },
+                            {
+                                text: 'Order Success',
+                                value: 2,
+                            },
+                            {
+                                text: 'Order Cancel',
+                                value: 4,
+                            },
+                        ]}
+                        onFilter={(value, record) => record.status === value}
+                        render={(_, record) => (record.status === 1 ? "Order Pending" : record.status === 2 ? "Order Success" : "Order Cancel")}
+                        key="status"
+                    />
+                    <Column title="Total Price" dataIndex="total" key="total" sorter={(a, b) => a.total - b.total} />
+                    <Column title="User's Order" dataIndex="createdBy" render={(_, record) => `${record.user.first_name} ${record.user.last_name}`} key="createdBy" />
+                    <Column title="Order Created Time" dataIndex="createdTimme" render={(_, record) => (moment(record.createdTimme).format('LLLL'))} key="created_time" />
+                    <Column title="Total Table Booked" dataIndex="bookTable"
+                        render={(_, record) => record.bookTable.listTable.length
+                        }
+                        key="createdBy" />
+                    <Column
+                        title="Action"
+                        key="action"
+                        render={(_, record) => (
+                            <Space size="middle">
+                                <a ><EyeOutlined onClick={() => showModal(record)} /></a>
+                                <Popover content={<div>
+                                    <Space
+                                        direction="vertical"
+                                        size="small"
+                                        style={{
+                                            display: 'flex',
+                                        }}
+                                    >
+                                        <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, 2) }}>Change to OrderSuccess</a>
+                                        <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, 1) }}>Change to OrderPending</a>
+                                        <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, 4) }}>Change to OrderCancel</a>
+                                    </Space>
+                                </div>} title="Change Status" trigger="click">
+                                    <a style={{ color: 'blue' }}>Change Status</a>
+                                </Popover>
+                            </Space>
+                        )}
+                    />
+                </StyledTable>}
 
 
             {/* Modal show detail order */}
+            {/* <Modal title="Detail Order" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText="Changed Status" width={'50%'}>
+                <Descriptions title="Order Info" layout="vertical" bordered>
+                    <Descriptions.Item label="Order Number"><b>{orderDetailModal.orderNumber}</b></Descriptions.Item>
+                    <Descriptions.Item label="Total Money"><b>{orderDetailModal.total}</b></Descriptions.Item>
+                    <Descriptions.Item label="Order By" span={2}>
+                        <b>{orderDetailModal.user.first_name} {orderDetailModal.user.last_name}</b>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="User Phone Number"><b><i>{orderDetailModal.user.phone}</i></b></Descriptions.Item>
+                    <Descriptions.Item label="Order Started Time"><b>{moment(orderDetailModal.createdTimme).format('LLLL')}</b></Descriptions.Item>
+                    <Descriptions.Item label="Order Status" span={3}>
+                        <Badge status={orderDetailModal.status === 1 ? "processing" : "success"} text={orderDetailModal.status === 1 ? "Order Pending" : "Order Success"} />
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Table Booked"><b>{orderDetailModal.bookTable.listTable.map(e => (e.tableNumber + ', '))}</b></Descriptions.Item>
+                    <Descriptions.Item label="Estimate Time">{orderDetailModal.bookTable.estimateReceiveTime === undefined ? "null" : orderDetailModal.bookTable.estimateReceiveTime}</Descriptions.Item>
+                    <Descriptions.Item label="Table Status">
+                        <Badge status={orderDetailModal.bookTable.status === 1 ? "success" : "processing"} text={orderDetailModal.bookTable.status === 1 ? "Table Booked" : "Table Free"} />
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Description">
+                        {orderDetailModal.description}
+                    </Descriptions.Item>
+                </Descriptions>
+            </Modal> */}
+
+
+
             <Modal title="Detail Order" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText="Changed Status" width={'50%'}>
                 <Descriptions title="Order Info" layout="vertical" bordered>
                     <Descriptions.Item label="Order Number"><b>{orderDetailModal.orderNumber}</b></Descriptions.Item>

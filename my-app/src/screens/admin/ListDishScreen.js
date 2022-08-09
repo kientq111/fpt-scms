@@ -204,12 +204,12 @@ const ListDishScreen = () => {
 
                 <Column title="Sub Category" dataIndex="subCategory" render={(_, record) => record.subCategory.subCategoryName} key="subCategory" />
                 <Column title="Price" dataIndex="price" render={(_, record) => record.price === null ? "null" : record.price} key="price" sorter={(a, b) => a.price - b.price} />
-                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>true</p> : <p style={{ color: 'red' }}>false</p>)}
+                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>enable</p> : <p style={{ color: 'red' }}>disable</p>)}
                     filters={[{
-                        text: 'True',
+                        text: 'enable',
                         value: 1,
                     }, {
-                        text: 'False',
+                        text: 'disable',
                         value: 0,
                     },]} onFilter={(value, record) => record.status === value}
                     key="status" />

@@ -4,7 +4,7 @@ import {
   Col,
   Form,
   Input,
-  InputNumber,
+  Space,
   Row,
   Breadcrumb, Card, Divider
 } from 'antd';
@@ -44,8 +44,12 @@ const tailFormItemLayout = {
   },
 };
 const AddSubCategoryScreen = () => {
-  const categoryData = useSelector((state) => state.categoryList);
   const dispatch = useDispatch()
+  const categoryData = useSelector((state) => state.categoryList);
+  const addSubCategorySelector = useSelector((state) => state.subCategoryAdd);
+  const loadingAddSubCategory = addSubCategorySelector.loading;
+  const subCategoryInfo = addSubCategorySelector.subCategoryInfo;
+  const subCategoryError = addSubCategorySelector.error;
   let optionListSubCategoryMenu = [];
   const { loading, categoryInfo } = categoryData;
   const [form] = Form.useForm();
@@ -58,7 +62,8 @@ const AddSubCategoryScreen = () => {
 
   useEffect(() => {
     dispatch(listCategory())
-  }, [])
+    console.log(subCategoryInfo)
+  }, [subCategoryInfo])
 
   if (loading === false) {
     optionListSubCategoryMenu = categoryInfo;
@@ -73,9 +78,23 @@ const AddSubCategoryScreen = () => {
         </Breadcrumb.Item>
       </Breadcrumb>
       <Card
-        style={{ marginTop: 30, width: 1100, height: 700,borderRadius: 25 }}
+        style={{ marginTop: 30, width: 1100, height: 700, borderRadius: 25 }}
       >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>Add SubCategory</h1></Divider>
+        {subCategoryError && <h1 style={{ color: 'red', fontSize: 20 }}>{subCategoryError}</h1>}
+        {(() => {
+          if (loadingAddSubCategory === false) {
+            if (subCategoryInfo.success === false) {
+              return (
+                <h2 style={{ color: 'red', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>{subCategoryInfo.data}</h2>
+              )
+            } else if (subCategoryInfo.success === true) {
+              return (
+                <h2 style={{ color: 'green', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>Add category successfull</h2>
+              )
+            }
 
+          }
+        })()}
         <Form style={{ marginTop: 50, marginRight: 150 }}
           {...formItemLayout}
           form={form}
@@ -83,7 +102,6 @@ const AddSubCategoryScreen = () => {
           onFinish={onFinish}
           scrollToFirstError
         >
-
 
           <Form.Item
             name="subCategoryName"
@@ -122,13 +140,18 @@ const AddSubCategoryScreen = () => {
               },
             ]}
           >
-            <Input.TextArea showCount maxLength={100} style={{height:200}} />
+            <Input.TextArea showCount maxLength={100} style={{ height: 200 }} />
           </Form.Item>
 
           <Form.Item {...tailFormItemLayout}>
-            <Button type="primary" htmlType="submit">
-              Add Category
-            </Button>
+            <Space size={'middle'}>
+              {loadingAddSubCategory && <Loader />}
+              <Button type="primary" htmlType="submit">
+                Add Category
+              </Button>
+
+            </Space>
+
           </Form.Item>
         </Form>
 

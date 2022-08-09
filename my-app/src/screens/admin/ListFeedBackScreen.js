@@ -225,7 +225,7 @@ const ListFeedBackScreen = () => {
 
             {/* Modal show detail feedback */}
             <>
-                <Modal title="FeedBack Detail" visible={isModalVisible} onOk={handleOk} width={'50%'}>
+                <Modal title="FeedBack Detail" visible={isModalVisible} onOk={handleOk} onCancel={handleOk} width={'50%'}>
                     <p><b>Sender:</b> {userDetailModal.username}</p>
                     <p><b>Phone:</b> {userDetailModal.phone}</p>
                     <p><b>Email:</b> {userDetailModal.email}</p>

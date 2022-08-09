@@ -203,7 +203,7 @@ const ListMenuScreen = () => {
             {loading === false && <StyledTable dataSource={menus} className="table-striped-rows" >
                 <Column title="Menu Name" dataIndex="menuName" key="menuName" {...getColumnSearchProps('menuName')} />
                 <Column title="Description" dataIndex="description" key="description" />
-                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: "green" }}>Enable</p> : <p style={{ color: "red" }}>Disable</p>)}
+                <Column title="Menu Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: "green" }}>Enable</p> : <p style={{ color: "red" }}>Disable</p>)}
                     filters={[{
                         text: 'Enable',
                         value: 1,
