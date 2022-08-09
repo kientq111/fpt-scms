@@ -207,21 +207,21 @@ const ListBlogScreen = () => {
                 </Row></>}
             {loading === false && <StyledTable dataSource={blogs} className="table-striped-rows">
                 <Column title="Blog Name" dataIndex="name" key="name" {...getColumnSearchProps('dishName')} />
-                <Column title="Content" dataIndex="content" key="content" width={'25%'} {...getColumnSearchProps('content')}
+                {/* <Column title="Content" dataIndex="content" key="content" width={'25%'} {...getColumnSearchProps('content')}
                     render={(_, record) => (<LinesEllipsis
                         text={record.content}
                         maxLine='1'
                         ellipsis='...'
                         trimRight
                         basedOn='letters'
-                    />)} />
+                    />)} /> */}
                 <Column title="Status" dataIndex="status" key="status"
-                    render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>true</p> : <p style={{ color: 'red' }}>false</p>)}
+                    render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>active</p> : <p style={{ color: 'red' }}>inactive</p>)}
                     filters={[{
-                        text: 'True',
+                        text: 'active',
                         value: 1,
                     }, {
-                        text: 'False',
+                        text: 'inactive',
                         value: 0,
                     },]} onFilter={(value, record) => record.status === value}
                 />

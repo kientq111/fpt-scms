@@ -131,20 +131,6 @@ export const changeTableStatus = (id, status) => async (dispatch, getState) => {
             },
         }
 
-        switch (status) {
-            case 1:
-                status = 2
-                break;
-            case 2:
-                status = 4
-                break;
-            case 4:
-                status = 1
-                break;
-            default:
-                break;
-        }
-
         const { data } = await axios.put(`${base_url}/table/changeStatusTable?status=${status}&tableId=${id}`, {}, config)
         dispatch({
             type: tableConstants.TABLE_CHANGE_STATUS_SUCCESS,

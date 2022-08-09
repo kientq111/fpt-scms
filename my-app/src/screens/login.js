@@ -26,7 +26,7 @@ const LoginScreen = () => {
         setUsername(values.username)
         setPassword(values.password)
         console.log('Received values of form: ', values);
-           // dispatch(login(values.username, values.password));
+            // dispatch(login(values.username, values.password));
          dispatch(checkAccount(values.username));
     };
     const navigate = useNavigate();

@@ -39,10 +39,6 @@ const itemsAdmin = [
         // getItem('List User', '/admin/listuser'),
         getItem('List Order', '/admin/listorder'),
     ]),
-    getItem('Booking Table Manager', '7', <TagOutlined />, [
-        // getItem('List User', '/admin/listuser'),
-        getItem('List Booking Table', '/admin/listbookingtable'),
-    ]),
     getItem('Menu Manager', '3', <DesktopOutlined />, [
         getItem('Add Menu', '/admin/addmenu'),
         getItem('List Menu', '/admin/listmenu'),
@@ -70,10 +66,6 @@ const itemsStaff = [
     getItem('Dashboard', '/admin/dashboard', <PieChartOutlined />),
     getItem('Order Manager', '2', <TagOutlined />, [
         getItem('List Order', '/admin/listorder'),
-    ]),
-    getItem('Booking Table Manager', '7', <TagOutlined />, [
-        // getItem('List User', '/admin/listuser'),
-        getItem('List Booking Table', '/admin/listbookingtable'),
     ]),
     getItem('Menu Manager', '3', <DesktopOutlined />, [
         getItem('Add Menu', '/admin/addmenu'),

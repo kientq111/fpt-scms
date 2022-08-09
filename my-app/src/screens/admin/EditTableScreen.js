@@ -3,7 +3,7 @@ import {
     Form,
     Input,
     Row,
-    Select, Breadcrumb, Card, Divider
+    Select, Breadcrumb, Card, Divider, Space
 } from 'antd';
 import Loader from '../../components/Loader';
 import { useState, useEffect } from 'react';
@@ -126,10 +126,15 @@ const EditTableScreen = () => {
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>
-                        {loading && <Loader />}
-                        <Button type="primary" htmlType="submit">
-                            Update Table
-                        </Button>
+                        <Space size={'middle'}>
+                            {loading && <Loader />}
+                            <Button type="primary" htmlType="submit">
+                                Update Table
+                            </Button>
+                            <Button onClick={() => window.history.back()}>
+                                Cancel
+                            </Button>
+                        </Space>
                     </Form.Item>
                 </Form>
 
