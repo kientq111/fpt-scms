@@ -30,7 +30,7 @@ const StyledTable = styled((props) => <Table {...props} />)`
 
 const openNotificationWithIcon = (type, description) => {
     notification[type]({
-        message: 'Opp!',
+        message: 'Notification!',
         description: description
     });
 };
@@ -168,7 +168,7 @@ const ListTableScreen = () => {
 
 
     const changeTableStatusHandle = (id, previousStatus, statusChange) => {
-    
+
         if ((previousStatus === 1 && statusChange === 8) || (previousStatus === 8 && statusChange === 1)) {
             openNotificationWithIcon("error", "Can not Book a Table Unavailable or Unavailable a Table Booked!")
             return
@@ -180,7 +180,7 @@ const ListTableScreen = () => {
         }
         console.log("Change")
         openNotificationWithIcon("success", "Change Status Table Successful!")
-         dispatch(changeTableStatus(id, statusChange))
+        dispatch(changeTableStatus(id, statusChange))
     }
 
     const editTableHandle = (table) => {
@@ -256,8 +256,6 @@ const ListTableScreen = () => {
                         },
                     ]}
                     onFilter={(value, record) => record.status === value}
-                />
-                <Column title="Type" dataIndex="type" key="type"
                 />
                 <Column title="Created Date" dataIndex="createdDate" render={(_, record) => (moment(record.createdDate).format('DD/MM/YYYY'))} key="createdDate" />
                 <Column title="Created By" dataIndex="createdBy" key="createdBy" />

@@ -149,8 +149,12 @@ const ListDishScreen = () => {
         message.success('Update Status successful');
     };
 
-    const updateDishHandle = (id, dishName, subCategory, description, createdTime, createdBy) => {
+    const updateDishHandle = (id, dishName, subCategory, description, createdTime, createdBy, price, img, finishedTime, status) => {
         console.log(id, dishName, subCategory, description);
+        if (status === 0) {
+            message.info('You must enable status before update this dish');
+            return
+        }
         navigate('/admin/editdish', {
             state:
             {
@@ -160,7 +164,11 @@ const ListDishScreen = () => {
                 description: description,
                 createdTime: createdTime,
                 createdBy: createdBy,
-                history: location.pathname
+                history: location.pathname,
+                price: price,
+                image: img,
+                finishedTime: finishedTime,
+                status: status,
             }
         })
     }
@@ -202,9 +210,9 @@ const ListDishScreen = () => {
                     basedOn='letters'
                 />)} key="description" />
 
-                <Column title="Sub Category" dataIndex="subCategory" render={(_, record) => record.subCategory.subCategoryName} key="subCategory" />
+                <Column title="SubCategory" dataIndex="subCategory" render={(_, record) => record.subCategory.subCategoryName} key="subCategory" />
                 <Column title="Price" dataIndex="price" render={(_, record) => record.price === null ? "null" : record.price} key="price" sorter={(a, b) => a.price - b.price} />
-                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>enable</p> : <p style={{ color: 'red' }}>disable</p>)}
+                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>Enable</p> : <p style={{ color: 'red' }}>Disable</p>)}
                     filters={[{
                         text: 'enable',
                         value: 1,
@@ -213,6 +221,7 @@ const ListDishScreen = () => {
                         value: 0,
                     },]} onFilter={(value, record) => record.status === value}
                     key="status" />
+                <Column title="Finished Time" dataIndex="finishedTime" key="finishedTime" render={(_, record) => (record.finishedTime + ' minute')}  sorter={(a, b) => a.finishedTime - b.finishedTime}/>
                 <Column title="Created Time" dataIndex="createdTime" key="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} />
                 <Column title="Created By" dataIndex="createdBy" key="createdBy" render={(_, record) => (record.createdBy == null ? 'null' : record.createdBy)} />
                 <Column title="Updated Time" dataIndex="updatedTime" key="updatedTime" render={(_, record) => (moment(record.updatedTime).format('DD/MM/YYYY'))} />
@@ -224,7 +233,7 @@ const ListDishScreen = () => {
                         <Space size="middle">
                             <a onClick={() => { dishDetailHandler(record.id) }}><EyeOutlined /></a>
                             <a onClick={() => { changeStatusHandle(record.id, record.status) }}>{record.status == 1 ? <Tag color="error">Change Status</Tag> : <Tag color="green">Change Status</Tag>}</a>
-                            <a onClick={() => { updateDishHandle(record.id, record.dishName, record.subCategory, record.description, record.createdTime, record.createdBy) }}><EditOutlined style={{ fontSize: 17 }} /></a>
+                            <a onClick={() => { updateDishHandle(record.id, record.dishName, record.subCategory, record.description, record.createdTime, record.createdBy, record.price, record.image, record.finishedTime, record.status) }}><EditOutlined style={{ fontSize: 17 }} /></a>
                         </Space>
                     )}
                 />

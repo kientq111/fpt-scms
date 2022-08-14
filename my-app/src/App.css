@@ -45,10 +45,6 @@ body {
     background-color: rgb(245, 237, 237);
 }
 
-.table-striped-rows thead {
-    background-color: #130808;
-}
-
 .backgroundLogin {
     background-image: url("../public/images/292425381_1636800160046535_3933860539575533942_n.png");
     background-size: cover;

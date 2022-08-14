@@ -85,7 +85,7 @@ const AddDishScreen = () => {
   //CALL API ZONEEE
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
-    dispatch(addDish(values.dishname, values.price, values.description, values.menu, values.subcategory, dishImg));
+    dispatch(addDish(values.dishname, values.price, values.description, values.menu, values.subcategory, dishImg, values.finishedTime));
   };
 
 
@@ -154,6 +154,16 @@ const AddDishScreen = () => {
               ]}
             >
               <InputNumber min={0} defaultValue={0} style={{ width: 250 }} />
+            </Form.Item>
+            <Form.Item label="Finished Time(min)" name="finishedTime"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input Finished Time!',
+                },
+              ]}
+            >
+              <InputNumber min={0} max={500} defaultValue={0} style={{ width: 250 }} />
             </Form.Item>
             <Form.Item label="Menu" name="menu">
               <Select

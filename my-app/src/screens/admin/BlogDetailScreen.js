@@ -37,7 +37,7 @@ const BlogDetailScreen = () => {
             <Row>
                 <Col span={3}></Col>
                 <Col span={18}>
-                    <Card style={{ height: 'auto' }}>
+                    <Card style={{ height: 'auto', width: '100%' }}>
                         <>
                             {loading && <Loader />}
                             {loading === false && <div style={{ marginLeft: 20, marginTop: 20 }}>
@@ -45,10 +45,10 @@ const BlogDetailScreen = () => {
                                 <Divider orientation="right" plain>
                                     {blogDate}
                                 </Divider>
-                                <div><img src={`${blogImg}`} alt="" width={'60%'} height={'50%'} /></div>
-                                <div dangerouslySetInnerHTML={{ __html: blogContent }} style={{ marginRight: 350, marginTop: 30 }}>
+                                <div><img src={`${blogImg}`} alt="" width={'70%'} height={'50%'} /></div>
+                                <div dangerouslySetInnerHTML={{ __html: blogContent }} style={{ marginRight: 350, marginTop: 30, width:'95%' }}>
                                 </div>
-                                <div style={{ height:200}}></div>
+                                <div style={{ height: 200 }}></div>
                             </div>}
                         </>
                     </Card></Col>
