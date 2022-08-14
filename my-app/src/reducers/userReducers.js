@@ -125,6 +125,24 @@ export const ChangeUserStatusReducer = (state = { users: [] }, action) => {
       return { loading: false, userInfo: action.payload, success: true }
     case userConstants.USER_CHANGE_STATUS_FAIL:
       return { loading: false, error: action.payload }
+    case userConstants.USER_CHANGE_STATUS_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+
+
+export const verifyAccountReducer = (state = { users: [] }, action) => {
+  switch (action.type) {
+    case userConstants.VERIFY_CODE_REQUEST:
+      return { loading: true }
+    case userConstants.VERIFY_CODE_SUCCESS:
+      return { loading: false, verifyStatus: action.payload, success: true }
+    case userConstants.VERIFY_CODE_FAIL:
+      return { loading: false, error: action.payload }
+    case userConstants.VERIFY_CODE_RESET:
+      return {}
     default:
       return state
   }

@@ -181,9 +181,11 @@ export const listUsers = () => async (dispatch, getState) => {
       payload: data.data,
     })
     dispatch({ type: userConstants.USER_UPDATE_RESET })
+
     dispatch({
-      type: userConstants.USER_CHECKACC_RESET,
+      type: userConstants.VERIFY_CODE_RESET,
     })
+
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -346,6 +348,41 @@ export const addStaff = (username, email, password, dob, first_name, last_name, 
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
+    })
+  }
+}
+
+export const verifyAccount = (email, code,) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: userConstants.VERIFY_CODE_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.accessToken}`
+
+      },
+    }
+
+    const { data } = await axios.post(`${base_url}/updateUserStatusIsActive?email=${email}&code=${code}`, {}, config)
+
+    dispatch({ type: userConstants.VERIFY_CODE_SUCCESS, payload: data })
+
+
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    dispatch({
+      type: userConstants.VERIFY_CODE_FAIL,
+      payload: message,
     })
   }
 }

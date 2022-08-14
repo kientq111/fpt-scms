@@ -198,7 +198,7 @@ const ListFeedBackScreen = () => {
                 <Column title="Sender" dataIndex="username" key="username" {...getColumnSearchProps('username')}
                 />
                 <Column title="content" dataIndex="content" key="content" render={(_, record) => (record.content === null ? "null" : record.content)} />
-                <Column title="Phone Number" dataIndex="phone" key="phone" />
+                <Column title="Phone Number" dataIndex="phone" key="phone" {...getColumnSearchProps('phone')} />
                 <Column title="Email" dataIndex="email" key="email"
                     {...getColumnSearchProps('email')}
                 />

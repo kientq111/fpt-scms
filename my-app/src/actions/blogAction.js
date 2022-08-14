@@ -93,9 +93,9 @@ export const editBlog = (id, name, content, image) => async (dispatch, getState)
                 Authorization: `Bearer ${userInfo.accessToken}`
             },
         }
-        const { data } = await axios.post(
-            `${base_url}/management/blogs/createPost`,
-            { id, name, content, image },
+        const { data } = await axios.put(
+            `${base_url}/management/blogs/update/post/${id}`,
+            { name, content, image },
             config
         );
         dispatch({

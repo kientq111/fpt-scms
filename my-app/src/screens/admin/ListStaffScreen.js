@@ -1,8 +1,8 @@
 import {
-  Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col
+  Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col, Modal, InputNumber
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
-import { deleteUser, listStaff } from '../../actions/userActions';
+import { changeUserStatus, deleteUser, listStaff, listUsers, verifyAccount } from '../../actions/userActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { SearchOutlined } from '@ant-design/icons';
@@ -12,19 +12,23 @@ import moment from 'moment'
 import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { Loader, LargeLoader } from '../../components/Loader';
 import LinesEllipsis from 'react-lines-ellipsis'
+import { userConstants } from '../../constants/Constants';
+import axios from 'axios';
 const { Column, ColumnGroup } = Table;
 
 const StyledTable = styled((props) => <Table {...props} />)`
-&& tbody > tr:hover > td {
-  background: rgba(208, 225, 225);
-}
-`;
+  && tbody > tr:hover > td {
+    background: rgba(208, 225, 225);
+  }
+  thead > tr > th {
+    background-color: rgba(202, 235, 199);
+  }
+  `;
 
-const ListStaffScreen = () => {
+const ListUserScreen = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
-
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -121,6 +125,92 @@ const ListStaffScreen = () => {
       ),
   });
 
+
+  const navigate = useNavigate();
+  const data = useSelector((state) => state.staffList);
+  const deleteSuccess = useSelector((state) => state.userDelete);
+  const updateSelector = useSelector((state) => state.userUpdate);
+  const changeUserStatusSelector = useSelector((state) => state.userChangeStatus);
+  const updateSuccess = updateSelector.success
+  const isChangeStatusSuccess = changeUserStatusSelector.success
+  const { success } = deleteSuccess;
+  const [userData, setUserData] = useState(data)
+  const { loading } = data;
+  const userLogin = useSelector((state) => state.userLogin)
+  const userLoginInfoToken = userLogin.userInfo.accessToken
+  const verifyStatusSelector = useSelector((state) => state.accountVerify)
+  const verifyStatusLoading = verifyStatusSelector.loading
+  const verifyStatusData = verifyStatusSelector.verifyStatus
+  const [pagination, setPagination] = useState({
+    pageSize: 9,
+  });
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const [form] = Form.useForm();
+  const location = useLocation();
+  const editUser = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street, gender) => {
+
+    navigate('/admin/edituser', {
+      state:
+      {
+        id: id,
+        username: username,
+        firstname: firstname,
+        lastname: lastname,
+        dob: dob,
+        gender: gender,
+        email: email,
+        phone: phone,
+        status: status,
+        country: country,
+        city: city,
+        district: district,
+        street: street,
+        history: location.pathname
+      }
+    })
+  }
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (updateSuccess === true) {
+      message.success('Update Successful');
+    }
+    if (isChangeStatusSuccess === true) {
+      message.success('Change Status Successful');
+      dispatch({
+        type: userConstants.USER_CHANGE_STATUS_RESET,
+      })
+    }
+    dispatch(listStaff());
+  }, [success, isChangeStatusSuccess]);
+
+
+
+  // Delete Update Form
+  const confirm = (id) => {
+    console.log(id);
+    message.success('Delete successful');
+    dispatch(deleteUser(id))
+  };
+
+  const cancel = (e) => {
+    console.log(e);
+  };
+
+
   const userDetailHandler = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street) => {
     console.log(id);
     navigate('/admin/userdetail', {
@@ -143,58 +233,72 @@ const ListStaffScreen = () => {
     })
   }
 
-  const navigate = useNavigate();
-  const data = useSelector((state) => state.staffList);
-  const deleteSuccess = useSelector((state) => state.userDelete);
-  const [userData, setUserData] = useState(data)
-  const loadingStaff = data.loading;
-  const [form] = Form.useForm();
-  const location = useLocation();
-  const editUser = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street) => {
-    console.log(id);
+  const changeUserStatusHandle = (username, status) => {
+    console.log(username, status);
+    dispatch(changeUserStatus(username, status));
+  }
+  //Verify Block
+  const verifyAccountHandle = (first_Name, last_Name, rawEmail, status) => {
+    if (status == true) {
+      console.log(status);
+      message.info('Email Has Verify!')
+      return
+    }
+    let firstName, lastName, email
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userLoginInfoToken}`,
+      },
+    }
 
-    navigate('/admin/edituser', {
-      state:
-      {
-        id: id,
-        username: username,
-        firstname: firstname,
-        lastname: lastname,
-        dob: dob,
-        email: email,
-        phone: phone,
-        status: status,
-        country: country,
-        city: city,
-        district: district,
-        street: street,
-        history: location.pathname
+    if (rawEmail !== undefined) {
+      let tempObj = {
+        firstName: first_Name,
+        lastName: last_Name,
+        email: rawEmail
       }
-    })
+      sessionStorage.setItem("verifySended", JSON.stringify(tempObj));
+    }
+    let getSessionObj = sessionStorage.getItem("verifySended");
+    const objSended = JSON.parse(getSessionObj)
+    firstName = objSended.firstName
+    lastName = objSended.lastName
+    email = objSended.email
+    console.log(firstName, lastName, email);
+    axios.post(`/verifyAccountSignUpOrUpdate`, { firstName, lastName, email }, config)
+      .then(res => {
+        message.info(`Sending`)
+      })
+      .catch(error => console.log(error));
+    showModal();
   }
 
-  const dispatch = useDispatch();
+  const verifyCodeHandle = (values) => {
+    let getSessionObj = sessionStorage.getItem("verifySended");
+    const objSended = JSON.parse(getSessionObj)
+    dispatch(verifyAccount(objSended.email, values.code))
+  }
+
   useEffect(() => {
-    dispatch(listStaff());
-    console.log(data.users)
-  }, [dispatch, deleteSuccess]);
+    if (verifyStatusLoading === false) {
+      if (verifyStatusData.success === false) {
+        message.error('VERIFY CODE INCORRECT');
+        dispatch({
+          type: userConstants.VERIFY_CODE_RESET,
+        })
+
+      } else {
+        message.success('VERIFY CODE SUCCESS');
+        setIsModalVisible(false);
+        dispatch(listStaff());
+      }
+
+    }
+  }, [verifyStatusData]);
 
 
-  //Delete Update Form
-  const confirm = (id) => {
-    console.log(id);
-    message.success('Delete successful');
-    dispatch(deleteUser(id))
-  };
-
-  const cancel = (e) => {
-    console.log(e);
-  };
-
-  const ActiveHandle = (id) => {
-    console.log(id);
-  }
-
+  //End Of Verify
   return (
     <>
       <Breadcrumb style={{ marginTop: 10 }}>
@@ -203,8 +307,9 @@ const ListStaffScreen = () => {
           <a href="">List Staff</a>
         </Breadcrumb.Item>
       </Breadcrumb>
-      <Divider orientation="right">  <Button type="primary" size="middle"><Link to={'/admin/addstaff'} style={{ textDecoration: 'none' }}>Add Staff</Link></Button></Divider>
-      {loadingStaff === true && <>
+      <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/addstaff'} style={{ textDecoration: 'none' }}>Add Staff</Link></Button></Divider>
+
+      {loading === true && <>
         <br></br> <br /> <br />
         <br></br> <br /> <br />
         <Row>
@@ -214,18 +319,19 @@ const ListStaffScreen = () => {
           <Col span={5}></Col>
         </Row></>}
 
-      {loadingStaff === false &&
+      {loading === false &&
         <StyledTable dataSource={data.users} className="table-striped-rows"
           scroll={{
             x: '200vw',
           }}
+          pagination={pagination}
         >
-          <Column title="UserName" dataIndex="username" key="username" {...getColumnSearchProps('username')} fixed={"left"}/>
-          <Column title="First Name" dataIndex="first_name" key="first_name" />
-          <Column title="Last Name" dataIndex="last_name" key="last_name" />
+          <Column title="UserName" dataIndex="username" key="username" {...getColumnSearchProps('username')} fixed={"left"} />
+          <Column title="First Name" dataIndex="first_name" key="first_name" {...getColumnSearchProps('first_name')} />
+          <Column title="Last Name" dataIndex="last_name" key="last_name"  {...getColumnSearchProps('last_name')} />
           <Column title="Date of Birth" dataIndex="dob" render={(_, record) => (moment(record.dob).format('DD/MM/YYYY'))} key="dob" />
           <Column title="Email" dataIndex="email" key="email" {...getColumnSearchProps('email')} />
-          <Column title="Phone Number" dataIndex="phone" key="phone" />
+          <Column title="Phone Number" dataIndex="phone" key="phone"  {...getColumnSearchProps('phone')} />
           <Column title="Gender" dataIndex="gender" key="gender" filters={[{
             text: 'Male',
             value: 'Male',
@@ -235,24 +341,24 @@ const ListStaffScreen = () => {
           },]} onFilter={(value, record) => record.gender.indexOf(value) === 0} />
 
 
-          <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>true</p> : <p style={{ color: 'red' }}>false</p>)}
+          <Column title="Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>UnBlock</p> : <p style={{ color: 'red' }}>Block</p>)}
             filters={[{
-              text: 'True',
-              value: '1',
+              text: 'Unblock',
+              value: 1,
             }, {
-              text: 'False',
-              value: '0',
+              text: 'Block',
+              value: 0,
             },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
             key="status" />
-          <Column title="is_active" dataIndex="is_active" render={(_, record) => (record.is_active == true ? <p style={{ color: 'green' }}>Active</p> : <p style={{ color: 'red' }}>Inactive</p>)}
+          <Column title="Email Active" dataIndex="is_active" render={(_, record) => (record.is_active == true ? <p style={{ color: 'green' }}>Active</p> : <p style={{ color: 'red' }}>Inactive</p>)}
             filters={[{
-              text: 'true',
+              text: 'active',
               value: true,
             }, {
-              text: 'false',
+              text: 'inactive',
               value: false,
             },]} onFilter={(value, record) => record.is_active === value}
-            key="Email Active" />
+            key="is_active" />
           <Column title="Country" dataIndex="address" render={(_, record) => record.address.country} key="country" />
           <Column title="City" dataIndex="address" render={(_, record) => record.address.city} key="city" />
           <Column title="District" dataIndex="address" render={(_, record) => record.address.district} key="district" />
@@ -267,16 +373,16 @@ const ListStaffScreen = () => {
           <Column title="Created Time" dataIndex="create_date" render={(_, record) => (moment(record.create_date).format('DD/MM/YYYY'))} key="create_date" />
           <Column title="Updated By" updated_by="updated_by" render={(_, record) => record.updated_by === null ? "Null" : record.updated_by} key="updated_by" />
           <Column title="Updated Time" dataIndex="updated_date" render={(_, record) => (moment(record.updated_date).format('DD/MM/YYYY'))} key="updated_date" />
+
           <Column
-            title="Action"
+            title="Action" width={'8%'}
             key="action"
-            fixed={"right"}
             render={(_, record) => (
               <Space size="middle">
                 <a><EyeOutlined onClick={() => userDetailHandler(record.id, record.username, record['first_name'], record['last_name'],
                   record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street)} /></a>
                 <a onClick={() => editUser(record.id, record.username, record['first_name'], record['last_name'],
-                  record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street)}><EditOutlined style={{ fontSize: 17 }} /></a>
+                  record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street, record.gender)}><EditOutlined style={{ fontSize: 17 }} /></a>
                 <Popconfirm
                   title="Are you sure to delete this task?"
                   onConfirm={() => confirm(record.id)}
@@ -286,15 +392,46 @@ const ListStaffScreen = () => {
                 >
                   <a><DeleteOutlined style={{ fontSize: 17 }} /></a>
                 </Popconfirm>
-
+                <a onClick={() => changeUserStatusHandle(record.username, record.status)} className='txtLink'>{record.status == 1 ? "Block" : "Unblock"}</a>
+                <a onClick={() => verifyAccountHandle(record.first_name, record.last_name, record.email, record.status)} className='txtLink'>{record.is_active == true ? <a style={{ color: 'green' }}>Verified</a> : <a style={{ color: 'blue' }}>Verify Email</a>}</a>
               </Space>
             )}
+            fixed={"right"}
           />
         </StyledTable>}
 
+      {/* Verify Modal */}
+      <Modal title="Verify Form" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+        <Form
+          onFinish={verifyCodeHandle}
+        >
+          <Form.Item
+            label="Verify Code"
+            name="code"
+            rules={[
+              {
+                required: true,
+                message: 'Please input code here!',
+              },
+            ]}
+          >
+            <Input min={0} max={9999} defaultValue={0} style={{ width: '30%' }} />
+          </Form.Item>
+          <Form.Item
+          >
+
+            <Button type="primary" htmlType="submit" size='middle' >
+              Verify
+            </Button>
+
+          </Form.Item>
+          <h1></h1>
+        </Form>
+        <a className='txtLink' onClick={() => verifyAccountHandle()}>re-send verify code</a>
+      </Modal>
     </>
 
   );
 };
 
-export default ListStaffScreen;
+export default ListUserScreen;

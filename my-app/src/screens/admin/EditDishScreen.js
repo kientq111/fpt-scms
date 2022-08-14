@@ -44,7 +44,7 @@ const EditDishScreen = () => {
 
   const [isMenuOptionChanged, setIsMenuOptionChanged] = useState(false);
   let [isSubCategoryOptionChanged, setIsSubCategoryOptionChanged] = useState(false);
-
+  const [dishImage, setDishImage] = useState(location.state.image);
 
   useEffect(() => {
     dispatch(listSubcategory());
@@ -58,6 +58,8 @@ const EditDishScreen = () => {
       // menu: location.state.menuID,
       dishname: location.state.dishName,
       description: location.state.description,
+      price: location.state.price,
+      finishedTime: location.state.finishedTime
     })
   }, []);
 
@@ -105,8 +107,8 @@ const EditDishScreen = () => {
     if (isSubCategoryOptionChanged === true) {
       subcategory = values.subcategory
     }
-    console.log(subcategory, menu);
-    dispatch(editDish(location.state.id, values.dishname, values.description, menu, subcategory, location.state.createdTime, location.state.createdBy));
+    console.log(values.price, values.finishedTime);
+    dispatch(editDish(location.state.id, values.dishname, values.description, menu, subcategory, location.state.createdTime, location.state.createdBy, values.price, dishImage, location.state.status, values.finishedTime));
   };
 
 
@@ -118,7 +120,7 @@ const EditDishScreen = () => {
   };
 
   const onLoad = fileString => {
-    console.log(fileString);
+    setDishImage(fileString);
   };
 
   const getBase64 = file => {
@@ -221,6 +223,26 @@ const EditDishScreen = () => {
               {/* <h4 style={{ marginLeft: 140, fontSize: 15, color: 'green'}}>ADD DISH SUCCESSFUL!</h4> */}
               <Form.Item label="Dish Name" name="dishname">
                 <Input />
+              </Form.Item>
+              <Form.Item label="Price" name="price"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input Price!',
+                  },
+                ]}
+              >
+                <InputNumber min={0} defaultValue={0} style={{ width: 250 }} />
+              </Form.Item>
+              <Form.Item label="Finished Time(min)" name="finishedTime"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input Finished Time!',
+                  },
+                ]}
+              >
+                <InputNumber min={0} max={500} defaultValue={0} style={{ width: 250 }} />
               </Form.Item>
               <Form.Item label="Menu" name="menu">
                 <Select

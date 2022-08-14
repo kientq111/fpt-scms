@@ -26,8 +26,8 @@ const LoginScreen = () => {
         setUsername(values.username)
         setPassword(values.password)
         console.log('Received values of form: ', values);
-            // dispatch(login(values.username, values.password));
-         dispatch(checkAccount(values.username));
+        // dispatch(login(values.username, values.password));
+        dispatch(checkAccount(values.username));
     };
     const navigate = useNavigate();
 
@@ -36,7 +36,13 @@ const LoginScreen = () => {
             if (userCheckAccountData.success === true) {
                 if (userCheckAccountData.data.role[0].name == "USER") {
                     SetMessage("You are not permission");
-                } else {
+                } else if (userCheckAccountData.data.status !== "1") {
+                    console.log(userCheckAccountData.data.status);
+                    SetMessage("This account is blocking")
+                } else if (userCheckAccountData.data.is_active !== true) {
+                    SetMessage("This Account is not verify email")
+                }
+                else {
                     console.log('login nek', username, password);
                     dispatch(login(username, password));
                 }
