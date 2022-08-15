@@ -56,9 +56,12 @@ export const changeMenuStatus = (id, status) => async (dispatch, getState) => {
             },
         }
 
-        await axios.put(`${base_url}/menu/updateMenuStatus?status=${status === 1 ? 0 : 1}&menuId=${id}`, {}, config)
+        const { data } = await axios.put(`${base_url}/menu/updateMenuStatus?status=${status === 1 ? 0 : 1}&menuId=${id}`, {}, config)
 
-        dispatch({ type: menuConstants.MENU_CHANGE_STATUS_SUCCESS })
+        dispatch({
+            type: menuConstants.MENU_CHANGE_STATUS_SUCCESS,
+            payload: data,
+        })
     } catch (error) {
         const message =
             error.response && error.response.data.message
@@ -144,9 +147,13 @@ export const editMenu = (id, menuName, description, status, listDish, createdBy,
         const updatedBy = userInfo.username;
         const updatedTime = new Date();
         let listDishId = [];
-        listDish.forEach(e => {
-            listDishId.push(e.id)
-        });
+
+        if (listDish !== []) {
+            listDish.forEach(e => {
+                listDishId.push(e.id)
+            });
+        }
+
         const { data } = await axios.post(
             `${base_url}/menu/addOrUpdate`,
             { id, menuName, description, status, listDishId, createdBy, updatedBy, updatedTime, createdTime },

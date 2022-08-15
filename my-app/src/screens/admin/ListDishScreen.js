@@ -1,5 +1,5 @@
 import {
-    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Col, Row
+    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Col, Row, notification
 } from 'antd';
 import { React, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,6 +12,8 @@ import LinesEllipsis from 'react-lines-ellipsis'
 import { DeleteOutlined, EditOutlined, UserAddOutlined, EyeOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { LargeLoader } from '../../components/Loader';
+import get from "lodash.get"
+import isequal from "lodash.isequal"
 const { Column, ColumnGroup } = Table;
 
 const StyledTable = styled((props) => <Table {...props} />)`
@@ -22,6 +24,14 @@ const StyledTable = styled((props) => <Table {...props} />)`
     background-color: rgba(202, 235, 199);
   }
   `;
+
+
+const openNotificationWithIcon = (type, message) => {
+    notification[type]({
+        message: message
+    });
+};
+
 
 
 const ListDishScreen = () => {
@@ -107,14 +117,14 @@ const ListDishScreen = () => {
             />
         ),
         onFilter: (value, record) =>
-            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+            get(record, dataIndex).toString().toLowerCase().includes(value.toLowerCase()),
         onFilterDropdownVisibleChange: (visible) => {
             if (visible) {
                 setTimeout(() => searchInput.current?.select(), 100);
             }
         },
         render: (text) =>
-            searchedColumn === dataIndex ? (
+            isequal(searchedColumn, dataIndex) ? (
                 <Highlighter
                     highlightStyle={{
                         backgroundColor: '#ffc069',
@@ -131,11 +141,16 @@ const ListDishScreen = () => {
 
     const dispatch = useDispatch();
     const dataDish = useSelector((state) => state.dishList);
+    const editDishSelector = useSelector((state) => state.dishEdit);
+    const dishEditSuccess = editDishSelector.success
     const dishStatusSelector = useSelector((state) => state.dishChangestatus);
     const { success } = dishStatusSelector;
     const { loading, dishes } = dataDish
 
     useEffect(() => {
+        if (dishEditSuccess === true) {
+            openNotificationWithIcon('success', 'UPDATE DISH SUCCESSFUL');
+        }
         dispatch(listDishes());
         console.log(dataDish);
         console.log(dishStatusSelector)
@@ -146,13 +161,13 @@ const ListDishScreen = () => {
     const changeStatusHandle = (id, status) => {
         console.log(id, status);
         dispatch(changeDishStatus(id, status));
-        message.success('Update Status successful');
+        openNotificationWithIcon('success', 'UPDATE DISH STATUS SUCCESSFUL');
     };
 
     const updateDishHandle = (id, dishName, subCategory, description, createdTime, createdBy, price, img, finishedTime, status) => {
         console.log(id, dishName, subCategory, description);
         if (status === 0) {
-            message.info('You must enable status before update this dish');
+            openNotificationWithIcon('info', 'You must enable status before update this dish');
             return
         }
         navigate('/admin/editdish', {
@@ -202,7 +217,7 @@ const ListDishScreen = () => {
                 </Row></>}
             {loading === false && <StyledTable dataSource={dishes} className="table-striped-rows">
                 <Column title="Dish Name" dataIndex="dishName" key="dishName" {...getColumnSearchProps('dishName')} />
-                <Column title="Description" dataIndex="description" width={'20%'} render={(_, record) => (<LinesEllipsis
+                <Column title="Description" dataIndex="description" width={'15%'} render={(_, record) => (<LinesEllipsis
                     text={record.description}
                     maxLine='1'
                     ellipsis='...'
@@ -210,7 +225,7 @@ const ListDishScreen = () => {
                     basedOn='letters'
                 />)} key="description" />
 
-                <Column title="SubCategory" dataIndex="subCategory" render={(_, record) => record.subCategory.subCategoryName} key="subCategory" />
+                <Column title="SubCategory" dataIndex={["subCategory", "subCategoryName"]} key="subCategory" {...getColumnSearchProps(["subCategory", "subCategoryName"])} />
                 <Column title="Price" dataIndex="price" render={(_, record) => record.price === null ? "null" : record.price} key="price" sorter={(a, b) => a.price - b.price} />
                 <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>Enable</p> : <p style={{ color: 'red' }}>Disable</p>)}
                     filters={[{
@@ -221,11 +236,11 @@ const ListDishScreen = () => {
                         value: 0,
                     },]} onFilter={(value, record) => record.status === value}
                     key="status" />
-                <Column title="Finished Time" dataIndex="finishedTime" key="finishedTime" render={(_, record) => (record.finishedTime + ' minute')}  sorter={(a, b) => a.finishedTime - b.finishedTime}/>
-                <Column title="Created Time" dataIndex="createdTime" key="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} />
-                <Column title="Created By" dataIndex="createdBy" key="createdBy" render={(_, record) => (record.createdBy == null ? 'null' : record.createdBy)} />
-                <Column title="Updated Time" dataIndex="updatedTime" key="updatedTime" render={(_, record) => (moment(record.updatedTime).format('DD/MM/YYYY'))} />
-                <Column title="Updated By" dataIndex="updatedBy" key="updatedBy" render={(_, record) => (record.updatedBy == null ? 'null' : record.updatedBy)} />
+                <Column title="Finished Time" dataIndex="finishedTime" key="finishedTime" render={(_, record) => (record.finishedTime + ' minute')} sorter={(a, b) => a.finishedTime - b.finishedTime} />
+                <Column title="Created Time" dataIndex="createdTime" key="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.createdTime).unix() - moment(b.createdTime).unix()} />
+                <Column title="Created By" dataIndex="createdBy" key="createdBy" render={(_, record) => (record.createdBy == null ? 'null' : record.createdBy)} {...getColumnSearchProps('createdBy')} />
+                <Column title="Updated Time" dataIndex="updatedTime" key="updatedTime" render={(_, record) => (moment(record.updatedTime).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.updatedTime).unix() - moment(b.updatedTime).unix()} />
+                <Column title="Updated By" dataIndex="updatedBy" key="updatedBy" render={(_, record) => (record.updatedBy == null ? 'null' : record.updatedBy)} {...getColumnSearchProps('updatedBy')} />
                 <Column
                     title="Action"
                     key="action"

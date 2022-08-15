@@ -50,7 +50,7 @@ const DishDetailScreen = () => {
         <>
             <Image
                 width={200}
-                src={`data:image/jpeg;base64,${dataImg}`}
+                src={`${dataImg}`}
             />
             <Descriptions size="small" column={column}>
                 <Descriptions.Item label="Created By">{dishLoading === false && dishInfo.createdBy} </Descriptions.Item>
@@ -59,6 +59,15 @@ const DishDetailScreen = () => {
                 </Descriptions.Item>
                 <Descriptions.Item label="Creation Time">{dishLoading === false && (moment(dishInfo.createdTime).format('DD/MM/YYYY'))}</Descriptions.Item>
                 <Descriptions.Item label="Updated Time">{dishLoading === false && (moment(dishInfo.updatedTime).format('DD/MM/YYYY'))}</Descriptions.Item>
+                <Descriptions.Item label="Status">
+                    {dishLoading === false && dishInfo.status === 1 ? <p style={{ color: 'green' }}><b>Active</b></p> : <p style={{ color: 'green' }}><b>Inactive</b></p>}
+                </Descriptions.Item>
+                <Descriptions.Item label="SubCategory">
+                    {dishLoading === false && dishInfo.subCategory.subCategoryName}
+                </Descriptions.Item>
+                <Descriptions.Item label="Category">
+                    {dishLoading === false && dishInfo.subCategory.category.categoryName}
+                </Descriptions.Item>
                 <Descriptions.Item label="Description">
                     {dishLoading === false && dishInfo.description}
                 </Descriptions.Item>
@@ -75,28 +84,6 @@ const DishDetailScreen = () => {
                 justifyContent: 'flex-end',
             }}
         >
-            <Statistic
-                title="Status"
-                value={dishLoading === false && dishInfo.status === 1 ? "active" : "inactive"}
-                style={{
-                    marginRight: 32,
-                }}
-                
-            />
-            <Statistic
-                title="SubCategory"
-                value={dishLoading === false && dishInfo.subCategory.subCategoryName}
-                style={{
-                    marginRight: 32,
-                }}
-            />
-            <Statistic
-                title="Category"
-                value={dishLoading === false && dishInfo.subCategory.category.categoryName}
-                style={{
-                    marginRight: 32,
-                }}
-            />
             <Statistic
                 title="Price"
                 value={dishLoading === false && dishInfo.price}
@@ -129,7 +116,7 @@ const DishDetailScreen = () => {
         {
             title: 'Status',
             dataIndex: 'status',
-            render: (text) => <a>{text === 1 ? <p style={{ color: 'green' }}>True</p> : <p style={{ color: 'red' }}>False</p>}</a>,
+            render: (text) => <a>{text === 1 ? <p style={{ color: 'green' }}>Enable</p> : <p style={{ color: 'red' }}>Disable</p>}</a>,
         },
     ];
 

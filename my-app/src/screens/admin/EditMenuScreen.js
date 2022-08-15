@@ -3,7 +3,7 @@ import {
     Form,
     Input,
     Row,
-    Breadcrumb, Card, Divider, Space
+    Breadcrumb, Card, Divider, Space, message
 } from 'antd';
 import Loader from '../../components/Loader';
 import { useState, useEffect } from 'react';
@@ -61,13 +61,17 @@ const EditMenuScreen = () => {
     const menuInfo = getMenuByIdSelector.menu;
     const menuEditSuccess = menuEditSelector.success;
     const menuEditLoading = menuEditSelector.loading;
+    const menuEditStatus = menuEditSelector.menus;
     const { loading, dishes } = getListDishSelector;
-
+    let isDishOptionChanged = false;
 
     const onFinish = (values) => {
-        console.log(values);
+        let listDish = menuInfo.listDish;
+        if (isDishOptionChanged === true) {
+            listDish = values.dish
+        }
 
-        dispatch(editMenu(location.state.id, values.menu, values.description, location.state.status, values.dish, location.state.createdBy, location.state.createdTime))
+        dispatch(editMenu(location.state.id, values.menu, values.description, location.state.status, listDish, location.state.createdBy, location.state.createdTime))
     };
 
 
@@ -82,7 +86,10 @@ const EditMenuScreen = () => {
 
     useEffect(() => {
         if (menuEditSuccess === true) {
-            console.log('aaaaa hahah');
+            if (menuEditStatus.success === false) {
+                message.error(menuEditStatus.data.message);
+                return
+            }
             navigate('/admin/listmenu', {
                 state: {
                     isEditMenuSuccess: true
@@ -102,6 +109,11 @@ const EditMenuScreen = () => {
 
     }
 
+
+    const changeDishOptionHandler = () => {
+        isDishOptionChanged = true;
+    }
+
     const cancelHandle = () => {
         navigate('/admin/listmenu');
     }
@@ -118,7 +130,7 @@ const EditMenuScreen = () => {
             </Breadcrumb>
 
                 <Card
-                    style={{ marginTop: 30, width: 1100, height: 700 }}
+                    style={{ marginTop: 30, width: 1100, height: 'auto', borderRadius: 25 }}
                 >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>Edit Menu</h1></Divider>
 
                     <Form style={{ marginTop: 50, marginRight: 250 }}
@@ -150,6 +162,7 @@ const EditMenuScreen = () => {
                                 getOptionLabel={option => option.dishName}
                                 getOptionValue={option => option.id}
                                 options={listDishOption}
+                                onChange={changeDishOptionHandler}
                                 defaultValue={oldDishInMenuIndex.map((index) => (listDishOption[index]))}
                                 isMulti
                             />
@@ -165,16 +178,16 @@ const EditMenuScreen = () => {
                                 },
                             ]}
                         >
-                            <Input.TextArea showCount maxLength={100} />
+                            <Input.TextArea showCount maxLength={300} style={{ height: 350 }} />
                         </Form.Item>
 
                         <Form.Item {...tailFormItemLayout}>
 
                             <Space size={'large'}>
+                                {menuEditLoading && <Loader />}
                                 <Button type="primary" htmlType="submit">
                                     Edit Menu
                                 </Button>
-                                {menuEditLoading && <Loader />}
                                 <Button onClick={cancelHandle}>Cancel</Button>
                             </Space>
                         </Form.Item>

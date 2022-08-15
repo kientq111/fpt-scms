@@ -1,5 +1,5 @@
 import {
-    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col
+    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col, notification
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,6 +11,8 @@ import moment from 'moment'
 import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { Loader, LargeLoader } from '../../components/Loader';
 import { changeCategoryStatus, changeSubCategoryStatus, listSubcategory } from '../../actions/categoryAction';
+import get from "lodash.get"
+import isequal from "lodash.isequal"
 
 const { Column, ColumnGroup } = Table;
 
@@ -22,6 +24,15 @@ const StyledTable = styled((props) => <Table {...props} />)`
     background-color: rgba(202, 235, 199);
   }
   `;
+
+
+const openNotificationWithIcon = (type, message) => {
+    notification[type]({
+        message: message
+    });
+};
+
+
 
 const ListSubCategoryScreen = () => {
     const [searchText, setSearchText] = useState('');
@@ -102,14 +113,14 @@ const ListSubCategoryScreen = () => {
             />
         ),
         onFilter: (value, record) =>
-            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+            get(record, dataIndex).toString().toLowerCase().includes(value.toLowerCase()),
         onFilterDropdownVisibleChange: (visible) => {
             if (visible) {
                 setTimeout(() => searchInput.current?.select(), 100);
             }
         },
         render: (text) =>
-            searchedColumn === dataIndex ? (
+            isequal(searchedColumn, dataIndex) ? (
                 <Highlighter
                     highlightStyle={{
                         backgroundColor: '#ffc069',
@@ -127,6 +138,8 @@ const ListSubCategoryScreen = () => {
     //Get data from API
     const navigate = useNavigate();
     const subCategoryData = useSelector((state) => state.subcategoryList);
+    const subCategoryEditSelector = useSelector((state) => state.subCategoryEdit);
+    const isSubCategoryEditSuccess = subCategoryEditSelector.success
     const changeSubCategoryStatusSelector = useSelector((state) => state.subCategoryChangeStatus);
     const { success } = changeSubCategoryStatusSelector;
     const { loading, subcategoryInfo } = subCategoryData;
@@ -137,21 +150,11 @@ const ListSubCategoryScreen = () => {
     //Called when when mounting
     const dispatch = useDispatch();
     useEffect(() => {
+        if (isSubCategoryEditSuccess === true) {
+            openNotificationWithIcon('success', 'SUBCATEGORY UPDATE SUCCESSFUL');
+        }
         dispatch(listSubcategory());
     }, [success]);
-
-
-
-    // Delete Update Form
-    const confirm = (id) => {
-        console.log(id);
-        message.success('Delete successful');
-
-    };
-
-    const cancel = (e) => {
-        console.log(e);
-    };
 
     const editSubCategoryHandle = (id, name, description, createdTime, createdBy, category) => {
         console.log(id, name, description, createdTime, createdBy, category);
@@ -169,7 +172,7 @@ const ListSubCategoryScreen = () => {
 
     const changeSubCategoryStatusHandle = (id, status) => {
         dispatch(changeSubCategoryStatus(id, status));
-        message.success("Change SubCategory Status Successful")
+        openNotificationWithIcon('success', 'SUBCATEGORY CHANGE STATUS SUCCESSFUL');
     }
 
     return (
@@ -194,28 +197,27 @@ const ListSubCategoryScreen = () => {
 
             {loading === false && <StyledTable dataSource={subcategoryInfo} className="table-striped-rows" >
                 <Column title="SubCategory Name" dataIndex="subCategoryName" key="subCategoryName" {...getColumnSearchProps('subCategoryName')} />
-                <Column title="Description" dataIndex="description" key="description" />
-                <Column title="Status" dataIndex="status" key="status" filters={[
-                    {
-                        text: '1',
-                        value: 1,
-                    },
-                    {
-                        text: '2',
-                        value: 2,
-                    },
-                    {
-                        text: '3',
-                        value: 3,
-                    },
-                ]}
+                <Column title="Description" dataIndex="description" key="description" width={'15%'} />
+                <Column title="Status" dataIndex="status" key="status"
+                    filters={[
+                        {
+                            text: 'Enable',
+                            value: 1,
+                        },
+                        {
+                            text: 'Disable',
+                            value: 0,
+                        },
+
+                    ]}
+                    render={(_, record) => record.status === 1 ? <p style={{ color: 'green' }}>Enable<b></b></p> : <p style={{ color: 'red' }}>Disable<b></b></p>}
                     onFilter={(value, record) => record.status === value}
                 />
-                <Column title="Created Time" dataIndex="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} key="createdTime" />
-                <Column title="Created By" dataIndex="createdBy" key="createdBy" />
-                <Column title="Updated Time" dataIndex="updatedTime" render={(_, record) => (moment(record.updatedTime).format('DD/MM/YYYY'))} key="updatedTime" />
-                <Column title="Updated By" dataIndex="updatedBy" key="updatedBy" />
-                <Column title="Category" dataIndex="category" render={(_, record) => record.category.categoryName} key="category" />
+                <Column title="Created Time" dataIndex="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} key="createdTime" sorter={(a, b) => moment(a.createdTime).unix() - moment(b.createdTime).unix()} />
+                <Column title="Created By" dataIndex="createdBy" key="createdBy"  {...getColumnSearchProps('createdBy')} />
+                <Column title="Updated Time" dataIndex="updatedTime" render={(_, record) => (moment(record.updatedTime).format('DD/MM/YYYY'))} key="updatedTime" sorter={(a, b) => moment(a.updatedTime).unix() - moment(b.updatedTime).unix()} />
+                <Column title="Updated By" dataIndex="updatedBy" key="updatedBy"  {...getColumnSearchProps('updatedBy')} />
+                <Column title="Category" dataIndex={["category", "categoryName"]} {...getColumnSearchProps(["category", "categoryName"])} key="category" />
 
                 <Column
                     title="Action"
