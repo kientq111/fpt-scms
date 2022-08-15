@@ -56,11 +56,11 @@ const DashboardScreen = () => {
     const checkAccSuccess = userCheckAccountSelector.success;
     const { loading, error, success, dashboardInfo } = listDashboardSelector;
     useEffect(() => {
-        if (checkAccSuccess === true) {
-            openNotificationWithIcon('success');
-        }
+        // if (checkAccSuccess === true) {
+        //     openNotificationWithIcon('success');
+        // }
         dispatch(getListDashboard())
-        // console.log(listDashboardSelector)
+     
         if (loading === false) {
             if (error === "Request failed with status code 401") {
                 console.log('LOGIN FAIL - 401')

@@ -59,6 +59,9 @@ export const checkAccount = (username) => async (dispatch) => {
       type: userConstants.USER_CHECKACC_SUCCESS,
       payload: data,
     })
+    if (data.success === true) {
+      localStorage.setItem('userDetailInfo', JSON.stringify(data))
+    }
 
   } catch (error) {
     dispatch({

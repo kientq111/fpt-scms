@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, Input, Button, Checkbox, Card, Space, Divider } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import { Row, Col } from 'antd';
 import { checkAccount, login } from '../actions/userActions';
 import Loader from '../components/Loader';
@@ -57,7 +57,12 @@ const LoginScreen = () => {
             if (userInfo === "Bad credentials") {
                 SetMessage("Password Fail");
             } else {
-                navigate('/admin/dashboard');
+                if (userInfo.role[0].authority == "ROLE_ADMIN") {
+                    navigate('/admin/dashboard');
+                } else {
+                    navigate('/admin/listorder');
+                }
+
             }
         }
     }, [userInfo])
@@ -117,9 +122,9 @@ const LoginScreen = () => {
                                     <Checkbox>Remember me</Checkbox>
                                 </Form.Item>
 
-                                <a className="login-form-forgot" href="#">
+                                <Link className="login-form-forgot" to={'/forgotpassword'}>
                                     Forgot password
-                                </a>
+                                </Link>
                             </Form.Item>
                             {userCheckAccountError && <h6 style={{ color: 'red' }}>{userCheckAccountError}</h6>}
                             <h6 style={{ color: 'red' }}>{message}</h6>

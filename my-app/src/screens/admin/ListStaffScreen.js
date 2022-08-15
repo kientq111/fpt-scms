@@ -10,9 +10,10 @@ import Highlighter from 'react-highlight-words';
 import styled from 'styled-components';
 import moment from 'moment'
 import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
-import { Loader, LargeLoader } from '../../components/Loader';
+import { LargeLoader } from '../../components/Loader';
 import LinesEllipsis from 'react-lines-ellipsis'
 import { userConstants } from '../../constants/Constants';
+import Loader from '../../components/Loader';
 import axios from 'axios';
 const { Column, ColumnGroup } = Table;
 
@@ -393,7 +394,7 @@ const ListUserScreen = () => {
                   <a><DeleteOutlined style={{ fontSize: 17 }} /></a>
                 </Popconfirm>
                 <a onClick={() => changeUserStatusHandle(record.username, record.status)} className='txtLink'>{record.status == 1 ? "Block" : "Unblock"}</a>
-                <a onClick={() => verifyAccountHandle(record.first_name, record.last_name, record.email, record.status)} className='txtLink'>{record.is_active == true ? <a style={{ color: 'green' }}>Verified</a> : <a style={{ color: 'blue' }}>Verify Email</a>}</a>
+                <a onClick={() => verifyAccountHandle(record.first_name, record.last_name, record.email, record.is_active)} className='txtLink'>{record.is_active == true ? <a style={{ color: 'green' }}>Verified</a> : <a style={{ color: 'blue' }}>Verify Email</a>}</a>
               </Space>
             )}
             fixed={"right"}
@@ -419,10 +420,13 @@ const ListUserScreen = () => {
           </Form.Item>
           <Form.Item
           >
+            <Space size={'middle'}>
+              <Button type="primary" htmlType="submit" size='middle' >
+                Verify
+              </Button>
+              {verifyStatusLoading && <Loader />}
+            </Space>
 
-            <Button type="primary" htmlType="submit" size='middle' >
-              Verify
-            </Button>
 
           </Form.Item>
           <h1></h1>
