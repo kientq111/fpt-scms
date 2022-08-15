@@ -84,6 +84,10 @@ const userInfoFromStorage = localStorage.getItem('userInfo')
     ? JSON.parse(localStorage.getItem('userInfo'))
     : null
 
+const userDetailInfoFromStorage = localStorage.getItem('userDetailInfo')
+    ? JSON.parse(localStorage.getItem('userDetailInfo'))
+    : null
+
 const middleware = [thunk]
 
 //get user from local storage
@@ -91,6 +95,7 @@ let initialState = {};
 if (userInfoFromStorage) {
     initialState = {
         userLogin: { userInfo: userInfoFromStorage.data },
+        userCheckAcc: { userCheckAccount: userDetailInfoFromStorage },
     }
 }
 

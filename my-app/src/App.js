@@ -40,22 +40,15 @@ import EditTableScreen from './screens/admin/EditTableScreen';
 import ListOrderScreen from './screens/admin/ListOrderScreen';
 import HeaderBar from './components/HeaderBar';
 import ListBookingTableScreen from './screens/admin/ListBookingTableScreen';
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+import ChangePasswordScreen from './screens/ChangePasswordScreen';
+import EditInfoPersonalScreen from './screens/admin/EditInfoPersonalScreen';
 const { Header, Content, Sider, Footer } = Layout;
 
 const App = () => {
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
   const [collapsed, setCollapsed] = useState(false);
-
-  const items1 = [{
-    key: '',
-    label: ``,
-  },
-  {
-    key: '',
-    label: `Hello ${userInfo && userInfo.username}`,
-  }]
-
 
 
   return (
@@ -139,8 +132,11 @@ const App = () => {
             <Route path='/admin/listbookingtable' element={<ListBookingTableScreen />} />
             {/* Common */}
             <Route path='/admin/dashboard' element={<DashboardScreen />} />
+            <Route path='/forgotpassword' element={<ForgotPasswordScreen />} />
             <Route path='*' element={<ErrorScreen />} />
             <Route path='/authorizedfail' element={<AuthorizedFailScreen />} />
+            <Route path='/admin/changepassword' element={<ChangePasswordScreen />} />
+            <Route path='/admin/personalize' element={<EditInfoPersonalScreen />} />
             <Route path='/test' element={<Test />} />
 
 
