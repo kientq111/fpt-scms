@@ -11,6 +11,9 @@ import styled from 'styled-components';
 import { changeOrderStatus, getOrderByID, listOrders } from '../../actions/orderAction';
 import LinesEllipsis from 'react-lines-ellipsis'
 import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
+import get from "lodash.get"
+import isequal from "lodash.isequal"
+
 const { Countdown } = Statistic;
 const { Column } = Table;
 
@@ -188,14 +191,14 @@ const ListOrderScreen = () => {
             />
         ),
         onFilter: (value, record) =>
-            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+            get(record, dataIndex).toString().toLowerCase().includes(value.toLowerCase()),
         onFilterDropdownVisibleChange: (visible) => {
             if (visible) {
                 setTimeout(() => searchInput.current?.select(), 100);
             }
         },
         render: (text) =>
-            searchedColumn === dataIndex ? (
+            isequal(searchedColumn, dataIndex) ? (
                 <Highlighter
                     highlightStyle={{
                         backgroundColor: '#ffc069',
@@ -361,7 +364,8 @@ const ListOrderScreen = () => {
             key: 'price',
             render: (text, record) => {
                 return `${record.price}`; // just for decoration
-            }
+            },
+            sorter: (a, b) => a.price - b.price
         },
 
         {
@@ -370,7 +374,8 @@ const ListOrderScreen = () => {
             key: 'Quantiy',
             render: (text, record) => {
                 return `${record.quantity}`; // just for decoration
-            }
+            },
+            sorter: (a, b) => a.quantity - b.quantity
         },
         { title: "Order Dish Number", dataIndex: "orderDishNumber", key: "orderDishNumber", sorter: (a, b) => a.orderDishNumber - b.orderDishNumber },
 
@@ -482,12 +487,14 @@ const ListOrderScreen = () => {
                             key="status"
                         />
                         <Column title="Total Price" dataIndex="total" key="total" sorter={(a, b) => a.total - b.total} />
-                        <Column title="User's Order" dataIndex="createdBy" render={(_, record) => `${record.user.first_name} ${record.user.last_name}`} key="createdBy" />
-                        <Column title="Order Created Time" dataIndex="createdTimme" render={(_, record) => (moment(record.createdTimme).format('LLLL'))} key="created_time" />
+                        <Column title="User's Order"  dataIndex={["user", "first_name"]} {...getColumnSearchProps(["user", "first_name"],)} key="createdBy" />
+                        <Column title="Order Created Time" dataIndex="createdTimme" render={(_, record) => (moment(record.createdTimme).format('LLLL'))} key="created_time" sorter={(a, b) => moment(a.createdTimme).unix() - moment(b.createdTimme).unix()} />
                         <Column title="Total Table Booked" dataIndex="bookTable"
                             render={(_, record) => record.bookTable.listTable.length
                             }
-                            key="createdBy" />
+                            key="createdBy"
+                            sorter={(a, b) => a.bookTable.listTable.length - b.bookTable.listTable.length}
+                        />
                         <Column
                             title="Action"
                             key="action"

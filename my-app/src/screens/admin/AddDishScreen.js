@@ -11,6 +11,7 @@ import { addDish } from '../../actions/dishAction';
 import { listMenus } from '../../actions/menuAction';
 import Loader from '../../components/Loader';
 import Select from "react-select";
+import { dishConstants } from '../../constants/Constants';
 
 
 const { TextArea } = Input;
@@ -38,7 +39,12 @@ const AddDishScreen = () => {
   const { loading, menus } = selectMenuSelector;
 
   useEffect(() => {
-    dispatch(listSubcategory());
+    if (addDishSelector) {
+      dispatch({
+        type: dishConstants.DISH_ADD_RESET,
+      })
+    }
+    dispatch(listSubcategory(1));
     dispatch(listMenus());
   }, []);
 
@@ -116,7 +122,7 @@ const AddDishScreen = () => {
           bordered={false}
           style={{
             marginTop: 20, marginLeft: 150,
-            width: 1000, height: 700, borderRadius: 25
+            width: 1000, height: 'auto', borderRadius: 25
           }}
         >
           <Divider plain>     <h1 style={{ fontSize: 30 }}>Add Dish</h1></Divider>
@@ -186,7 +192,7 @@ const AddDishScreen = () => {
               />
             </Form.Item>
             <Form.Item label="Description" name="description">
-              <TextArea rows={4} />
+              <TextArea rows={4} maxLength={500} showCount />
             </Form.Item>
             <Form.Item label="Image" name="dishimg" accept="image/png, image/gif, image/jpeg" >
               <input type="file" onChange={ImageHandler} />

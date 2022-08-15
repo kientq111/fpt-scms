@@ -8,39 +8,39 @@ import { dashboardAction, logout } from '../../actions/userActions';
 import { getListDashboard } from '../../actions/dashboardAction';
 import Loader from '../../components/Loader';
 Chart.register(...registerables);
-const dataChart = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-        {
-            label: "First dataset",
-            data: [33, 53, 85, 41, 44, 65],
-            fill: true,
-            backgroundColor: "rgba(75,192,192,0.2)",
-            borderColor: "rgba(75,192,192,1)"
-        },
-        {
-            label: "Second dataset",
-            data: [33, 25, 35, 51, 54, 76],
-            fill: false,
-            borderColor: "#742774"
-        }
-    ]
-};
+// const dataChart = {
+//     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+//     datasets: [
+//         {
+//             label: "First dataset",
+//             data: [33, 53, 85, 41, 44, 65],
+//             fill: true,
+//             backgroundColor: "rgba(75,192,192,0.2)",
+//             borderColor: "rgba(75,192,192,1)"
+//         },
+//         {
+//             label: "Second dataset",
+//             data: [33, 25, 35, 51, 54, 76],
+//             fill: false,
+//             borderColor: "#742774"
+//         }
+//     ]
+// };
 
-const dataList = [
-    {
-        title: 'Ant Design Title 1',
-    },
-    {
-        title: 'Ant Design Title 2',
-    },
-    {
-        title: 'Ant Design Title 3',
-    },
-    {
-        title: 'Ant Design Title 4',
-    },
-];
+// const dataList = [
+//     {
+//         title: 'Ant Design Title 1',
+//     },
+//     {
+//         title: 'Ant Design Title 2',
+//     },
+//     {
+//         title: 'Ant Design Title 3',
+//     },
+//     {
+//         title: 'Ant Design Title 4',
+//     },
+// ];
 
 const openNotificationWithIcon = (type) => {
     notification[type]({
@@ -91,7 +91,7 @@ const DashboardScreen = () => {
                     <h1>Dashboard</h1>
                 </Card>
 
-                <Card style={{ backgroundColor: 'rgba(242, 246, 248)' }}
+                <Card style={{ backgroundColor: 'rgba(242, 246, 248)', height:'800px'}}
                 >
 
                     <div className="site-statistic-demo-card">
@@ -139,7 +139,7 @@ const DashboardScreen = () => {
                         </Row>
                     </div>
                 </Card>
-                <Card style={{ height: 700, backgroundColor: 'rgba(242, 246, 248)' }}
+                {/* <Card style={{ height: 700, backgroundColor: 'rgba(242, 246, 248)' }}
                 >
                     <Row gutter={10}>
                         <Col span={12}><h4>Total Revenue In Month</h4>
@@ -234,7 +234,7 @@ const DashboardScreen = () => {
 
                         </Col>
                     </Row>
-                </Card>
+                </Card> */}
             </>}
 
 

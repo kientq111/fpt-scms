@@ -13,6 +13,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { addCategory, addSubCategory, listCategory } from '../../actions/categoryAction';
 import Select from 'react-select'
+import { subCategoryConstatnts } from '../../constants/Constants';
 const formItemLayout = {
   labelCol: {
     xs: {
@@ -61,7 +62,16 @@ const AddSubCategoryScreen = () => {
 
 
   useEffect(() => {
-    dispatch(listCategory())
+    if (addSubCategorySelector) {
+      dispatch({
+        type: subCategoryConstatnts.SUB_CATEGORY_ADD_RESET,
+      })
+    }
+
+  }, [])
+
+  useEffect(() => {
+    dispatch(listCategory(1))
     console.log(subCategoryInfo)
   }, [subCategoryInfo])
 
@@ -78,14 +88,14 @@ const AddSubCategoryScreen = () => {
         </Breadcrumb.Item>
       </Breadcrumb>
       <Card
-        style={{ marginTop: 30, width: 1100, height: 700, borderRadius: 25 }}
+        style={{ marginTop: 30, width: 1100, height: 'auto', borderRadius: 25 }}
       >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>Add SubCategory</h1></Divider>
         {subCategoryError && <h1 style={{ color: 'red', fontSize: 20 }}>{subCategoryError}</h1>}
         {(() => {
           if (loadingAddSubCategory === false) {
             if (subCategoryInfo.success === false) {
               return (
-                <h2 style={{ color: 'red', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>{subCategoryInfo.data}</h2>
+                <h2 style={{ color: 'red', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>{subCategoryInfo.data.message}</h2>
               )
             } else if (subCategoryInfo.success === true) {
               return (
@@ -105,7 +115,7 @@ const AddSubCategoryScreen = () => {
 
           <Form.Item
             name="subCategoryName"
-            label="subCategory Name"
+            label="SubCategory Name"
             rules={[
               {
                 required: true,
@@ -140,7 +150,7 @@ const AddSubCategoryScreen = () => {
               },
             ]}
           >
-            <Input.TextArea showCount maxLength={100} style={{ height: 200 }} />
+            <Input.TextArea showCount maxLength={300} style={{ height: 300 }} />
           </Form.Item>
 
           <Form.Item {...tailFormItemLayout}>

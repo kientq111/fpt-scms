@@ -202,7 +202,7 @@ const ListFeedBackScreen = () => {
                 <Column title="Email" dataIndex="email" key="email"
                     {...getColumnSearchProps('email')}
                 />
-                <Column title="Created Date" dataIndex="created_time" render={(_, record) => (moment(record.created_time).format('DD/MM/YYYY'))} key="created_time" />
+                <Column title="Created Date" dataIndex="created_time" render={(_, record) => (moment(record.created_time).format('DD/MM/YYYY'))} key="created_time" sorter={(a, b) => moment(a.created_time).unix() - moment(b.created_time).unix()} />
                 <Column
                     title="Action"
                     key="action"

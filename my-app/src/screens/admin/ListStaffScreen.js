@@ -329,7 +329,7 @@ const ListUserScreen = () => {
           <Column title="UserName" dataIndex="username" key="username" {...getColumnSearchProps('username')} fixed={"left"} />
           <Column title="First Name" dataIndex="first_name" key="first_name" {...getColumnSearchProps('first_name')} />
           <Column title="Last Name" dataIndex="last_name" key="last_name"  {...getColumnSearchProps('last_name')} />
-          <Column title="Date of Birth" dataIndex="dob" render={(_, record) => (moment(record.dob).format('DD/MM/YYYY'))} key="dob" />
+          <Column title="Date of Birth" dataIndex="dob" render={(_, record) => (moment(record.dob).format('DD/MM/YYYY'))} key="dob" sorter={(a, b) => moment(a.dob).unix() - moment(b.dob).unix()} />
           <Column title="Email" dataIndex="email" key="email" {...getColumnSearchProps('email')} />
           <Column title="Phone Number" dataIndex="phone" key="phone"  {...getColumnSearchProps('phone')} />
           <Column title="Gender" dataIndex="gender" key="gender" filters={[{
@@ -369,10 +369,10 @@ const ListUserScreen = () => {
             trimRight
             basedOn='letters'
           />} key="street" />
-          <Column title="Created By" dataIndex="create_by" key="create_by" />
-          <Column title="Created Time" dataIndex="create_date" render={(_, record) => (moment(record.create_date).format('DD/MM/YYYY'))} key="create_date" />
-          <Column title="Updated By" updated_by="updated_by" render={(_, record) => record.updated_by === null ? "Null" : record.updated_by} key="updated_by" />
-          <Column title="Updated Time" dataIndex="updated_date" render={(_, record) => (moment(record.updated_date).format('DD/MM/YYYY'))} key="updated_date" />
+          <Column title="Created By" dataIndex="create_by" {...getColumnSearchProps('create_by')} key="create_by" />
+          <Column title="Created Time" dataIndex="create_date" render={(_, record) => (moment(record.create_date).format('DD/MM/YYYY'))} key="create_date" sorter={(a, b) => moment(a.create_date).unix() - moment(b.create_date).unix()} />
+          <Column title="Updated By" dataIndex="updated_by" {...getColumnSearchProps('updated_by')} key="updated_by" />
+          <Column title="Updated Time" dataIndex="updated_date" render={(_, record) => (moment(record.updated_date).format('DD/MM/YYYY'))} key="updated_date" sorter={(a, b) => moment(a.updated_date).unix() - moment(b.updated_date).unix()} />
 
           <Column
             title="Action" width={'8%'}

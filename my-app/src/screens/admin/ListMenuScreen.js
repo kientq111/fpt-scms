@@ -1,5 +1,5 @@
 import {
-    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col
+    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col, notification
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { changeMenuStatus, listMenus } from '../../actions/menuAction';
@@ -11,6 +11,8 @@ import styled from 'styled-components';
 import moment from 'moment'
 import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { Loader, LargeLoader } from '../../components/Loader';
+import get from "lodash.get"
+import isequal from "lodash.isequal"
 
 const { Column, ColumnGroup } = Table;
 
@@ -22,6 +24,14 @@ const StyledTable = styled((props) => <Table {...props} />)`
     background-color: rgba(202, 235, 199);
   }
   `;
+
+
+const openNotificationWithIcon = (type, message) => {
+    notification[type]({
+        message: message
+    });
+};
+
 
 const ListMenuScreen = () => {
     const [searchText, setSearchText] = useState('');
@@ -38,6 +48,7 @@ const ListMenuScreen = () => {
         clearFilters();
         setSearchText('');
     };
+
 
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -102,14 +113,14 @@ const ListMenuScreen = () => {
             />
         ),
         onFilter: (value, record) =>
-            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+            get(record, dataIndex).toString().toLowerCase().includes(value.toLowerCase()),
         onFilterDropdownVisibleChange: (visible) => {
             if (visible) {
                 setTimeout(() => searchInput.current?.select(), 100);
             }
         },
         render: (text) =>
-            searchedColumn === dataIndex ? (
+            isequal(searchedColumn, dataIndex) ? (
                 <Highlighter
                     highlightStyle={{
                         backgroundColor: '#ffc069',
@@ -127,8 +138,8 @@ const ListMenuScreen = () => {
 
     const navigate = useNavigate();
     const menuListSelector = useSelector((state) => state.menuList);
-    // const updateSelector = useSelector((state) => state.userUpdate);
-    // const updateSuccess = updateSelector.success
+    const updateMenuSelector = useSelector((state) => state.menuEdit);
+    const updateMenuSuccess = updateMenuSelector.success
     const changeMenuStatusSelector = useSelector((state) => state.menuChangeStatus);
     const { success } = changeMenuStatusSelector;
     const { loading, menus } = menuListSelector;
@@ -139,6 +150,9 @@ const ListMenuScreen = () => {
 
 
     useEffect(() => {
+        if (updateMenuSuccess === true) {
+            openNotificationWithIcon('success', 'UPDATE MENU SUCCESSFUL');
+        }
         dispatch(listMenus());
     }, [changeMenuStatusSelector]);
 
@@ -154,8 +168,12 @@ const ListMenuScreen = () => {
     };
 
     const changeStatusHandle = (id, status) => {
+        if (status === 1) {
+            openNotificationWithIcon('error', 'IN THE LIST MENU SHOULD HAS ONLY LEAST ONE MENU ACTIVE');
+            return
+        }
         console.log(id, status);
-        message.success('successful');
+        openNotificationWithIcon('success', 'CHANGE MENU STATUS SUCCESSFUL');
         dispatch(changeMenuStatus(id, status));
     };
 
@@ -212,11 +230,11 @@ const ListMenuScreen = () => {
                         value: 0,
                     },]} onFilter={(value, record) => record.status === value}
                     key="status" />
-                <Column title="Created Time" dataIndex="createdTime" key="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} />
-                <Column title="Created By" dataIndex="createdBy" key="createdBy" />
+                <Column title="Created Time" dataIndex="createdTime" key="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.createdTime).unix() - moment(b.createdTime).unix()} />
+                <Column title="Created By" dataIndex="createdBy" key="createdBy" {...getColumnSearchProps('createdBy')} />
 
-                <Column title="Updated Time" dataIndex="updatedTime" key="updatedTime" render={(_, record) => (moment(record.updatedTime).format('DD/MM/YYYY'))} />
-                <Column title="Updated By" dataIndex="updatedBy" key="updatedBy" />
+                <Column title="Updated Time" dataIndex="updatedTime" key="updatedTime" render={(_, record) => (moment(record.updatedTime).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.updatedTime).unix() - moment(b.updatedTime).unix()} />
+                <Column title="Updated By" dataIndex="updatedBy" key="updatedBy" {...getColumnSearchProps('updatedBy')} />
 
                 <Column
                     title="Action"

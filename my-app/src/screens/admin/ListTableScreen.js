@@ -143,12 +143,16 @@ const ListTableScreen = () => {
     const tableStatusSelector = useSelector((state) => state.tableChangeStatus);
     const tableChangeStatusSuccess = tableStatusSelector.success
     const [form] = Form.useForm();
-
+    const tableEditSelector = useSelector((state) => state.tableEdit);
+    const isEditSuccess = tableEditSelector.success;
 
 
     //Called when when mounting
     const dispatch = useDispatch();
     useEffect(() => {
+        if (isEditSuccess === true) {
+            openNotificationWithIcon("success", "Update Table Successful!")
+        }
         dispatch(listTables());
     }, [tableChangeStatusSuccess]);
 
@@ -257,10 +261,10 @@ const ListTableScreen = () => {
                     ]}
                     onFilter={(value, record) => record.status === value}
                 />
-                <Column title="Created Date" dataIndex="createdDate" render={(_, record) => (moment(record.createdDate).format('DD/MM/YYYY'))} key="createdDate" />
-                <Column title="Created By" dataIndex="createdBy" key="createdBy" />
-                <Column title="Updated Date" dataIndex="updatedDate" render={(_, record) => (moment(record.updatedDate).format('DD/MM/YYYY'))} key="updatedTime" />
-                <Column title="Updated By" dataIndex="updatedBy" key="updatedBy" />
+                <Column title="Created Date" dataIndex="createdDate" render={(_, record) => (moment(record.createdDate).format('DD/MM/YYYY'))} key="createdDate" sorter={(a, b) => moment(a.createdDate).unix() - moment(b.createdDate).unix()} />
+                <Column title="Created By" dataIndex="createdBy" key="createdBy"  {...getColumnSearchProps("createdBy")} />
+                <Column title="Updated Date" dataIndex="updatedDate" render={(_, record) => (moment(record.updatedDate).format('DD/MM/YYYY'))} key="updatedTime" sorter={(a, b) => moment(a.updatedDate).unix() - moment(b.updatedDate).unix()} />
+                <Column title="Updated By" dataIndex="updatedBy" {...getColumnSearchProps("updatedBy")} key="updatedBy" />
 
 
                 <Column

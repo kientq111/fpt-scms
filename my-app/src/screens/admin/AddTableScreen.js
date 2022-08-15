@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { addCategory } from '../../actions/categoryAction';
 import { addTable } from '../../actions/tableAction';
+import { tableConstants } from '../../constants/Constants';
 
 const formItemLayout = {
     labelCol: {
@@ -53,6 +54,11 @@ const AddTableScreen = () => {
 
 
     useEffect(() => {
+        if (tableData) {
+            dispatch({
+                type: tableConstants.TABLE_ADD_RESET,
+            })
+        }
         console.log(table);
 
     }, [])
@@ -70,7 +76,7 @@ const AddTableScreen = () => {
 
 
             <Card
-                style={{ marginTop: 30, width: 1100, height: 700, borderRadius: 25 }}
+                style={{ marginTop: 30, width: 1100, height: 'auto', borderRadius: 25 }}
             >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>ADD TABLE</h1></Divider>
                 {error && <h1 style={{ color: 'red', fontSize: 20 }}>{error}</h1>}
                 {(() => {
@@ -105,7 +111,7 @@ const AddTableScreen = () => {
                             },
                         ]}
                     >
-                        <Input.TextArea showCount maxLength={100} style={{height:200}} />
+                        <Input.TextArea showCount maxLength={100} style={{ height: 200 }} />
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>
