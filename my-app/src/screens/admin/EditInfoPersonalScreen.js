@@ -50,42 +50,36 @@ const EditInfoPersonalScreen = () => {
     const [form] = Form.useForm();
     //useLocation to get state from previous screen
 
-    const location = useLocation();
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
     //get data from store
     const userUpdateSelector = useSelector((state) => state.userUpdate)
-    const userLogin = useSelector((state) => state.userLogin)
-    const { userInfo } = userLogin
+    const userCheckAcc = useSelector((state) => state.userCheckAcc)
+    const { userCheckAccount } = userCheckAcc
     const { success, loading } = userUpdateSelector;
-    const [provin, setProvin] = useState([{ name: location.state.city, code: "" }]);
-    const [district, setDistrict] = useState([{ name: location.state.district, code: "" }]);
-    const streetSplit = location.state.street.split("-");
-    const [wards, setWards] = useState([{ name: streetSplit[1], code: "" }])
+    const [provin, setProvin] = useState();
+    const [district, setDistrict] = useState();
+
+    const [wards, setWards] = useState()
     let [isProvinChance, setIsProvinChange] = useState(false);
     let [isDistrictChance, setIsDistrictChange] = useState(false);
     let [isWardChange, setIsWardChange] = useState(false);
-    let oldGender = (location.state.gender === "Male" ? 0 : 1);
     let isOptionGenderChange = false;
 
     //INIT OLD USER PROFILE
     useEffect(() => {
-        axios.get(`getInfoByUserName?username=${userInfo.username}`)
-            .then(res => {
-                console.log(res);
-                const formatDob = moment(res.data.dob).format('YYYY-MM-DD')
-                form.setFieldsValue({
-                    first_name: res.data.firstname,
-                    last_name: res.data.last_name,
-                    username: res.data.username,
-                    email: res.data.email,
-                    dob: `${formatDob}`,
-                    street: res.data.address.street,
-                    phone: res.data.phone,
-                })
-            })
-            .catch(error => console.log(error));
-
+        const formatDob = moment(userCheckAccount.data.dob).format('YYYY-MM-DD')
+        form.setFieldsValue({
+            first_name: userCheckAccount.data.first_name,
+            last_name: userCheckAccount.data.last_name,
+            username: userCheckAccount.data.username,
+            email: userCheckAccount.data.email,
+            dob: `${formatDob}`,
+            street: userCheckAccount.data.address.street,
+            phone: userCheckAccount.data.phone,
+        })
+        console.log(userCheckAccount);
         axios.get(`https://provinces.open-api.vn/api/p/`)
             .then(res => {
                 const dataRes = res.data;
@@ -159,9 +153,8 @@ const EditInfoPersonalScreen = () => {
     //Submit edit form to action
     const onFinish = (values) => {
         let gender;
-        let ward = streetSplit[1]
-        let district = location.state.district;
-        let city = location.state.city;
+        let district = userCheckAccount.data.address.district;
+        let city = userCheckAccount.data.address.city;;
 
         if (isProvinChance === true) {
             city = values.city.name;
@@ -169,46 +162,25 @@ const EditInfoPersonalScreen = () => {
         if (isDistrictChance === true) {
             district = values.district.name;
         }
-        if (isWardChange === true) {
-            ward = values.wards.name;
-        }
 
-        gender = (oldGender === 0 ? false : true)
+
+        gender = (userCheckAccount.data.gender === "Female" ? false : true)
 
         if (isOptionGenderChange === true) {
             gender = values.gender.value
         }
 
         const address = {
-            street: `${values.street}-${ward}`,
+            street: `${values.street}`,
             district: district,
             city: city,
             country: 'Việt Nam',
         }
         console.log(gender);
-        dispatch(updateUser(location.state.id, values.username, values.email, values.dob, values.first_name, values.last_name, values.phone, address, gender));
+        dispatch(updateUser(userCheckAccount.data.id, values.username, values.email, values.dob, values.first_name, values.last_name, values.phone, address, gender));
 
     };
 
-    useEffect(() => {
-        if (success === true) {
-            if (location.state.history === '/admin/liststaff') {
-                navigate('/admin/liststaff')
-            } else {
-                navigate('/admin/listuser')
-            }
-        }
-
-    }, [success])
-
-
-    const handlerCancel = () => {
-        if (location.state.history === '/admin/liststaff') {
-            navigate('/admin/liststaff')
-        } else {
-            navigate('/admin/listuser')
-        }
-    }
 
     const optionGenderChangeHandle = () => {
         isOptionGenderChange = true;
@@ -301,7 +273,6 @@ const EditInfoPersonalScreen = () => {
                     >
                         <Select
                             onChange={optionGenderChangeHandle}
-                            defaultValue={[optionGender[oldGender]]}
                             options={optionGender}
                         />
                     </Form.Item>
@@ -323,7 +294,7 @@ const EditInfoPersonalScreen = () => {
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
                             onChange={handleProvinSelect}
-                            defaultValue={[provin[0]]}
+
                             options={provin}
                         />
                     </Form.Item>
@@ -335,7 +306,7 @@ const EditInfoPersonalScreen = () => {
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
                             onChange={handleDistrictSelect}
-                            defaultValue={[district[0]]}
+
                             options={district}
                         />
                     </Form.Item>
@@ -349,7 +320,7 @@ const EditInfoPersonalScreen = () => {
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
                             onChange={handleWardSelect}
-                            defaultValue={[wards[0]]}
+
                             options={wards}
                         />
                     </Form.Item>

@@ -130,6 +130,12 @@ const AddSubCategoryScreen = () => {
           <Form.Item
             name="category"
             label="Category"
+            rules={[
+              {
+                required: true,
+                message: 'Please select Category!',
+              },
+            ]}
           >
             <Select
               options={optionListSubCategoryMenu}

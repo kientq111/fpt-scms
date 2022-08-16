@@ -181,7 +181,14 @@ const AddDishScreen = () => {
                 isMulti
               />
             </Form.Item>
-            <Form.Item label="Sub Category" name="subcategory">
+            <Form.Item label="Sub Category" name="subcategory"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please select subcategory!',
+                },
+              ]}
+            >
               <Select
                 options={optionListSubCategory}
                 placeholder="Select subcategory"
@@ -191,7 +198,13 @@ const AddDishScreen = () => {
 
               />
             </Form.Item>
-            <Form.Item label="Description" name="description">
+            <Form.Item label="Description" name="description"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please select description!',
+                },
+              ]}>
               <TextArea rows={4} maxLength={500} showCount />
             </Form.Item>
             <Form.Item label="Image" name="dishimg" accept="image/png, image/gif, image/jpeg" >

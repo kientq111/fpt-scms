@@ -292,7 +292,7 @@ export const listStaff = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.accessToken}`,
       },
     }
-    const { data } = await axios.get(`${base_url}/getListStaff?username=&email=&phone=&status=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=`, config)
+    const { data } = await axios.get(`${base_url}/getListStaff?username=&email=&phone=&status=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=200`, config)
     dispatch({
       type: staffConstants.STAFF_LIST_SUCCESS,
       payload: data.data,

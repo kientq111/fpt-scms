@@ -240,7 +240,7 @@ const ListOrderScreen = () => {
         //if all dish finish then changed status of order detail
         console.log(isModalVisible)
         console.log('flag', flag);
-        if (countDish === ordDetailData.length && flag === false) {
+        if (countDish === ordDetailData.length) {
             openNotificationWithIcon('success');
         }
     }
@@ -257,8 +257,8 @@ const ListOrderScreen = () => {
         {
             "id": 412,
             "orderId": 517,
-            "quantity": 6,
-            "price": 17000.0,
+            "quantity": 3,
+            "price": 11000.0,
             "createdDate": "2022-07-31T16:38:34.000+00:00",
             "createdBy": "admin",
             "updatedDate": "2022-07-31T16:38:34.000+00:00",
@@ -337,6 +337,10 @@ const ListOrderScreen = () => {
         }
     ]
 
+    const onChangeCoundownHandler = (values) => {
+        console.log(values / 1000);
+    }
+
     const columns = [
         {
             title: 'Dish Name',
@@ -384,11 +388,11 @@ const ListOrderScreen = () => {
             dataIndex: 'dishTimeFinished',
             key: 'count',
             render: (text, record) => {
-                let coundown = record.dishItem.finishedTime * 60;
+                let coundown = record.dishTimeFinished * 60;
                 if (doneDish === record.id) {
                     coundown = 0;
                 }
-                return <Countdown value={Date.now() + coundown * 1000} onFinish={dishFinishHandle} />; // just for decoration
+                return <Countdown value={Date.now() + coundown * 1000} onFinish={dishFinishHandle} onChange={onChangeCoundownHandler} />; // just for decoration
             }
         },
 
@@ -487,7 +491,7 @@ const ListOrderScreen = () => {
                             key="status"
                         />
                         <Column title="Total Price" dataIndex="total" key="total" sorter={(a, b) => a.total - b.total} />
-                        <Column title="User's Order"  dataIndex={["user", "first_name"]} {...getColumnSearchProps(["user", "first_name"],)} key="createdBy" />
+                        <Column title="User's Order" dataIndex={["user", "first_name"]} {...getColumnSearchProps(["user", "first_name"],)} key="createdBy" />
                         <Column title="Order Created Time" dataIndex="createdTimme" render={(_, record) => (moment(record.createdTimme).format('LLLL'))} key="created_time" sorter={(a, b) => moment(a.createdTimme).unix() - moment(b.createdTimme).unix()} />
                         <Column title="Total Table Booked" dataIndex="bookTable"
                             render={(_, record) => record.bookTable.listTable.length
@@ -541,10 +545,10 @@ const ListOrderScreen = () => {
                 <Descriptions title="" layout="vertical" bordered>
                     <Descriptions.Item label="Order Number" style={{ width: "20%" }}><b>{orderDetailModal.orderNumber}</b></Descriptions.Item>
                     <Descriptions.Item label="Total Money"><b>{orderDetailModal.total}</b></Descriptions.Item>
-                    <Descriptions.Item label="Order By" span={2}>
+                    {/* <Descriptions.Item label="Order By" span={2}>
                         <b>{orderDetailModal.user.first_name} {orderDetailModal.user.last_name}</b>
                     </Descriptions.Item>
-                    <Descriptions.Item label="User Phone Number"><b><i>{orderDetailModal.user.phone}</i></b></Descriptions.Item>
+                    <Descriptions.Item label="User Phone Number"><b><i>{orderDetailModal.user.phone}</i></b></Descriptions.Item> */}
                     <Descriptions.Item label="Order Started Time"><b>{moment(orderDetailModal.createdTimme).format('LLLL')}</b></Descriptions.Item>
                     <Descriptions.Item label="Order Status" span={3}>
                         <Badge status={orderDetailModal.status === 1 ? "processing" : orderDetailModal.status === 2 ? "success" : "error"} text={orderDetailModal.status === 1 ? "Order Pending" : orderDetailModal.status === 2 ? "Order Success" : "Order Cancel"} />
@@ -564,14 +568,15 @@ const ListOrderScreen = () => {
                         </Row>
                     </>
                 }
-                {orderDetailModal.status === 2 && <>
+                {/* {orderDetailModal.status === 2 && <>
                     <Row style={{ marginBottom: 10 }}>
                         <Col span={8}></Col>
                         <Col span={8}><h3 style={{ color: 'green' }}>Order Success</h3></Col>
                         <Col span={8}></Col>
                     </Row>
-                </>}
-                {orderDetailModal.status !== 4 && orderDetailModal.status !== 2 && <Table columns={columns} dataSource={orderDetailData} />}
+                </>} */}
+                {/* {orderDetailModal.status !== 4 && orderDetailModal.status !== 2 && <Table columns={columns} dataSource={orderDetailData} />} */}
+                {<Table columns={columns} dataSource={orderDetailData} />}
                 <h2></h2>
                 <h4> <Col span={12}>List Table Booked
                 </Col></h4>
