@@ -137,7 +137,11 @@ export const addDish = (dishName, price, description, rawMenu, rawSubCategory, i
                 )
             });
         }
-        const subcategoryId = rawSubCategory.value;
+        let subcategoryId;
+
+        if (rawSubCategory !== undefined) {
+            subcategoryId = rawSubCategory.value;
+        }
 
         //End of rename key block
         const createdTime = new Date();

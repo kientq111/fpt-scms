@@ -541,10 +541,10 @@ const ListOrderScreen = () => {
                 <Descriptions title="" layout="vertical" bordered>
                     <Descriptions.Item label="Order Number" style={{ width: "20%" }}><b>{orderDetailModal.orderNumber}</b></Descriptions.Item>
                     <Descriptions.Item label="Total Money"><b>{orderDetailModal.total}</b></Descriptions.Item>
-                    <Descriptions.Item label="Order By" span={2}>
+                    {/* <Descriptions.Item label="Order By" span={2}>
                         <b>{orderDetailModal.user.first_name} {orderDetailModal.user.last_name}</b>
                     </Descriptions.Item>
-                    <Descriptions.Item label="User Phone Number"><b><i>{orderDetailModal.user.phone}</i></b></Descriptions.Item>
+                    <Descriptions.Item label="User Phone Number"><b><i>{orderDetailModal.user.phone}</i></b></Descriptions.Item> */}
                     <Descriptions.Item label="Order Started Time"><b>{moment(orderDetailModal.createdTimme).format('LLLL')}</b></Descriptions.Item>
                     <Descriptions.Item label="Order Status" span={3}>
                         <Badge status={orderDetailModal.status === 1 ? "processing" : orderDetailModal.status === 2 ? "success" : "error"} text={orderDetailModal.status === 1 ? "Order Pending" : orderDetailModal.status === 2 ? "Order Success" : "Order Cancel"} />
@@ -571,7 +571,8 @@ const ListOrderScreen = () => {
                         <Col span={8}></Col>
                     </Row>
                 </>}
-                {orderDetailModal.status !== 4 && orderDetailModal.status !== 2 && <Table columns={columns} dataSource={orderDetailData} />}
+                {/* {orderDetailModal.status !== 4 && orderDetailModal.status !== 2 && <Table columns={columns} dataSource={orderDetailData} />} */}
+                { <Table columns={columns} dataSource={orderDetailData} />}
                 <h2></h2>
                 <h4> <Col span={12}>List Table Booked
                 </Col></h4>

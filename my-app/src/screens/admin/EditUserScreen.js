@@ -168,10 +168,11 @@ const EditUserScreen = () => {
             ward = values.wards.name;
         }
 
-        gender = (oldGender === 0 ? false : true)
+        gender = (oldGender === 0 ? true : false)
 
         if (isOptionGenderChange === true) {
             gender = values.gender.value
+           console.log(gender);
         }
 
         const address = {
@@ -210,11 +211,11 @@ const EditUserScreen = () => {
     }
 
     const optionGender = [{
-        value: false,
+        value: true,
         label: "Male"
     },
     {
-        value: true,
+        value: false,
         label: "Female"
     }
     ]

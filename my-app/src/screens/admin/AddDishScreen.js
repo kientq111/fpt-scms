@@ -181,7 +181,14 @@ const AddDishScreen = () => {
                 isMulti
               />
             </Form.Item>
-            <Form.Item label="Sub Category" name="subcategory">
+            <Form.Item label="Sub Category" name="subcategory"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please select subcategory!',
+                },
+              ]}
+            >
               <Select
                 options={optionListSubCategory}
                 placeholder="Select subcategory"
