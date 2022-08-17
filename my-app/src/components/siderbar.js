@@ -57,7 +57,7 @@ const itemsAdmin = [
         getItem('Add Blog', '/admin/addblog'),
         getItem('List Blog', '/admin/listblog'),
     ]),
-    getItem("User's Feedback", '/admin/listfeedback', <FormOutlined />),
+    getItem("Contact", '/admin/listcontact', <FormOutlined />),
     getItem('Logout', '/', <LogoutOutlined />),
 ];
 
@@ -85,7 +85,7 @@ const itemsStaff = [
         getItem('Add Blog', '/admin/addblog'),
         getItem('List Blog', '/admin/listblog'),
     ]),
-    getItem("User's Feedback", '/admin/listfeedback', <FormOutlined />),
+    getItem("Contact", '/admin/listcontact', <FormOutlined />),
     getItem('Logout', '/', <LogoutOutlined />),
 ];
 

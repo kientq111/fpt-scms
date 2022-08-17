@@ -58,10 +58,9 @@ const EditInfoPersonalScreen = () => {
     const userCheckAcc = useSelector((state) => state.userCheckAcc)
     const { userCheckAccount } = userCheckAcc
     const { success, loading } = userUpdateSelector;
-    const [provin, setProvin] = useState();
-    const [district, setDistrict] = useState();
+    const [provin, setProvin] = useState([{ name: userCheckAccount.data.address.city, code: "" }]);
+    const [district, setDistrict] = useState([{ name: userCheckAccount.data.address.district, code: "" }]);
 
-    const [wards, setWards] = useState()
     let [isProvinChance, setIsProvinChange] = useState(false);
     let [isDistrictChance, setIsDistrictChange] = useState(false);
     let [isWardChange, setIsWardChange] = useState(false);
@@ -84,36 +83,26 @@ const EditInfoPersonalScreen = () => {
             .then(res => {
                 const dataRes = res.data;
                 setProvin(dataRes);
+                console.log(provin);
             })
             .catch(error => console.log(error));
 
     }, [])
 
-    // useEffect(() => {
-    //     //Search previous province and get code to list wards
-    //     axios.get(`https://provinces.open-api.vn/api/p/search/?q=${location.state.city}`)
-    //         .then(res => {
-    //             const dataProvinceRes = res.data[0].code;
-    //             axios.get(`https://provinces.open-api.vn/api/p/${dataProvinceRes}?depth=3`)
-    //                 .then(res => {
-    //                     const dataDistric = res.data;
-    //                     setDistrict(dataDistric.districts);
-    //                 })
-    //         })
-    //         .catch(error => console.log(error));
-    //     //Search previous district and get code to list wards
-    //     axios.get(`https://provinces.open-api.vn/api/d/search/?q=${location.state.district}`)
-    //         .then(res => {
-    //             const dataDistrictRes = res.data[0].code;
-    //             axios.get(`https://provinces.open-api.vn/api/d/${dataDistrictRes}?depth=2`)
-    //                 .then(res => {
-    //                     const dataWard = res.data;
-    //                     console.log(dataWard);
-    //                     setWards(dataWard.wards);
-    //                 })
-    //         })
-    //         .catch(error => console.log(error));
-    // }, []);
+    useEffect(() => {
+        //Search previous province and get code to list wards
+        axios.get(`https://provinces.open-api.vn/api/p/search/?q=${userCheckAccount.data.address.city}`)
+            .then(res => {
+                const dataProvinceRes = res.data[0].code;
+                axios.get(`https://provinces.open-api.vn/api/p/${dataProvinceRes}?depth=3`)
+                    .then(res => {
+                        const dataDistric = res.data;
+                        setDistrict(dataDistric.districts);
+
+                    })
+            })
+            .catch(error => console.log(error));
+    }, []);
 
     // Function triggered on selection
     function handleProvinSelect(value) {
@@ -132,22 +121,10 @@ const EditInfoPersonalScreen = () => {
     }
 
     function handleDistrictSelect(value) {
-        axios.get(`https://provinces.open-api.vn/api/d/${value.code}?depth=2`)
-            .then(res => {
-                const dataRes = res.data;
-                setWards(dataRes.wards);
-            })
-            .catch(error => console.log(error));
-        //Clear select when district changed
-        form.setFieldsValue({
-            wards: "",
-        })
         setIsDistrictChange(true)
     }
 
-    function handleWardSelect() {
-        setIsWardChange(true);
-    }
+
     //END OF INIT
 
     //Submit edit form to action
@@ -294,7 +271,7 @@ const EditInfoPersonalScreen = () => {
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
                             onChange={handleProvinSelect}
-
+                            defaultValue={[provin[0]]}
                             options={provin}
                         />
                     </Form.Item>
@@ -306,24 +283,11 @@ const EditInfoPersonalScreen = () => {
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
                             onChange={handleDistrictSelect}
-
+                            defaultValue={[district[0]]}
                             options={district}
                         />
                     </Form.Item>
 
-                    <Form.Item
-                        name="wards"
-                        label="Wards"
-                        Size="small "
-                    >
-                        <Select
-                            getOptionLabel={option => option.name}
-                            getOptionValue={option => option.code}
-                            onChange={handleWardSelect}
-
-                            options={wards}
-                        />
-                    </Form.Item>
 
                     <Form.Item
                         name="street"
@@ -335,8 +299,8 @@ const EditInfoPersonalScreen = () => {
                                 message: 'Please input your street!',
                                 whitespace: true,
                             }, {
-                                max: 20,
-                                message: 'please input not larger than 20 words!',
+                                max: 50,
+                                message: 'please input not larger than 50 words!',
                             }
                         ]}
                     >

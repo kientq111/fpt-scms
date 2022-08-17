@@ -124,7 +124,7 @@ const App = () => {
             <Route path='/admin/addtable' element={<AddTableScreen />} />
             <Route path='/admin/edittable' element={<EditTableScreen />} />
             {/* feedback */}
-            <Route path='/admin/listfeedback' element={<ListFeedBackScreen />} />
+            <Route path='/admin/listcontact' element={<ListFeedBackScreen />} />
             {/* Order */}
             <Route path='/admin/listorder' element={<ListOrderScreen />} />
 

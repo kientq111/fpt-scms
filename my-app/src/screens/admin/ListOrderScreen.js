@@ -233,7 +233,7 @@ const ListOrderScreen = () => {
 
 
 
-    const dishFinishHandle = () => {
+    const dishFinishHandle = (record) => {
         let newDish = countDish + 1;
         countDish = newDish;
         console.log(countDish)
@@ -242,6 +242,7 @@ const ListOrderScreen = () => {
         console.log('flag', flag);
         if (countDish === ordDetailData.length) {
             openNotificationWithIcon('success');
+            console.log(record)
         }
     }
 
@@ -338,7 +339,7 @@ const ListOrderScreen = () => {
     ]
 
     const onChangeCoundownHandler = (values) => {
-        console.log(values / 1000);
+        // console.log(values / 1000);
     }
 
     const columns = [
@@ -392,7 +393,7 @@ const ListOrderScreen = () => {
                 if (doneDish === record.id) {
                     coundown = 0;
                 }
-                return <Countdown value={Date.now() + coundown * 1000} onFinish={dishFinishHandle} onChange={onChangeCoundownHandler} />; // just for decoration
+                return <Countdown value={Date.now() + coundown * 1000} onFinish={() => dishFinishHandle(record)} onChange={onChangeCoundownHandler} />; // just for decoration
             }
         },
 
@@ -528,19 +529,19 @@ const ListOrderScreen = () => {
             }
 
             <Modal title="Detail Order" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText="Ok" width={'70%'}>
-                {orderDetailModal.status !== 2 && orderDetailModal.status !== 4 &&
-                    <>
-                        <Row style={{ marginBottom: 10 }}>
-                            <Col span={6}></Col>
-                            <Col span={6}></Col>
-                            <Col span={6}></Col>
-                            <Col span={6}>
-                                <Button type='primary' style={{ marginRight: 20 }}>Done Order</Button>
-                                <Button type='danger'>Cancel Order</Button>
-                            </Col>
-                        </Row>
-                    </>
-                }
+
+                <>
+                    <Row style={{ marginBottom: 10 }}>
+                        <Col span={6}></Col>
+                        <Col span={6}></Col>
+                        <Col span={6}></Col>
+                        <Col span={6}>
+                            <Button type='primary' style={{ marginRight: 20 }}>Done Order</Button>
+                            <Button type='danger'>Cancel Order</Button>
+                        </Col>
+                    </Row>
+                </>
+
 
                 <Descriptions title="" layout="vertical" bordered>
                     <Descriptions.Item label="Order Number" style={{ width: "20%" }}><b>{orderDetailModal.orderNumber}</b></Descriptions.Item>
