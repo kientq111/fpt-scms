@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, Input, Button, Checkbox, Card, Space, Divider } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useNavigate,Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Row, Col } from 'antd';
 import { checkAccount, login } from '../actions/userActions';
 import Loader from '../components/Loader';
@@ -25,7 +25,7 @@ const LoginScreen = () => {
     const onFinish = (values) => {
         setUsername(values.username)
         setPassword(values.password)
-        console.log('Received values of form: ', values);
+
         // dispatch(login(values.username, values.password));
         dispatch(checkAccount(values.username));
     };
@@ -53,8 +53,9 @@ const LoginScreen = () => {
     }, [userCheckAccountData])
 
     useEffect(() => {
-        if (userInfo) {
-            if (userInfo === "Bad credentials") {
+        console.log({ userInfo });
+        if (userInfo !== undefined) {
+            if (userInfo === null) {
                 SetMessage("Password Fail");
             } else {
                 if (userInfo.role[0].authority == "ROLE_ADMIN") {

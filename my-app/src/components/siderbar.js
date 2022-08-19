@@ -57,13 +57,12 @@ const itemsAdmin = [
         getItem('Add Blog', '/admin/addblog'),
         getItem('List Blog', '/admin/listblog'),
     ]),
-    getItem("User's Feedback", '/admin/listfeedback', <FormOutlined />),
+    getItem("Contact", '/admin/listcontact', <FormOutlined />),
     getItem('Logout', '/', <LogoutOutlined />),
 ];
 
 
 const itemsStaff = [
-    getItem('Dashboard', '/admin/dashboard', <PieChartOutlined />),
     getItem('Order Manager', '2', <TagOutlined />, [
         getItem('List Order', '/admin/listorder'),
     ]),
@@ -85,7 +84,7 @@ const itemsStaff = [
         getItem('Add Blog', '/admin/addblog'),
         getItem('List Blog', '/admin/listblog'),
     ]),
-    getItem("User's Feedback", '/admin/listfeedback', <FormOutlined />),
+    getItem("Contact", '/admin/listcontact', <FormOutlined />),
     getItem('Logout', '/', <LogoutOutlined />),
 ];
 
@@ -95,11 +94,14 @@ const SiderBar = () => {
     const navigate = useNavigate();
     const userLogin = useSelector((state) => state.userLogin)
     const { userInfo } = userLogin
-    if (userInfo.role[0].authority === "ROLE_ADMIN") {
-        items = itemsAdmin
-    } else {
-        items = itemsStaff
+    if (userInfo.data !== null) {
+        if (userInfo.role[0].authority === "ROLE_ADMIN") {
+            items = itemsAdmin
+        } else {
+            items = itemsStaff
+        }
     }
+
     const handleSiderClick = (e) => {
         if (e.key === '/') {
             dispatch(logout());

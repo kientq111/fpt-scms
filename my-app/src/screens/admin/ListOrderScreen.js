@@ -4,7 +4,7 @@ import {
 import { React, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from "react-router-dom";
-import { LargeLoader } from '../../components/Loader';
+import Loader, { LargeLoader } from '../../components/Loader';
 import moment from 'moment'
 import Highlighter from 'react-highlight-words';
 import styled from 'styled-components';
@@ -13,8 +13,10 @@ import LinesEllipsis from 'react-lines-ellipsis'
 import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
 import get from "lodash.get"
 import isequal from "lodash.isequal"
+import axios from 'axios';
+import { isArray } from 'lodash';
+import Countdown from 'react-countdown'
 
-const { Countdown } = Statistic;
 const { Column } = Table;
 
 const StyledTable = styled((props) => <Table {...props} />)`
@@ -35,18 +37,18 @@ const openNotificationWithIcon = (type) => {
 const ListOrderScreen = () => {
     const [searchText, setSearchText] = useState('');
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [visible, setVisible] = useState(false);
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
     const dispatch = useDispatch();
-    const dataOrder = useSelector((state) => state.orderList);
+
     const orderChangeStatusSelector = useSelector((state) => state.orderChangeStatus);
-    const orderDishGetByIdSelector = useSelector((state) => state.orderGetById);
-    const orderDetailLoading = orderDishGetByIdSelector.loading
-    const orderDetailData = orderDishGetByIdSelector.orderDetail
+    const userLoginInfo = useSelector((state) => state.userLogin);
+    const { userInfo } = userLoginInfo;
+    const [listOrd, setListOrd] = useState([]);
     const { success } = orderChangeStatusSelector;
-    const { loading, orders } = dataOrder
-    let countDish = 0;
+    const [loading, setLoading] = useState();
+    const { RangePicker } = DatePicker;
+    const [listDish, setListDish] = useState();
     var flag = false;
     const [orderDetailModal, setOrderDetailModal] = useState({
         orderNumber: "",
@@ -72,24 +74,6 @@ const ListOrderScreen = () => {
         }
     });
     let listDishOrder;
-    const navigate = useNavigate();
-
-
-
-    useEffect(() => {
-        let currentDate = new Date();
-        let tomorrowDate = currentDate.setDate(currentDate.getDate() + 1);
-        let today = currentDate.setDate(currentDate.getDate() - 1);
-        dispatch(listOrders(moment(today).format('YYYY-MM-DD'), moment(tomorrowDate).format('YYYY-MM-DD')));
-        //Get Tomorrow Date
-    }, [success]);
-
-    const showModal = (order) => {
-        console.log('hee');
-        dispatch(getOrderByID(order.orderId))
-        setOrderDetailModal(order);
-        setIsModalVisible(true);
-    };
 
     const handleOk = () => {
         setIsModalVisible(false);
@@ -98,18 +82,9 @@ const ListOrderScreen = () => {
 
     const handleCancel = () => {
         setIsModalVisible(false);
-        console.log('Cancel');
         flag = true;
     };
 
-    const hide = () => {
-        setVisible(false);
-    };
-
-    const handleVisibleChange = (newVisible) => {
-        setVisible(newVisible);
-    };
-    //Handle Search Prop
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -121,13 +96,6 @@ const ListOrderScreen = () => {
         setSearchText('');
     };
 
-
-
-
-    const changeOrderStatusHandle = (id, status) => {
-        dispatch(changeOrderStatus(id, status))
-        message.success(`Order change id: ${id} to status: ${status === 1 ? 'Pending' : status === 2 ? 'Success' : 'Cancel'}`)
-    }
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
             <div
@@ -212,133 +180,147 @@ const ListOrderScreen = () => {
                 text
             ),
     });
-    const { RangePicker } = DatePicker;
+
+    const showModal = (order) => {
+        getOrderDetailData(order.orderId)
+        setOrderDetailModal(order);
+        flag = false;
+        setIsModalVisible(true);
+    };
+
+    const changeStatusAndReloadOrderDetail = (orderId, status) => {
+        changeOrderStatusHandle(orderId, 0, status)
+        getOrderDetailById(orderId);
+    }
+
+    const getOrderDetailById = async (orderId) => {
+        try {
+
+            const res = await axios.get(`/order/getOrderDishById/${orderId}`, {
+                params: {
+                },
+                headers: {
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            })
+
+            setOrderDetailModal(res.data?.data)
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getOrder = async (startDate, endDate) => {
+
+        try {
+
+            const res = await axios.get(`/order/getListOrderDish`, {
+                params: {
+                    orderNumber: '',
+                    userId: '',
+                    status: '',
+                    bookId: '',
+                    startDate: startDate ? startDate : '',
+                    endDate: endDate ? endDate : '',
+                    createdBy: '',
+                    orderId: '',
+                    pageSize: 100,
+                    pageIndex: 0,
+                },
+                headers: {
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            })
+            setListOrd(res.data?.data)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getOrderDetailData = async (id) => {
+        try {
+            setLoading(true)
+            const res = await axios.get(`/orderDetail/getListOrderDetailByOrderId`, {
+                params: {
+                    orderId: id,
+                    fromDate: '',
+                    toDate: '',
+                    createdBy: '',
+                    pageIndex: 0,
+                    pageSize: 100,
+                },
+                headers: {
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            })
+            console.log(res.data?.data);
+            setListDish(res.data?.data)
+            setLoading(false)
+            return res.data?.data
+
+        } catch (error) {
+        }
+    }
+
+    const getDishItemById = (id, orders) => {
+        let foundItem;
+        for (const item of orders) {
+            if (item.orderId === id) {
+                foundItem = item;
+                break;
+            }
+        }
+        return foundItem;
+    }
+
     const refreshListOrder = () => {
         let currentDate = new Date();
         let tomorrowDate = currentDate.setDate(currentDate.getDate() + 1);
         let today = currentDate.setDate(currentDate.getDate() - 1);
-        dispatch(listOrders(moment(today).format('YYYY-MM-DD'), moment(tomorrowDate).format('YYYY-MM-DD')));
+        // dispatch(listOrders(moment(today).format('YYYY-MM-DD'), moment(tomorrowDate).format('YYYY-MM-DD')));
+        getOrder(moment(today).format('YYYY-MM-DD'), moment(tomorrowDate).format('YYYY-MM-DD'))
     }
     const dateOnchangeHandle = (value) => {
         if (value === null) {
             return
         }
-        console.log(moment(value[0]).format('YYYY-MM-DD'))
-        console.log(moment(value[1]).format('YYYY-MM-DD'))
         const startDate = moment(value[0]).format('YYYY-MM-DD');
         const endDate = moment(value[1]).format('YYYY-MM-DD')
-
-        dispatch(listOrders(startDate, endDate));
+        getOrder(moment(startDate).format('YYYY-MM-DD'), moment(endDate).format('YYYY-MM-DD'))
+        // dispatch(listOrders(startDate, endDate));
     }
 
-
-
-    const dishFinishHandle = () => {
-        let newDish = countDish + 1;
-        countDish = newDish;
-        console.log(countDish)
-        //if all dish finish then changed status of order detail
-        console.log(isModalVisible)
-        console.log('flag', flag);
-        if (countDish === ordDetailData.length) {
-            openNotificationWithIcon('success');
+    const changeOrderStatusHandle = (id, prevStatus, status) => {
+        // console.log({ status });
+        if (prevStatus === 2) {
+            message.info('You are not permission to change this status')
+            return
         }
+        dispatch(changeOrderStatus(id, status))
+        message.success(`Order change id: ${id} to status: ${status === 1 ? 'Pending' : status === 2 ? 'Success' : 'Cancel'}`)
     }
 
-    let doneDish;
-    const onDoneHandle = (id) => {
-        doneDish = id
-        console.log(doneDish);
-        console.log("huhu");
-        console.log(id);
-    }
+    const onDoneHandle = (dishId) => {
+        console.log(dishId);
+        setListOrd(prevOrders => {
+            let updatedOrders = prevOrders?.map(order => ({
+                ...order,
+                dishItem: order?.dishItem?.map(dish => {
+                    if (dish?.id === dishId) {
+                        return {
+                            ...dish,
+                            dishTimeFinished: 0
+                        }
+                    } else {
+                        return dish
+                    }
+                })
+            }))
 
-    const ordDetailData = [
-        {
-            "id": 412,
-            "orderId": 517,
-            "quantity": 3,
-            "price": 11000.0,
-            "createdDate": "2022-07-31T16:38:34.000+00:00",
-            "createdBy": "admin",
-            "updatedDate": "2022-07-31T16:38:34.000+00:00",
-            "updatedBy": "admin",
-            "isEnabled": false,
-            "isDeleted": false,
-            "orderDishNumber": 0,
-            "dishTimeFinished": 0.3,
-            "dishItem": {
-                "id": 22,
-                "dishName": "Phở Hà Nội Đặc Biệt",
-                "subCategory": {
-                    "id": 8,
-                    "subCategoryName": "Cake",
-                    "category": {
-                        "id": 3,
-                        "categoryName": "Drink",
-                    },
-                    price: "18000",
-                },
-            }
-        },
-        {
-            "id": 112,
-            "orderId": 517,
-            "quantity": 6,
-            "price": 17000.0,
-            "createdDate": "2022-07-31T16:38:34.000+00:00",
-            "createdBy": "admin",
-            "updatedDate": "2022-07-31T16:38:34.000+00:00",
-            "updatedBy": "admin",
-            "isEnabled": false,
-            "isDeleted": false,
-            "orderDishNumber": 0,
-            "dishTimeFinished": 0.2,
-            "dishItem": {
-                "id": 44,
-                "dishName": "Cơm Canteen",
-                "subCategory": {
-                    "id": 8,
-                    "subCategoryName": "Cake",
-                    "category": {
-                        "id": 3,
-                        "categoryName": "Drink",
-                    },
-                    price: "18000",
-                },
-            }
-        },
-        {
-            "id": 311,
-            "orderId": 517,
-            "quantity": 6,
-            "price": 17000.0,
-            "createdDate": "2022-07-31T16:38:34.000+00:00",
-            "createdBy": "admin",
-            "updatedDate": "2022-07-31T16:38:34.000+00:00",
-            "updatedBy": "admin",
-            "isEnabled": false,
-            "isDeleted": false,
-            "orderDishNumber": 0,
-            "dishTimeFinished": 0.12,
-            "dishItem": {
-                "id": 123,
-                "dishName": "CocaCola",
-                "subCategory": {
-                    "id": 8,
-                    "subCategoryName": "Cake",
-                    "category": {
-                        "id": 3,
-                        "categoryName": "Drink",
-                    },
-                    price: "18000",
-                },
-            }
+            return updatedOrders;
         }
-    ]
-
-    const onChangeCoundownHandler = (values) => {
-        console.log(values / 1000);
+        )
     }
 
     const columns = [
@@ -388,25 +370,100 @@ const ListOrderScreen = () => {
             dataIndex: 'dishTimeFinished',
             key: 'count',
             render: (text, record) => {
-                let coundown = record.dishTimeFinished * 60;
-                if (doneDish === record.id) {
-                    coundown = 0;
-                }
-                return <Countdown value={Date.now() + coundown * 1000} onFinish={dishFinishHandle} onChange={onChangeCoundownHandler} />; // just for decoration
+                let countdown = 500000
+                // parseInt(moment(detail.createdDate).format('x')) + (detail.dishTimeFinished * 60 * 1000)
+                // if (doneDish === record.id) {
+                //     countdown = 0;
+                // }
+                return <Countdown
+                    date={parseInt(moment(countdown).format('x')) + (countdown * 60 * 1000) + 1} renderer={countdownRederer}
+                    onComplete={() => dishFinishHandle(orderDetailModal.orderId, orderDetailModal.status)} />; // just for decoration
+            }
+        },
+
+    ];
+
+
+    const countdownRederer = ({ hours, minutes, seconds, completed }) => {
+        if (orderDetailModal.status === 2 || orderDetailModal.status === 4 || orderDetailModal.status === 32) {
+            return
+        }
+
+        if (completed) {
+            return <span>Done</span>
+        }
+
+        return <span>{('0' + minutes).slice('-2')}:{('0' + seconds).slice('-2')}</span>;
+    }
+
+    let countDish = 0;
+    const dishFinishHandle = (orderId, status) => {
+        let newDish = countDish + 1;
+        countDish = newDish;
+        //if all dish finish then changed status of order detail
+        console.log({ countDish })
+        console.log(listDish.length)
+        console.log({ status });
+        if (countDish == listDish.length && status == 1 && flag === false) {
+            openNotificationWithIcon('success');
+             changeStatusAndReloadOrderDetail(orderId, 2);
+        }
+    }
+
+    const columnsDoneOrCancel = [
+        {
+            title: 'Dish Name',
+            dataIndex: 'dishName',
+            key: '',
+            render: (text, record) => {
+                return `${record.dishItem.dishName}`; // just for decoration
+            },
+
+
+        },
+
+        {
+            title: 'SubCategory',
+            dataIndex: 'subCategory',
+            key: 'sub',
+            render: (text, record) => {
+                return `${record.dishItem.subCategory.subCategoryName}`; // just for decoration
             }
         },
 
         {
-            title: 'Action',
-            key: 'action',
+            title: 'Price',
+            dataIndex: 'price',
+            key: 'price',
             render: (text, record) => {
-                return <Button onClick={() => onDoneHandle(record.id)}>Mask As Done</Button>
-            }
+                return `${record.price}`; // just for decoration
+            },
+            sorter: (a, b) => a.price - b.price
         },
 
-
-
+        {
+            title: 'Quantity',
+            dataIndex: 'Quantity',
+            key: 'Quantiy',
+            render: (text, record) => {
+                return `${record.quantity}`; // just for decoration
+            },
+            sorter: (a, b) => a.quantity - b.quantity
+        },
+        { title: "Order Dish Number", dataIndex: "orderDishNumber", key: "orderDishNumber", sorter: (a, b) => a.orderDishNumber - b.orderDishNumber },
     ];
+
+
+    useEffect(() => {
+
+        let currentDate = new Date();
+        let tomorrowDate = currentDate.setDate(currentDate.getDate() + 1);
+        let today = currentDate.setDate(currentDate.getDate() - 1);
+        getOrder(moment(today).format('YYYY-MM-DD'), moment(tomorrowDate).format('YYYY-MM-DD'))
+        // getOrder()
+
+    }, [success]);
+
 
     const columnsTable = [
         {
@@ -425,12 +482,6 @@ const ListOrderScreen = () => {
     ];
 
 
-    if (orderDetailLoading === false) {
-        listDishOrder = orderDetailData;
-    }
-
-
-
     return (
         <>
             <Breadcrumb style={{ marginTop: 10 }}>
@@ -441,7 +492,7 @@ const ListOrderScreen = () => {
             </Breadcrumb>
             <Divider orientation="right">  <Button type="" size="middle" onClick={refreshListOrder}>Refresh</Button></Divider>
 
-            {loading === true && <>
+            {/* {loading === true && <>
                 <br></br> <br /> <br />
                 <br></br> <br /> <br />
                 <Row>
@@ -449,106 +500,109 @@ const ListOrderScreen = () => {
                     <Col span={5}></Col>
                     <Col span={5}><LargeLoader /></Col>
                     <Col span={5}></Col>
-                </Row></>}
+                </Row></>} */}
 
-            {loading === false &&
-                <>
-                    <div>
-                        <Row>
-                            <Col span={8}></Col>
-                            <Col span={8}></Col>
-                            <Col span={8}> <RangePicker onChange={(value) => dateOnchangeHandle(value)} /></Col>
-                        </Row>
-                    </div>
-                    <StyledTable dataSource={orders} className="table-striped-rows">
-                        <Column title="Order Number" dataIndex="orderNumber" key="orderNumber" {...getColumnSearchProps('orderNumber')} />
-                        <Column title="Description" dataIndex="description" key="description" width={'20%'}
-                            render={(_, record) => (<LinesEllipsis
-                                text={record.description}
-                                maxLine='1'
-                                ellipsis='...'
-                                trimRight
-                                basedOn='letters'
-                            />)}
-                        />
-                        <Column title="Order Status" dataIndex="status"
-                            filters={[
-                                {
-                                    text: 'Order Pending',
-                                    value: 1,
-                                },
-                                {
-                                    text: 'Order Success',
-                                    value: 2,
-                                },
-                                {
-                                    text: 'Order Cancel',
-                                    value: 4,
-                                },
-                            ]}
-                            onFilter={(value, record) => record.status === value}
-                            render={(_, record) => (record.status === 1 ? (<p style={{ color: 'blue' }}>Pending</p>) : record.status === 2 ? (<p style={{ color: 'green' }}>Success</p>) : (<p style={{ color: 'red' }}>Cancel</p>))}
-                            key="status"
-                        />
-                        <Column title="Total Price" dataIndex="total" key="total" sorter={(a, b) => a.total - b.total} />
-                        <Column title="User's Order" dataIndex={["user", "first_name"]} {...getColumnSearchProps(["user", "first_name"],)} key="createdBy" />
-                        <Column title="Order Created Time" dataIndex="createdTimme" render={(_, record) => (moment(record.createdTimme).format('LLLL'))} key="created_time" sorter={(a, b) => moment(a.createdTimme).unix() - moment(b.createdTimme).unix()} />
-                        <Column title="Total Table Booked" dataIndex="bookTable"
-                            render={(_, record) => record.bookTable.listTable.length
-                            }
-                            key="createdBy"
-                            sorter={(a, b) => a.bookTable.listTable.length - b.bookTable.listTable.length}
-                        />
-                        <Column
-                            title="Action"
-                            key="action"
-                            render={(_, record) => (
-                                <Space size="middle">
-                                    <a ><EyeOutlined onClick={() => showModal(record)} /></a>
-                                    <Popover content={<div>
-                                        <Space
-                                            direction="vertical"
-                                            size="small"
-                                            style={{
-                                                display: 'flex',
-                                            }}
-                                        >
-                                            <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, 2) }}>Change to OrderSuccess</a>
-                                            <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, 1) }}>Change to OrderPending</a>
-                                            <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, 4) }}>Change to OrderCancel</a>
-                                        </Space>
-                                    </div>} title="Change Status" trigger="click">
-                                        <a style={{ color: 'blue' }}>Change Status</a>
-                                    </Popover>
-                                </Space>
-                            )}
-                        />
-                    </StyledTable>
-                </>
-            }
+            {/* {loading === false && */}
+            <>
+                <div>
+                    <Row>
+                        <Col span={8}></Col>
+                        <Col span={8}></Col>
+                        <Col span={8}> <RangePicker onChange={(value) => dateOnchangeHandle(value)} /></Col>
+                    </Row>
+                </div>
+                <StyledTable dataSource={listOrd || []} className="table-striped-rows">
+                    <Column title="Order Number" dataIndex="orderNumber" key="orderNumber" {...getColumnSearchProps('orderNumber')} />
+                    <Column title="Description" dataIndex="description" key="description" width={'20%'}
+                        render={(_, record) => (<LinesEllipsis
+                            text={record.description}
+                            maxLine='1'
+                            ellipsis='...'
+                            trimRight
+                            basedOn='letters'
+                        />)}
+                    />
+                    <Column title="Order Status" dataIndex="status"
+                        filters={[
+                            {
+                                text: 'Order Pending',
+                                value: 1,
+                            },
+                            {
+                                text: 'Order Success',
+                                value: 2,
+                            },
+                            {
+                                text: 'Order Cancel',
+                                value: 4,
+                            },
+                        ]}
+                        onFilter={(value, record) => record.status === value}
+                        render={(_, record) => (record.status === 1 ? (<p style={{ color: 'blue' }}>Pending</p>) : record.status === 2 ? (<p style={{ color: 'green' }}>Success</p>) : (<p style={{ color: 'red' }}>Cancel</p>))}
+                        key="status"
+                    />
+                    <Column title="Total Price" dataIndex="total" key="total" sorter={(a, b) => a.total - b.total} />
+                    <Column title="User's Order" dataIndex={["user", "first_name"]} {...getColumnSearchProps(["user", "first_name"],)} key="createdBy" />
+                    <Column title="Order Created Time" dataIndex="createdTimme" render={(_, record) => (moment(record.createdTimme).format('LLLL'))} key="created_time" sorter={(a, b) => moment(a.createdTimme).unix() - moment(b.createdTimme).unix()} />
+                    <Column title="Total Table Booked" dataIndex="bookTable"
+                        render={(_, record) => record.bookTable.listTable.length
+                        }
+                        key="createdBy"
+                        sorter={(a, b) => a.bookTable.listTable.length - b.bookTable.listTable.length}
+                    />
+                    <Column
+                        title="Action"
+                        key="action"
+                        render={(_, record) => (
+                            <Space size="middle">
+                                <a ><EyeOutlined onClick={() => showModal(record)} /></a>
+                                <Popover content={<div>
+                                    <Space
+                                        direction="vertical"
+                                        size="small"
+                                        style={{
+                                            display: 'flex',
+                                        }}
+                                    >
+                                        <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 2) }}>Change to OrderSuccess</a>
+                                        <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 1) }}>Change to OrderPending</a>
+                                        <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 4) }}>Change to OrderCancel</a>
+                                    </Space>
+                                </div>} title="Change Status" trigger="click">
+                                    <a style={{ color: 'blue' }}>Change Status</a>
+                                </Popover>
+                            </Space>
+                        )}
+                    />
+                </StyledTable>
+            </>
+            {/* } */}
 
             <Modal title="Detail Order" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText="Ok" width={'70%'}>
-                {orderDetailModal.status !== 2 && orderDetailModal.status !== 4 &&
-                    <>
-                        <Row style={{ marginBottom: 10 }}>
-                            <Col span={6}></Col>
-                            <Col span={6}></Col>
-                            <Col span={6}></Col>
-                            <Col span={6}>
-                                <Button type='primary' style={{ marginRight: 20 }}>Done Order</Button>
-                                <Button type='danger'>Cancel Order</Button>
-                            </Col>
-                        </Row>
-                    </>
-                }
+
+                <>
+                    <Row style={{ marginBottom: 10 }}>
+                        <Col span={6}></Col>
+                        <Col span={6}></Col>
+                        <Col span={6}></Col>
+                        <Col span={6}>
+                            {orderDetailModal.status === 1 &&
+                                <>
+                                    <Button type='primary' style={{ marginRight: 20 }} onClick={() => changeStatusAndReloadOrderDetail(orderDetailModal.orderId, 2)}>Done Order</Button>
+                                    <Button type='danger' onClick={() => changeStatusAndReloadOrderDetail(orderDetailModal.orderId, 4)} > Cancel Order</Button>
+                                </>
+                            }
+                        </Col>
+                    </Row>
+                </>
 
                 <Descriptions title="" layout="vertical" bordered>
                     <Descriptions.Item label="Order Number" style={{ width: "20%" }}><b>{orderDetailModal.orderNumber}</b></Descriptions.Item>
                     <Descriptions.Item label="Total Money"><b>{orderDetailModal.total}</b></Descriptions.Item>
-                    {/* <Descriptions.Item label="Order By" span={2}>
-                        <b>{orderDetailModal.user.first_name} {orderDetailModal.user.last_name}</b>
+                    <Descriptions.Item label="Order By" span={2}>
+                        <b>{orderDetailModal.user?.first_name} {orderDetailModal?.user.last_name}</b>
                     </Descriptions.Item>
-                    <Descriptions.Item label="User Phone Number"><b><i>{orderDetailModal.user.phone}</i></b></Descriptions.Item> */}
+                    <Descriptions.Item label="User Phone Number"><b><i>{orderDetailModal?.user.phone}</i></b></Descriptions.Item>
                     <Descriptions.Item label="Order Started Time"><b>{moment(orderDetailModal.createdTimme).format('LLLL')}</b></Descriptions.Item>
                     <Descriptions.Item label="Order Status" span={3}>
                         <Badge status={orderDetailModal.status === 1 ? "processing" : orderDetailModal.status === 2 ? "success" : "error"} text={orderDetailModal.status === 1 ? "Order Pending" : orderDetailModal.status === 2 ? "Order Success" : "Order Cancel"} />
@@ -559,24 +613,19 @@ const ListOrderScreen = () => {
                 </Descriptions>
                 <h2></h2>
                 <h4>List Dish Order</h4>
-                {orderDetailModal.status === 4 &&
+                {(orderDetailModal.status === 4 || orderDetailModal.status === 2) &&
                     <>
                         <Row style={{ marginBottom: 10 }}>
                             <Col span={10}></Col>
-                            <Col span={10}><h3 style={{ color: 'red' }}>Order Cancel</h3></Col>
+                            {orderDetailModal.status === 4 ? <Col span={10}><h3 style={{ color: 'red' }}>Order Cancel</h3></Col> : <Col span={10}><h3 style={{ color: 'green' }}>Order Success</h3></Col>}
                             <Col span={10}></Col>
                         </Row>
                     </>
                 }
-                {/* {orderDetailModal.status === 2 && <>
-                    <Row style={{ marginBottom: 10 }}>
-                        <Col span={8}></Col>
-                        <Col span={8}><h3 style={{ color: 'green' }}>Order Success</h3></Col>
-                        <Col span={8}></Col>
-                    </Row>
-                </>} */}
-                {/* {orderDetailModal.status !== 4 && orderDetailModal.status !== 2 && <Table columns={columns} dataSource={orderDetailData} />} */}
-                {<Table columns={columns} dataSource={orderDetailData} />}
+
+                {loading === true && <Loader />}
+                {/* <Table columns={columns} dataSource={listDish} /> */}
+                {loading === false && <Table columns={columns} dataSource={listDish} />}
                 <h2></h2>
                 <h4> <Col span={12}>List Table Booked
                 </Col></h4>

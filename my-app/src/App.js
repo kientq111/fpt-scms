@@ -58,7 +58,7 @@ const App = () => {
       }}
     >
 
-      {userInfo && userInfo !== "Bad credentials" && <Sider Sider collapsible collapsed={collapsed} className="site-layout-background" onCollapse={(value) => setCollapsed(value)}>
+      {userInfo && userInfo !== null && <Sider Sider collapsible collapsed={collapsed} className="site-layout-background" onCollapse={(value) => setCollapsed(value)}>
         <div className="logo">
           <img
             className="logo"
@@ -70,7 +70,7 @@ const App = () => {
       </Sider>}
 
       <Layout className="site-layout">
-        {userInfo && userInfo !== "Bad credentials" && <Header
+        {userInfo && userInfo !== null && <Header
           className="site-layout-background"
           style={{
             padding: 0,
@@ -124,7 +124,7 @@ const App = () => {
             <Route path='/admin/addtable' element={<AddTableScreen />} />
             <Route path='/admin/edittable' element={<EditTableScreen />} />
             {/* feedback */}
-            <Route path='/admin/listfeedback' element={<ListFeedBackScreen />} />
+            <Route path='/admin/listcontact' element={<ListFeedBackScreen />} />
             {/* Order */}
             <Route path='/admin/listorder' element={<ListOrderScreen />} />
 
