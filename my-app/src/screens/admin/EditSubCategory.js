@@ -72,7 +72,7 @@ const EditSubCategoryScreen = () => {
 
 
     useEffect(() => {
-        dispatch(listCategory())
+        dispatch(listCategory(1))
         form.setFieldsValue({
             // menu: location.state.menuID,
             subCategoryName: location.state.subCategoryName,
@@ -104,7 +104,7 @@ const EditSubCategoryScreen = () => {
                 </Breadcrumb.Item>
             </Breadcrumb>
             <Card
-                style={{ marginTop: 30, width: 1100, height: 700, borderRadius: 25 }}
+                style={{ marginTop: 30, width: 1100, height: 'auto', borderRadius: 25 }}
             >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>EDIT SUBCATEGORY</h1></Divider>
 
                 <Form style={{ marginTop: 50, marginRight: 150 }}
@@ -155,7 +155,7 @@ const EditSubCategoryScreen = () => {
                             },
                         ]}
                     >
-                        <Input.TextArea showCount maxLength={100} />
+                        <Input.TextArea showCount maxLength={300} style={{height:300}} />
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>

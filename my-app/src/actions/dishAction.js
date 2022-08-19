@@ -23,7 +23,7 @@ export const listDishes = (status) => async (dispatch, getState) => {
             status = "";
         }
 
-        const { data } = await axios.get(`${base_url}/dish/getListDish?dishName=&status=${status}&subcategoryId=&startDate&endDate&createdBy&pageIndex=1&pageSize=100`, config)
+        const { data } = await axios.get(`${base_url}/dish/getListDish?dishName=&status=${status}&subcategoryId=&startDate&endDate&createdBy&pageIndex=0&pageSize=1000`, config)
         dispatch({
             type: dishConstants.DISH_LIST_SUCCESS,
             payload: data.data,
@@ -112,7 +112,7 @@ export const changeDishStatus = (id, status) => async (dispatch, getState) => {
     }
 }
 
-export const addDish = (dishName, price, description, rawMenu, rawSubCategory, dishImage) => async (dispatch, getState) => {
+export const addDish = (dishName, price, description, rawMenu, rawSubCategory, image, finishedTime) => async (dispatch, getState) => {
     try {
         dispatch({
 
@@ -130,20 +130,26 @@ export const addDish = (dishName, price, description, rawMenu, rawSubCategory, d
         }
         //Rename key of obj block
         const listMenuId = [];
-        rawMenu.forEach(element => {
-            listMenuId.push(
-                element.value
-            )
-        });
-        const subcategoryId = rawSubCategory.value;
+        if (rawMenu !== undefined) {
+            rawMenu.forEach(element => {
+                listMenuId.push(
+                    element.value
+                )
+            });
+        }
+        let subcategoryId;
+
+        if (rawSubCategory !== undefined) {
+            subcategoryId = rawSubCategory.value;
+        }
 
         //End of rename key block
         const createdTime = new Date();
         const updatedTime = new Date();
-
+        const status = 1;
         const createdBy = userInfo.username;
         const updatedBy = userInfo.username;
-        const { data } = await axios.post(`${base_url}/dish/addOrUpdate`, { dishName, description, createdBy, listMenuId, subcategoryId, updatedBy, createdTime, updatedTime, price, dishImage }, config)
+        const { data } = await axios.post(`${base_url}/dish/addOrUpdate`, { dishName, description, createdBy, status, listMenuId, subcategoryId, updatedBy, createdTime, updatedTime, price, image, finishedTime }, config)
 
         dispatch({ type: dishConstants.DISH_ADD_SUCCESS, payload: data })
     } catch (error) {
@@ -161,7 +167,7 @@ export const addDish = (dishName, price, description, rawMenu, rawSubCategory, d
     }
 }
 
-export const editDish = (id, dishName, description, rawMenu, rawSubCategory, createdTime, createdBy) => async (dispatch, getState) => {
+export const editDish = (id, dishName, description, rawMenu, rawSubCategory, createdTime, createdBy, price, image, status, finishedTime) => async (dispatch, getState) => {
     try {
         dispatch({
 
@@ -179,18 +185,20 @@ export const editDish = (id, dishName, description, rawMenu, rawSubCategory, cre
         }
         //Rename value  of obj block
         const listMenuId = [];
-        rawMenu.forEach(element => {
-            listMenuId.push(
-                element.value
-            )
-        });
+        if (rawMenu !== undefined) {
+            rawMenu.forEach(element => {
+                listMenuId.push(
+                    element.value
+                )
+            });
+        }
         const subcategoryId = rawSubCategory.value
 
 
         //End of rename key block
         const updatedTime = new Date();
         const updatedBy = userInfo.username;
-        const { data } = await axios.post(`${base_url}/dish/addOrUpdate`, { id, dishName, description, createdBy, listMenuId, subcategoryId, updatedBy, createdTime, updatedTime }, config)
+        const { data } = await axios.post(`${base_url}/dish/addOrUpdate`, { id, dishName, description, createdBy, listMenuId, subcategoryId, updatedBy, createdTime, updatedTime, price, image, status, finishedTime }, config)
 
         dispatch({ type: dishConstants.DISH_EDIT_SUCCESS, payload: data })
     } catch (error) {

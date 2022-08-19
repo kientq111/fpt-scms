@@ -61,7 +61,7 @@ const AddBlogScreen = () => {
                     style={{
                         borderRadius: 10,
                         marginTop: 20, marginLeft: 150,
-                        width: 1300, height: 800
+                        width: 1300, height: 'auto'
                     }}
                 >
                     <Divider plain>     <h1 style={{ fontSize: 30 }}>Add Blog</h1></Divider>

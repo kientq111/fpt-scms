@@ -4,7 +4,7 @@ import {
   Form,
   Input,
   Row, Space,
-  Breadcrumb, Card, Divider
+  Breadcrumb, Card, Divider, message
 } from 'antd';
 import Loader from '../../components/Loader';
 import { useState, useEffect } from 'react';
@@ -56,8 +56,6 @@ const EditCategoryScreen = () => {
 
 
   useEffect(() => {
-    console.log(categoryInfo);
-    console.log(location.state);
     form.setFieldsValue({
       // menu: location.state.menuID,
       categoryName: location.state.categoryName,
@@ -66,9 +64,19 @@ const EditCategoryScreen = () => {
   }, [])
 
   useEffect(() => {
-    if (success === true) {
+    if (loading === false) {
+      if (categoryInfo.success === false) {
+        message.error('CATEGORY NAME HAS EXIST');
+        return;
+      }
+      if (error) {
+        message.error(error);
+      }
       navigate('/admin/listcategory')
     }
+
+
+
   }, [categoryData]);
 
 
@@ -87,19 +95,19 @@ const EditCategoryScreen = () => {
         style={{ marginTop: 30, width: 1100, height: 700 }}
       >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>Update Category</h1></Divider>
         {error && <h1 style={{ color: 'red', fontSize: 20 }}>{error}</h1>}
-        {(() => {
+        {/* {(() => {
           if (loading === false) {
-            if (categoryInfo.isSuccess === false) {
+            if (categoryInfo.success === false) {
               return (
                 <h2 style={{ color: 'red', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>{categoryInfo.data}</h2>
               )
-            } else if (categoryInfo.isSuccess === true) {
+            } else if (categoryInfo.success === true) {
               return (
                 <h2 style={{ color: 'green', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>update category successfull</h2>
               )
             }
           }
-        })()}
+        })()} */}
         <Form style={{ marginTop: 50 }}
           {...formItemLayout}
           form={form}
@@ -143,7 +151,7 @@ const EditCategoryScreen = () => {
                 Update Category
               </Button>
               <Button onClick={() => navigate('/admin/listcategory')}>
-                Update Category
+                Cancel
               </Button>
             </Space>
           </Form.Item>

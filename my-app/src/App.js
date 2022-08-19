@@ -40,22 +40,15 @@ import EditTableScreen from './screens/admin/EditTableScreen';
 import ListOrderScreen from './screens/admin/ListOrderScreen';
 import HeaderBar from './components/HeaderBar';
 import ListBookingTableScreen from './screens/admin/ListBookingTableScreen';
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+import ChangePasswordScreen from './screens/ChangePasswordScreen';
+import EditInfoPersonalScreen from './screens/admin/EditInfoPersonalScreen';
 const { Header, Content, Sider, Footer } = Layout;
 
 const App = () => {
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
   const [collapsed, setCollapsed] = useState(false);
-
-  const items1 = [{
-    key: '',
-    label: ``,
-  },
-  {
-    key: '',
-    label: `Hello ${userInfo && userInfo.username}`,
-  }]
-
 
 
   return (
@@ -65,7 +58,7 @@ const App = () => {
       }}
     >
 
-      {userInfo && userInfo !== "Bad credentials" && <Sider Sider collapsible collapsed={collapsed} className="site-layout-background" onCollapse={(value) => setCollapsed(value)}>
+      {userInfo && userInfo !== null && <Sider Sider collapsible collapsed={collapsed} className="site-layout-background" onCollapse={(value) => setCollapsed(value)}>
         <div className="logo">
           <img
             className="logo"
@@ -77,7 +70,7 @@ const App = () => {
       </Sider>}
 
       <Layout className="site-layout">
-        {userInfo && userInfo !== "Bad credentials" && <Header
+        {userInfo && userInfo !== null && <Header
           className="site-layout-background"
           style={{
             padding: 0,
@@ -131,7 +124,7 @@ const App = () => {
             <Route path='/admin/addtable' element={<AddTableScreen />} />
             <Route path='/admin/edittable' element={<EditTableScreen />} />
             {/* feedback */}
-            <Route path='/admin/listfeedback' element={<ListFeedBackScreen />} />
+            <Route path='/admin/listcontact' element={<ListFeedBackScreen />} />
             {/* Order */}
             <Route path='/admin/listorder' element={<ListOrderScreen />} />
 
@@ -139,8 +132,11 @@ const App = () => {
             <Route path='/admin/listbookingtable' element={<ListBookingTableScreen />} />
             {/* Common */}
             <Route path='/admin/dashboard' element={<DashboardScreen />} />
+            <Route path='/forgotpassword' element={<ForgotPasswordScreen />} />
             <Route path='*' element={<ErrorScreen />} />
             <Route path='/authorizedfail' element={<AuthorizedFailScreen />} />
+            <Route path='/admin/changepassword' element={<ChangePasswordScreen />} />
+            <Route path='/admin/personalize' element={<EditInfoPersonalScreen />} />
             <Route path='/test' element={<Test />} />
 
 

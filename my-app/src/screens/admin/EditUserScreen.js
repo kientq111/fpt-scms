@@ -49,6 +49,7 @@ const tailFormItemLayout = {
 const EditUserScreen = () => {
     const [form] = Form.useForm();
     //useLocation to get state from previous screen
+
     const location = useLocation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -58,24 +59,26 @@ const EditUserScreen = () => {
     const [provin, setProvin] = useState([{ name: location.state.city, code: "" }]);
     const [district, setDistrict] = useState([{ name: location.state.district, code: "" }]);
     const streetSplit = location.state.street.split("-");
-    const [wards, setWards] = useState([{ name: streetSplit[1], code: "" }])
     let [isProvinChance, setIsProvinChange] = useState(false);
     let [isDistrictChance, setIsDistrictChange] = useState(false);
     let [isWardChange, setIsWardChange] = useState(false);
     let wardsInitialIndex;
-
-
+    let oldGender = (location.state.gender === "Male" ? 0 : 1);
+    let isOptionGenderChange = false;
 
     //INIT OLD USER PROFILE
     useEffect(() => {
         const formatDob = moment(location.state.dob).format('YYYY-MM-DD')
+        console.log(location.state.gender);
         form.setFieldsValue({
             first_name: location.state.firstname,
             last_name: location.state.lastname,
             username: location.state.username,
             email: location.state.email,
             dob: `${formatDob}`,
-            street: streetSplit[0],
+            // street: streetSplit[0],
+            street: location.state.street,
+
             phone: location.state.phone,
         })
 
@@ -108,7 +111,6 @@ const EditUserScreen = () => {
                     .then(res => {
                         const dataWard = res.data;
                         console.log(dataWard);
-                        setWards(dataWard.wards);
                     })
             })
             .catch(error => console.log(error));
@@ -127,21 +129,11 @@ const EditUserScreen = () => {
             district: "",
             wards: ""
         })
-      setIsProvinChange(true)
+        setIsProvinChange(true)
     }
 
     function handleDistrictSelect(value) {
-        axios.get(`https://provinces.open-api.vn/api/d/${value.code}?depth=2`)
-            .then(res => {
-                const dataRes = res.data;
-                setWards(dataRes.wards);
-            })
-            .catch(error => console.log(error));
-        //Clear select when district changed
-        form.setFieldsValue({
-            wards: "",
-        })
-    setIsDistrictChange(true)
+        setIsDistrictChange(true)
     }
 
     function handleWardSelect() {
@@ -151,7 +143,7 @@ const EditUserScreen = () => {
 
     //Submit edit form to action
     const onFinish = (values) => {
-        console.log('Received values of form: ', values);
+        let gender;
         let ward = streetSplit[1]
         let district = location.state.district;
         let city = location.state.city;
@@ -162,20 +154,23 @@ const EditUserScreen = () => {
         if (isDistrictChance === true) {
             district = values.district.name;
         }
-        if (isWardChange === true) {
-            ward = values.wards.name;
+
+
+        gender = (oldGender === 0 ? true : false)
+
+        if (isOptionGenderChange === true) {
+            gender = values.gender.value
+            console.log(gender);
         }
 
-
-
         const address = {
-            street: `${values.street}-${ward}`,
+            street: `${values.street}`,
             district: district,
             city: city,
             country: 'Việt Nam',
         }
-        console.log(address);
-          dispatch(updateUser(location.state.id, values.username, values.email, values.dob, values.first_name, values.last_name, values.phone, address));
+        console.log(gender);
+        dispatch(updateUser(location.state.id, values.username, values.email, values.dob, values.first_name, values.last_name, values.phone, address, gender));
 
     };
 
@@ -198,6 +193,20 @@ const EditUserScreen = () => {
             navigate('/admin/listuser')
         }
     }
+
+    const optionGenderChangeHandle = () => {
+        isOptionGenderChange = true;
+    }
+
+    const optionGender = [{
+        value: true,
+        label: "Male"
+    },
+    {
+        value: false,
+        label: "Female"
+    }
+    ]
 
     return (
         <Row>
@@ -225,7 +234,7 @@ const EditUserScreen = () => {
                         name="email"
                         label="E-mail"
                     >
-                        <Input readOnly disabled/>
+                        <Input readOnly disabled />
                     </Form.Item>
 
                     <Form.Item
@@ -270,7 +279,16 @@ const EditUserScreen = () => {
                         <Input />
                     </Form.Item>
 
-
+                    <Form.Item
+                        name="gender"
+                        label="Gender"
+                    >
+                        <Select
+                            onChange={optionGenderChangeHandle}
+                            defaultValue={[optionGender[oldGender]]}
+                            options={optionGender}
+                        />
+                    </Form.Item>
                     <Form.Item name="dob" label="Date of Birth" rules={[
                         {
                             required: true,
@@ -307,20 +325,6 @@ const EditUserScreen = () => {
                     </Form.Item>
 
                     <Form.Item
-                        name="wards"
-                        label="Wards"
-                        Size="small "
-                    >
-                        <Select
-                            getOptionLabel={option => option.name}
-                            getOptionValue={option => option.code}
-                            onChange={handleWardSelect}
-                            defaultValue={[wards[0]]}
-                            options={wards}
-                        />
-                    </Form.Item>
-
-                    <Form.Item
                         name="street"
                         label="Street"
                         Size="small "
@@ -330,8 +334,8 @@ const EditUserScreen = () => {
                                 message: 'Please input your street!',
                                 whitespace: true,
                             }, {
-                                max: 20,
-                                message: 'please input not larger than 20 words!',
+                                max: 50,
+                                message: 'please input not larger than 50 words!',
                             }
                         ]}
                     >
@@ -359,10 +363,17 @@ const EditUserScreen = () => {
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit">
-                            Update Account
-                        </Button>
-                        {loading && <Loader />}
+                        <Space size={'middle'}>
+                            {loading && <Loader />}
+                            <Button type="primary" htmlType="submit">
+                                Update Account
+                            </Button>
+                            <Button onClick={handlerCancel}>
+                                Cancel
+                            </Button>
+                        </Space>
+
+
                     </Form.Item>
                 </Form>
             </Card>

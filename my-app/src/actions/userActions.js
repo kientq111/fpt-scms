@@ -59,6 +59,9 @@ export const checkAccount = (username) => async (dispatch) => {
       type: userConstants.USER_CHECKACC_SUCCESS,
       payload: data,
     })
+    if (data.success === true) {
+      localStorage.setItem('userDetailInfo', JSON.stringify(data))
+    }
 
   } catch (error) {
     dispatch({
@@ -181,9 +184,11 @@ export const listUsers = () => async (dispatch, getState) => {
       payload: data.data,
     })
     dispatch({ type: userConstants.USER_UPDATE_RESET })
+
     dispatch({
-      type: userConstants.USER_CHECKACC_RESET,
+      type: userConstants.VERIFY_CODE_RESET,
     })
+
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -231,7 +236,7 @@ export const deleteUser = (id) => async (dispatch, getState) => {
   }
 }
 
-export const updateUser = (id, username, email, dob, first_name, last_name, phone, address) => async (dispatch, getState) => {
+export const updateUser = (id, username, email, dob, first_name, last_name, phone, address, gender) => async (dispatch, getState) => {
   try {
     dispatch({
       type: userConstants.USER_UPDATE_REQUEST,
@@ -241,7 +246,7 @@ export const updateUser = (id, username, email, dob, first_name, last_name, phon
       userLogin: { userInfo },
     } = getState()
 
-    const createdBy = "";
+    const createdBy = "admin";
     const updatedBy = userInfo.username;
 
     const config = {
@@ -252,7 +257,7 @@ export const updateUser = (id, username, email, dob, first_name, last_name, phon
       },
     }
 
-    const { data } = await axios.put(`${base_url}/updateUser/${id}`, { username, email, dob, first_name, last_name, createdBy, updatedBy, phone, address }, config)
+    const { data } = await axios.put(`${base_url}/updateUser/${id}`, { username, email, dob, first_name, last_name, createdBy, updatedBy, phone, address, gender }, config)
 
     dispatch({ type: userConstants.USER_UPDATE_SUCCESS, payload: data })
 
@@ -287,7 +292,7 @@ export const listStaff = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.accessToken}`,
       },
     }
-    const { data } = await axios.get(`${base_url}/getListStaff?username=&email=&phone=&status=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=`, config)
+    const { data } = await axios.get(`${base_url}/getListStaff?username=&email=&phone=&status=&type=&isActive=&createdBy=&dateFrom=&dateUntil=&page=&pageSize=200`, config)
     dispatch({
       type: staffConstants.STAFF_LIST_SUCCESS,
       payload: data.data,
@@ -346,6 +351,41 @@ export const addStaff = (username, email, password, dob, first_name, last_name, 
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
+    })
+  }
+}
+
+export const verifyAccount = (email, code,) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: userConstants.VERIFY_CODE_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.accessToken}`
+
+      },
+    }
+
+    const { data } = await axios.post(`${base_url}/updateUserStatusIsActive?email=${email}&code=${code}`, {}, config)
+
+    dispatch({ type: userConstants.VERIFY_CODE_SUCCESS, payload: data })
+
+
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    dispatch({
+      type: userConstants.VERIFY_CODE_FAIL,
+      payload: message,
     })
   }
 }

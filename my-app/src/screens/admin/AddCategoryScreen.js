@@ -9,7 +9,7 @@ import Loader from '../../components/Loader';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { addCategory } from '../../actions/categoryAction';
-
+import { categoryConstants } from '../../constants/Constants';
 const formItemLayout = {
   labelCol: {
     xs: {
@@ -50,11 +50,15 @@ const AddCateScreen = () => {
     dispatch(addCategory(values.categoryName, values.description));
   };
 
-
   useEffect(() => {
-    console.log(categoryInfo);
+    if (categoryData) {
+      dispatch({
+        type: categoryConstants.CATEGORY_ADD_RESET,
+      })
+    }
 
   }, [])
+
 
   return (
     <Row>
@@ -74,11 +78,11 @@ const AddCateScreen = () => {
         {error && <h1 style={{ color: 'red', fontSize: 20 }}>{error}</h1>}
         {(() => {
           if (loading === false) {
-            if (categoryInfo.isSuccess === false) {
+            if (categoryInfo.success === false) {
               return (
-                <h2 style={{ color: 'red', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>{categoryInfo.data}</h2>
+                <h2 style={{ color: 'red', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>{categoryInfo.data.message}</h2>
               )
-            } else if (categoryInfo.isSuccess === true) {
+            } else if (categoryInfo.success === true) {
               return (
                 <h2 style={{ color: 'green', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>Add category successfull</h2>
               )
@@ -122,7 +126,7 @@ const AddCateScreen = () => {
               },
             ]}
           >
-            <Input.TextArea showCount maxLength={100} style={{ height: 200 }} />
+            <Input.TextArea showCount maxLength={300} style={{ height: 300 }} />
           </Form.Item>
 
           <Form.Item {...tailFormItemLayout}>

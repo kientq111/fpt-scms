@@ -5,11 +5,12 @@ import {
   Input,
   Row,
   Col,
-  Button, Divider, Card, Breadcrumb
+  Button, Divider, Card, Breadcrumb, Statistic
 } from 'antd';
 import Select from "react-select";
-
-
+import moment from 'moment'
+import { useSelector } from "react-redux";
+const { Countdown } = Statistic;
 const { Option } = Select;
 
 const formItemLayout = {
@@ -49,121 +50,45 @@ export default function App() {
   const [provin, setProvin] = useState([{ name: "Đà Lạt", code: "" }]);
   const [district, setDistrict] = useState([{ name: "Đà Nẵng", code: "" }]);
   const [wards, setWards] = useState([{ name: "", code: "" }])
-  let optionDistrictFlag = false;
-  
-  useEffect(() => {
-    axios.get(`https://provinces.open-api.vn/api/p/`)
-      .then(res => {
-        const dataRes = res.data;
-        setProvin(dataRes);
-      })
-      .catch(error => console.log(error));
-  }, []);
+  const userLoginInfo = useSelector((state) => state.userLogin);
+  const { userInfo } = userLoginInfo;
+  const [orderDetailModal, setOrderDetailModal] = useState()
+  const [loading, setLoading] = useState();
 
-  useEffect(() => {
-    axios.get(`https://provinces.open-api.vn/api/p/search/?q='Tỉnh Bắc Kạn'`)
-      .then(res => {
-        const dataRes = res.data[0].code;
-        axios.get(`https://provinces.open-api.vn/api/p/${dataRes}?depth=3`)
-          .then(res => {
-            const dataDistric = res.data;
-            console.log(dataDistric);
-            setDistrict(dataDistric.districts);
-          })
-      })
-      .catch(error => console.log(error));
-  }, []);
 
+  const getOrderDetailById = async (orderId) => {
+    try {
+      setLoading(true)
+      const res = await axios.get(`/order/getOrderDishById/${orderId}`, {
+        params: {
+        },
+        headers: {
+          Authorization: `Bearer ${userInfo.accessToken}`,
+        },
+      })
+      setLoading(false);
+      setOrderDetailModal(res.data?.data)
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
 
   };
 
-  // Function triggered on selection
-  function handleProvinSelect(value) {
-    console.log(value);
-    axios.get(`https://provinces.open-api.vn/api/p/${value.code}?depth=3`)
-      .then(res => {
-        const dataRes = res.data;
-        setDistrict(dataRes.districts);
-      })
-      .catch(error => console.log(error));
-    form.setFieldsValue({
-      district: "",
-      wards: ""
-    })
-  }
 
-  function handleDistrictSelect(value) {
-    console.log(value);
-    axios.get(`https://provinces.open-api.vn/api/d/${value.code}?depth=2`)
-      .then(res => {
-        const dataRes = res.data;
-        setWards(dataRes.wards);
-      })
-      .catch(error => console.log(error));
-    form.setFieldsValue({
-      wards: "",
-    })
-  }
+  useEffect(() => {
+    getOrderDetailById(866)
+  }, []);
+  let date = Date.now()
+  let count =  5 * 60 * 1000
+  console.log(date)
   return (
+   
     <>
-      <Form style={{ marginRight: 150 }}
-        {...formItemLayout}
-        form={form}
-        name="register"
-        onFinish={onFinish}
-        scrollToFirstError
-      >
-
-        <Form.Item
-          name="city"
-          label="city"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Select
-            getOptionLabel={option => option.name}
-            getOptionValue={option => option.code}
-            onChange={handleProvinSelect}
-            defaultValue={provin[0]}
-            options={provin}
-          />
-        </Form.Item>
-        <Form.Item
-          name="district"
-          label="District"
-        >
-          <Select
-            getOptionLabel={option => option.name}
-            getOptionValue={option => option.code}
-            onChange={handleDistrictSelect}
-            defaultValue={[district[0]]}
-            options={district}
-          />
-        </Form.Item>
-
-        <Form.Item
-          name="wards"
-          label="wards"
-          Size="small "
-        >
-          <Select
-            getOptionLabel={option => option.name}
-            getOptionValue={option => option.code}
-            options={wards}
-          />
-        </Form.Item>
-        <Form.Item {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit">
-            Add Account
-          </Button>
-        </Form.Item>
-      </Form>
+      {/* <Countdown value={} /> */}
     </>
-  );
+  )
 }

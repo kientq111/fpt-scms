@@ -7,6 +7,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import styled from 'styled-components';
+import LinesEllipsis from 'react-lines-ellipsis'
 import moment from 'moment'
 import { DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import { LargeLoader } from '../../components/Loader';
@@ -172,7 +173,7 @@ const ListFeedBackScreen = () => {
             <Breadcrumb style={{ marginTop: 10 }}>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>
-                    <a href="">List Feedback</a>
+                    <a href="">List Contact</a>
                 </Breadcrumb.Item>
             </Breadcrumb>
             <Divider orientation="right"> </Divider>
@@ -195,21 +196,29 @@ const ListFeedBackScreen = () => {
                 </Row>
             </div> */}
             {loading === false && <StyledTable dataSource={feedbacks} className="table-striped-rows" >
-                <Column title="Sender" dataIndex="username" key="username" {...getColumnSearchProps('username')}
+                <Column title="Sender" dataIndex="firstName" key="firstName" {...getColumnSearchProps('firstName')}
                 />
-                <Column title="content" dataIndex="content" key="content" render={(_, record) => (record.content === null ? "null" : record.content)} />
-                <Column title="Phone Number" dataIndex="phone" key="phone" />
+                <Column title="Description" dataIndex="description" key="description"
+                    width={'15%'}
+                    render={(_, record) => (<LinesEllipsis
+                        text={record.description}
+                        maxLine='1'
+                        ellipsis='...'
+                        trimRight
+                        basedOn='letters'
+                    />)} />
+                <Column title="Phone Number" dataIndex="phoneNumber" key="phoneNumber" {...getColumnSearchProps('phoneNumber')} />
                 <Column title="Email" dataIndex="email" key="email"
                     {...getColumnSearchProps('email')}
                 />
-                <Column title="Created Date" dataIndex="created_time" render={(_, record) => (moment(record.created_time).format('DD/MM/YYYY'))} key="created_time" />
+                <Column title="Created Date" dataIndex="createdDate" render={(_, record) => (moment(record.createdDate).format('DD/MM/YYYY'))} key="createdDate" sorter={(a, b) => moment(a.createdDate).unix() - moment(b.createdDate).unix()} />
                 <Column
                     title="Action"
                     key="action"
                     render={(_, record) => (
                         <Space size="middle">
-                            <a><EyeOutlined style={{ fontSize: 17 }} onClick={() => showModal(record.username, record.content, record.phone, record.email, record.created_time)} /></a>
-                            <Popconfirm
+                            <a><EyeOutlined style={{ fontSize: 17 }} onClick={() => showModal(record.firstName, record.description, record.phoneNumber, record.email, record.createdDate)} /></a>
+                            {/* <Popconfirm
                                 title="Are you sure to delete this task?"
                                 onConfirm={() => confirm(record.id)}
                                 onCancel={cancel}
@@ -217,7 +226,7 @@ const ListFeedBackScreen = () => {
                                 cancelText="No"
                             >
                                 <a><DeleteOutlined style={{ fontSize: 17 }} /></a>
-                            </Popconfirm>
+                            </Popconfirm> */}
                         </Space>
                     )}
                 />
@@ -225,12 +234,12 @@ const ListFeedBackScreen = () => {
 
             {/* Modal show detail feedback */}
             <>
-                <Modal title="FeedBack Detail" visible={isModalVisible} onOk={handleOk} width={'50%'}>
+                <Modal title="Contact Detail" visible={isModalVisible} onOk={handleOk} onCancel={handleOk} width={'50%'}>
                     <p><b>Sender:</b> {userDetailModal.username}</p>
                     <p><b>Phone:</b> {userDetailModal.phone}</p>
                     <p><b>Email:</b> {userDetailModal.email}</p>
                     <p><b>Time:</b> {moment(userDetailModal.created_time).format('DD/MM/YYYY')}</p>
-                    <p><b>Feedback Content:</b> {userDetailModal.content}</p>
+                    <p><b>Content:</b> {userDetailModal.content}</p>
                 </Modal>
             </>
         </>

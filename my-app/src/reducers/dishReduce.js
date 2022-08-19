@@ -36,6 +36,8 @@ export const dishAddReducer = (state = {}, action) => {
       return { loading: false, dishes: action.payload, success: true }
     case dishConstants.DISH_ADD_FAIL:
       return { loading: false, error: action.payload }
+    case dishConstants.DISH_ADD_RESET:
+      return {}
     default:
       return state
   }

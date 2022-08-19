@@ -30,7 +30,7 @@ const StyledTable = styled((props) => <Table {...props} />)`
 
 const openNotificationWithIcon = (type, description) => {
     notification[type]({
-        message: 'Notification Title',
+        message: 'Notification!',
         description: description
     });
 };
@@ -143,12 +143,16 @@ const ListTableScreen = () => {
     const tableStatusSelector = useSelector((state) => state.tableChangeStatus);
     const tableChangeStatusSuccess = tableStatusSelector.success
     const [form] = Form.useForm();
-
+    const tableEditSelector = useSelector((state) => state.tableEdit);
+    const isEditSuccess = tableEditSelector.success;
 
 
     //Called when when mounting
     const dispatch = useDispatch();
     useEffect(() => {
+        if (isEditSuccess === true) {
+            openNotificationWithIcon("success", "Update Table Successful!")
+        }
         dispatch(listTables());
     }, [tableChangeStatusSuccess]);
 
@@ -168,7 +172,7 @@ const ListTableScreen = () => {
 
 
     const changeTableStatusHandle = (id, previousStatus, statusChange) => {
-    
+
         if ((previousStatus === 1 && statusChange === 8) || (previousStatus === 8 && statusChange === 1)) {
             openNotificationWithIcon("error", "Can not Book a Table Unavailable or Unavailable a Table Booked!")
             return
@@ -180,7 +184,7 @@ const ListTableScreen = () => {
         }
         console.log("Change")
         openNotificationWithIcon("success", "Change Status Table Successful!")
-         dispatch(changeTableStatus(id, statusChange))
+        dispatch(changeTableStatus(id, statusChange))
     }
 
     const editTableHandle = (table) => {
@@ -236,7 +240,8 @@ const ListTableScreen = () => {
                     basedOn='letters'
                 />)} />
                 <Column title="Status" dataIndex="status" key="status"
-                    render={(_, record) => (record.status === 1 ? "Table Booked" : record.status === 2 ? "Table Free" : record.status === 4 ? "Table Cancel" : "Table Unavailable")}
+
+                    render={(_, record) => (record.status === 1 ? (<p style={{ color: 'green' }}>Booked</p>) : record.status === 2 ? (<p style={{ color: 'blue' }}>Free</p>) : record.status === 4 ? (<p style={{ color: 'red' }}>Cancel</p>) : (<p style={{ color: 'gray' }}>Unavailable</p>) )}
                     filters={[
                         {
                             text: 'Table Booked',
@@ -257,12 +262,10 @@ const ListTableScreen = () => {
                     ]}
                     onFilter={(value, record) => record.status === value}
                 />
-                <Column title="Type" dataIndex="type" key="type"
-                />
-                <Column title="Created Date" dataIndex="createdDate" render={(_, record) => (moment(record.createdDate).format('DD/MM/YYYY'))} key="createdDate" />
-                <Column title="Created By" dataIndex="createdBy" key="createdBy" />
-                <Column title="Updated Date" dataIndex="updatedDate" render={(_, record) => (moment(record.updatedDate).format('DD/MM/YYYY'))} key="updatedTime" />
-                <Column title="Updated By" dataIndex="updatedBy" key="updatedBy" />
+                <Column title="Created Date" dataIndex="createdDate" render={(_, record) => (moment(record.createdDate).format('DD/MM/YYYY'))} key="createdDate" sorter={(a, b) => moment(a.createdDate).unix() - moment(b.createdDate).unix()} />
+                <Column title="Created By" dataIndex="createdBy" key="createdBy"  {...getColumnSearchProps("createdBy")} />
+                <Column title="Updated Date" dataIndex="updatedDate" render={(_, record) => (moment(record.updatedDate).format('DD/MM/YYYY'))} key="updatedTime" sorter={(a, b) => moment(a.updatedDate).unix() - moment(b.updatedDate).unix()} />
+                <Column title="Updated By" dataIndex="updatedBy" {...getColumnSearchProps("updatedBy")} key="updatedBy" />
 
 
                 <Column

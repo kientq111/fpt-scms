@@ -3,7 +3,7 @@ import {
     Form,
     Input,
     Row,
-    Breadcrumb, Card, Divider
+    Breadcrumb, Card, Divider, Space
 } from 'antd';
 import Loader from '../../components/Loader';
 import { useState, useEffect } from 'react';
@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { listDishes } from '../../actions/dishAction';
 import Select from 'react-select';
 import { addMenu } from '../../actions/menuAction';
+import { menuConstants } from '../../constants/Constants';
 
 const formItemLayout = {
     labelCol: {
@@ -49,16 +50,27 @@ const AddMenuScreen = () => {
 
     let listDishOption = [];
     const getListDishSelector = useSelector((state) => state.dishList);
+    const addMenuSelector = useSelector((state) => state.menuAdd);
+    const addMenuSuccess = addMenuSelector.success
+    const addMenuLoading = addMenuSelector.loading
+    const addMenuInfo = addMenuSelector.menus
     const { loading, dishes } = getListDishSelector;
     const onFinish = (values) => {
         // console.log(values.dish);
-         dispatch(addMenu(values.menu, values.description, values.dish))
+        dispatch(addMenu(values.menu, values.description, values.dish))
     };
 
 
     useEffect(() => {
+        if (addMenuSelector) {
+            dispatch({
+                type: menuConstants.MENU_ADD_RESET,
+            })
+        }
         dispatch(listDishes(1))
     }, [])
+
+
 
 
     if (loading === false) {
@@ -76,16 +88,31 @@ const AddMenuScreen = () => {
             </Breadcrumb>
 
             <Card
-                style={{ marginTop: 30, width: 1100, height: 700, borderRadius: 25 }}
+                style={{ marginTop: 30, width: 1100, height: 'auto', borderRadius: 25 }}
             >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>Add Menu</h1></Divider>
 
-                <Form style={{ marginTop: 50, marginRight: 250 }}
+                {(() => {
+                    if (addMenuLoading === false) {
+                        if (addMenuInfo.success === false) {
+                            return (
+                                <h2 style={{ color: 'red', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>{addMenuInfo.data.message}</h2>
+                            )
+                        } else {
+                            return (
+                                <h2 style={{ color: 'green', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>ADD MENU SUCCESSFUL</h2>
+                            )
+                        }
+
+                    }
+                })()}
+                <Form style={{ marginTop: 50, marginRight: 250, }}
                     {...formItemLayout}
                     form={form}
                     name="register"
                     onFinish={onFinish}
                     scrollToFirstError
                 >
+
                     <Form.Item
                         name="menu"
                         label="Menu Name"
@@ -122,13 +149,16 @@ const AddMenuScreen = () => {
                             },
                         ]}
                     >
-                        <Input.TextArea showCount maxLength={100} style={{height:150}} />
+                        <Input.TextArea showCount maxLength={300} style={{ height: 150 }} />
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit">
-                            Add menu
-                        </Button>
+                        <Space size={'middle'}>
+                            {addMenuLoading && <Loader />}
+                            <Button type="primary" htmlType="submit">
+                                Add menu
+                            </Button>
+                        </Space>
                     </Form.Item>
                 </Form>
 

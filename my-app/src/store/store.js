@@ -6,7 +6,7 @@ import {
     userListReducer, userDeleteReducer,
     userUpdateReducer, staffListReducer,
     userCheckAccountReducer, AddStaffReducer,
-    ChangeUserStatusReducer
+    ChangeUserStatusReducer, verifyAccountReducer
 } from '../reducers/userReducers';
 import {
     dishListReducer, dishChangeStatusReducer,
@@ -17,7 +17,7 @@ import { menuListReducer, menuChangeStatusReducer, menuAddReducer, menuEditReduc
 import { addBlogReducer, listBlogReducer, editBlogReducer, changeBlogStatusReducer, deleteBlogReducer, blogDetailReducer } from '../reducers/blogReducer';
 import { listTableReducer, addTableReducer, changeTableStatusReducer, editTableReducer } from '../reducers/tableReducers';
 import { listFeedBackReducer, deleteFeedBackReducer } from '../reducers/feedbackReducers';
-import { listOrderReducer, getOrderByIdReducer, changeOrderStatusReducer } from '../reducers/orderReducers';
+import { listOrderReducer, getOrderByIdReducer, changeOrderStatusReducer, changeOrderDetailStatusReducer } from '../reducers/orderReducers';
 import { listBookingTableReducer, changeBookingTableStatusReducer } from '../reducers/bookingTableReducers';
 import { listDashboardReducer } from '../reducers/dashboardReducers';
 const reducers = combineReducers({
@@ -31,6 +31,7 @@ const reducers = combineReducers({
     staffList: staffListReducer,
     staffAdd: AddStaffReducer,
     userChangeStatus: ChangeUserStatusReducer,
+    accountVerify: verifyAccountReducer,
     //DISH ZONEEEEE
     dishList: dishListReducer,
     dishAdd: dishAddReducer,
@@ -71,6 +72,7 @@ const reducers = combineReducers({
     orderList: listOrderReducer,
     orderGetById: getOrderByIdReducer,
     orderChangeStatus: changeOrderStatusReducer,
+    orderDetailChangeStatus: changeOrderDetailStatusReducer,
     //Booking table ZONEE
     bookingTableList: listBookingTableReducer,
     bookingTableChangeStatus: changeBookingTableStatusReducer,
@@ -82,6 +84,10 @@ const userInfoFromStorage = localStorage.getItem('userInfo')
     ? JSON.parse(localStorage.getItem('userInfo'))
     : null
 
+const userDetailInfoFromStorage = localStorage.getItem('userDetailInfo')
+    ? JSON.parse(localStorage.getItem('userDetailInfo'))
+    : null
+
 const middleware = [thunk]
 
 //get user from local storage
@@ -89,6 +95,7 @@ let initialState = {};
 if (userInfoFromStorage) {
     initialState = {
         userLogin: { userInfo: userInfoFromStorage.data },
+        userCheckAcc: { userCheckAccount: userDetailInfoFromStorage },
     }
 }
 

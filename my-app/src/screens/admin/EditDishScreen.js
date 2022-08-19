@@ -3,7 +3,7 @@ import {
   Form,
   Input,
   InputNumber,
-  Switch, Card, Space, Divider, Breadcrumb
+  Switch, Card, Space, Divider, Breadcrumb, Image
 } from 'antd';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -41,13 +41,12 @@ const EditDishScreen = () => {
   const loadingDishGetById = getDishByIdSelector.loading;
   const { menus } = selectMenuSelector;
   const loadingMenu = selectMenuSelector.loading
-
   const [isMenuOptionChanged, setIsMenuOptionChanged] = useState(false);
   let [isSubCategoryOptionChanged, setIsSubCategoryOptionChanged] = useState(false);
-
+  const [dishImage, setDishImage] = useState(location.state.image);
 
   useEffect(() => {
-    dispatch(listSubcategory());
+    dispatch(listSubcategory(1));
     dispatch(listMenus());
     dispatch(getDishById(location.state.id))
   }, []);
@@ -58,6 +57,8 @@ const EditDishScreen = () => {
       // menu: location.state.menuID,
       dishname: location.state.dishName,
       description: location.state.description,
+      price: location.state.price,
+      finishedTime: location.state.finishedTime
     })
   }, []);
 
@@ -105,8 +106,8 @@ const EditDishScreen = () => {
     if (isSubCategoryOptionChanged === true) {
       subcategory = values.subcategory
     }
-    console.log(subcategory, menu);
-    dispatch(editDish(location.state.id, values.dishname, values.description, menu, subcategory, location.state.createdTime, location.state.createdBy));
+    console.log(values.price, values.finishedTime);
+    dispatch(editDish(location.state.id, values.dishname, values.description, menu, subcategory, location.state.createdTime, location.state.createdBy, values.price, dishImage, location.state.status, values.finishedTime));
   };
 
 
@@ -118,7 +119,7 @@ const EditDishScreen = () => {
   };
 
   const onLoad = fileString => {
-    console.log(fileString);
+    setDishImage(fileString);
   };
 
   const getBase64 = file => {
@@ -201,7 +202,7 @@ const EditDishScreen = () => {
             style={{
               borderRadius: 15,
               marginTop: 20, marginLeft: 150,
-              width: 1000, height: 700
+              width: 1000, height: 'auto'
             }}
           >
             <Divider plain>     <h1 style={{ fontSize: 30 }}>UPDATE DISH</h1></Divider>
@@ -219,8 +220,35 @@ const EditDishScreen = () => {
               scrollToFirstError
             >
               {/* <h4 style={{ marginLeft: 140, fontSize: 15, color: 'green'}}>ADD DISH SUCCESSFUL!</h4> */}
-              <Form.Item label="Dish Name" name="dishname">
+              <Form.Item label="Dish Name" name="dishname"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input dish name!',
+                  },
+                ]}
+              >
                 <Input />
+              </Form.Item>
+              <Form.Item label="Price" name="price"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input Price!',
+                  },
+                ]}
+              >
+                <InputNumber min={0} defaultValue={0} style={{ width: 250 }} />
+              </Form.Item>
+              <Form.Item label="Finished Time(min)" name="finishedTime"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input Finished Time!',
+                  },
+                ]}
+              >
+                <InputNumber min={0} max={500} defaultValue={0} style={{ width: 250 }} />
               </Form.Item>
               <Form.Item label="Menu" name="menu">
                 <Select
@@ -244,10 +272,15 @@ const EditDishScreen = () => {
                 />
               </Form.Item>
               <Form.Item label="Description" name="description">
-                <TextArea rows={4} />
+                <TextArea rows={4} maxLength={500} showCount />
               </Form.Item>
               <Form.Item label="Image" name="dishimg" >
                 <input type="file" onChange={ImageHandler} />
+                <h1></h1>
+                <Image
+                  width={200}
+                  src={`${dishImage}`}
+                />
               </Form.Item>
               <Form.Item style={{ marginLeft: 160 }}>
                 <Space size={'large'}>
@@ -255,7 +288,6 @@ const EditDishScreen = () => {
                   <Button type='primary' htmlType="submit">Update Dish</Button>
                   <Button onClick={() => navigate('/admin/listdish')}>Cancel</Button>
                 </Space>
-
               </Form.Item>
             </Form>
 

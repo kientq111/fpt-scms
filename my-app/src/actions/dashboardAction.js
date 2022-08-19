@@ -8,9 +8,9 @@ import { base_url } from "../api/api"
 export const getListDashboard = () => async (dispatch, getState) => {
     try {
 
-        dispatch({
-            type: userConstants.USER_CHECKACC_RESET,
-        })
+        // dispatch({
+        //     type: userConstants.USER_CHECKACC_RESET,
+        // })
 
         dispatch({
             type: dashboardConstants.GET_DASHBOARD_REQUEST,

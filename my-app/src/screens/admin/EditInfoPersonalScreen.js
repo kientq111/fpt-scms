@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addStaff, register } from '../../actions/userActions';
+import { updateUser } from '../../actions/userActions';
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Loader from '../../components/Loader';
+import moment from 'moment';
 import {
     Form,
     Input,
     Row,
     Col,
-    Button, Divider, Card, Breadcrumb
+    Button, Divider, Space, Card, Breadcrumb
 } from 'antd';
-import Loader from '../../components/Loader';
-import Select from "react-select";
+import Select from 'react-select'
 import axios from 'axios';
-const { Option } = Select;
 
 const formItemLayout = {
     labelCol: {
@@ -43,22 +45,64 @@ const tailFormItemLayout = {
         },
     },
 };
-// iter2: if add success => redirect success screen
-const AddStaffScreen = () => {
-    const [form] = Form.useForm();
-    const dispatch = useDispatch();
-    const [provin, setProvin] = useState([{ name: "", code: "" }]);
-    const [district, setDistrict] = useState([{ name: "", code: "" }]);
 
+const EditInfoPersonalScreen = () => {
+    const [form] = Form.useForm();
+    //useLocation to get state from previous screen
+
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    //get data from store
+    const userUpdateSelector = useSelector((state) => state.userUpdate)
+    const userCheckAcc = useSelector((state) => state.userCheckAcc)
+    const { userCheckAccount } = userCheckAcc
+    const { success, loading } = userUpdateSelector;
+    const [provin, setProvin] = useState([{ name: userCheckAccount.data.address.city, code: "" }]);
+    const [district, setDistrict] = useState([{ name: userCheckAccount.data.address.district, code: "" }]);
+
+    let [isProvinChance, setIsProvinChange] = useState(false);
+    let [isDistrictChance, setIsDistrictChange] = useState(false);
+    let [isWardChange, setIsWardChange] = useState(false);
+    let isOptionGenderChange = false;
+
+    //INIT OLD USER PROFILE
     useEffect(() => {
+        const formatDob = moment(userCheckAccount.data.dob).format('YYYY-MM-DD')
+        form.setFieldsValue({
+            first_name: userCheckAccount.data.first_name,
+            last_name: userCheckAccount.data.last_name,
+            username: userCheckAccount.data.username,
+            email: userCheckAccount.data.email,
+            dob: `${formatDob}`,
+            street: userCheckAccount.data.address.street,
+            phone: userCheckAccount.data.phone,
+        })
+        console.log(userCheckAccount);
         axios.get(`https://provinces.open-api.vn/api/p/`)
             .then(res => {
                 const dataRes = res.data;
                 setProvin(dataRes);
+                console.log(provin);
+            })
+            .catch(error => console.log(error));
+
+    }, [])
+
+    useEffect(() => {
+        //Search previous province and get code to list wards
+        axios.get(`https://provinces.open-api.vn/api/p/search/?q=${userCheckAccount.data.address.city}`)
+            .then(res => {
+                const dataProvinceRes = res.data[0].code;
+                axios.get(`https://provinces.open-api.vn/api/p/${dataProvinceRes}?depth=3`)
+                    .then(res => {
+                        const dataDistric = res.data;
+                        setDistrict(dataDistric.districts);
+
+                    })
             })
             .catch(error => console.log(error));
     }, []);
-
 
     // Function triggered on selection
     function handleProvinSelect(value) {
@@ -68,45 +112,65 @@ const AddStaffScreen = () => {
                 setDistrict(dataRes.districts);
             })
             .catch(error => console.log(error));
+        //Clear select when province changed
         form.setFieldsValue({
             district: "",
             wards: ""
         })
+        setIsProvinChange(true)
+    }
+
+    function handleDistrictSelect(value) {
+        setIsDistrictChange(true)
     }
 
 
-    //get data from store
-    const userAddSelector = useSelector((state) => state.staffAdd)
-    const { userInfo, loading } = userAddSelector;
-    //Submit register form to action
+    //END OF INIT
+
+    //Submit edit form to action
     const onFinish = (values) => {
-        console.log('Received values of form: ', values);
+        let gender;
+        let district = userCheckAccount.data.address.district;
+        let city = userCheckAccount.data.address.city;;
+
+        if (isProvinChance === true) {
+            city = values.city.name;
+        }
+        if (isDistrictChance === true) {
+            district = values.district.name;
+        }
+
+
+        gender = (userCheckAccount.data.gender === "Female" ? false : true)
+
+        if (isOptionGenderChange === true) {
+            gender = values.gender.value
+        }
+
         const address = {
             street: `${values.street}`,
-            district: values.district.name,
-            city: values.city.name,
-            country: "VIET NAM",
+            district: district,
+            city: city,
+            country: 'Việt Nam',
         }
-        console.log(values.gender.Value);
-        dispatch(addStaff(values.username, values.email, values.password, values.dob, values.first_name, values.last_name, values.gender.Value, values.phone, address));
+        console.log(gender);
+        dispatch(updateUser(userCheckAccount.data.id, values.username, values.email, values.dob, values.first_name, values.last_name, values.phone, address, gender));
+
     };
 
-    useEffect(() => {
-        if (userInfo) {
-            console.log(userInfo.success);
-        }
-    }, [userInfo])
 
+    const optionGenderChangeHandle = () => {
+        isOptionGenderChange = true;
+    }
 
-    const genderOptions = [
-        {
-            Value: true,
-            Label: 'Male'
-        },
-        {
-            Value: false,
-            Label: 'Female'
-        },
+    const optionGender = [{
+        value: false,
+        label: "Male"
+    },
+    {
+        value: true,
+        label: "Female"
+    }
     ]
 
     return (
@@ -115,7 +179,7 @@ const AddStaffScreen = () => {
             <Breadcrumb style={{ marginTop: 10 }}>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>
-                    <a href="">Add Staff</a>
+                    <a href="">update account</a>
                 </Breadcrumb.Item>
             </Breadcrumb>
             <Card
@@ -123,7 +187,7 @@ const AddStaffScreen = () => {
                     width: 900, height: 1100, marginTop: 20, marginLeft: 100, borderRadius: 25
                 }}
             >
-                <Divider plain>     <h1 style={{ fontSize: 30 }}>ADD STAFF</h1></Divider>
+                <Divider plain>     <h1 style={{ fontSize: 30 }}>UPDATE ACCOUNT</h1></Divider>
                 <Form style={{ marginRight: 150 }}
                     {...formItemLayout}
                     form={form}
@@ -131,24 +195,11 @@ const AddStaffScreen = () => {
                     onFinish={onFinish}
                     scrollToFirstError
                 >
-                    {loading === false && userInfo.success === false && <h5 style={{ marginLeft: 230, color: 'red' }}>{userInfo.message}</h5>}
-                    {loading === false && userInfo.success === true && <h5 style={{ marginLeft: 230, color: 'green' }}>{userInfo.message}</h5>}
                     <Form.Item
                         name="email"
                         label="E-mail"
-
-                        rules={[
-                            {
-                                type: 'email',
-                                message: 'The input is not valid E-mail!',
-                            },
-                            {
-                                required: true,
-                                message: 'Please input your E-mail!',
-                            },
-                        ]}
                     >
-                        <Input />
+                        <Input readOnly disabled />
                     </Form.Item>
 
                     <Form.Item
@@ -192,76 +243,16 @@ const AddStaffScreen = () => {
                     >
                         <Input />
                     </Form.Item>
-                    <Form.Item
-                        name="password"
-                        label="Password"
-
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your password!',
-                            },
-                            {
-                                pattern: new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'),
-                                message: 'Password must contain at least one lowercase letter, uppercase letter, number, and special character'
-                            },
-                            {
-                                max: 12,
-                                message: 'Password not large than 12 word'
-                            }
-
-                        ]}
-                        hasFeedback
-                    >
-                        <Input.Password />
-                    </Form.Item>
 
                     <Form.Item
-                        name="confirm"
-
-                        label="Confirm Password"
-                        dependencies={['password']}
-                        hasFeedback
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please confirm your password!',
-                            },
-                            ({ getFieldValue }) => ({
-                                validator(_, value) {
-                                    if (!value || getFieldValue('password') === value) {
-                                        return Promise.resolve();
-                                    }
-
-                                    return Promise.reject(new Error('The two passwords that you entered do not match!'));
-                                },
-                            }),
-                        ]}
+                        name="gender"
+                        label="Gender"
                     >
-                        <Input.Password />
+                        <Select
+                            onChange={optionGenderChangeHandle}
+                            options={optionGender}
+                        />
                     </Form.Item>
-
-
-                    <Form.Item
-                        name="username"
-                        label="User Name"
-                        tooltip="user name used to login to your account"
-
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your user name!',
-                                whitespace: true,
-                            },
-                            {
-                                pattern: new RegExp('^(?!.*\d_)(?!.*_\d)[a-zA-Z0-9_]+$'),
-                                message: 'User name must not have special character'
-                            }
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-
                     <Form.Item name="dob" label="Date of Birth" rules={[
                         {
                             required: true,
@@ -273,35 +264,14 @@ const AddStaffScreen = () => {
                     </Form.Item>
 
                     <Form.Item
-                        name="gender"
-                        label="Gender"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please select gender!',
-                            },
-                        ]}
-                    >
-                        <Select
-                            getOptionLabel={option => option.Label}
-                            getOptionValue={option => option.Value}
-                            options={genderOptions}
-                        />
-                    </Form.Item>
-
-                    <Form.Item
                         name="city"
                         label="city"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
                     >
                         <Select
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
                             onChange={handleProvinSelect}
+                            defaultValue={[provin[0]]}
                             options={provin}
                         />
                     </Form.Item>
@@ -312,9 +282,12 @@ const AddStaffScreen = () => {
                         <Select
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
+                            onChange={handleDistrictSelect}
+                            defaultValue={[district[0]]}
                             options={district}
                         />
                     </Form.Item>
+
 
                     <Form.Item
                         name="street"
@@ -356,7 +329,7 @@ const AddStaffScreen = () => {
 
                     <Form.Item {...tailFormItemLayout}>
                         <Button type="primary" htmlType="submit">
-                            Add Account
+                            Update Account
                         </Button>
                         {loading && <Loader />}
                     </Form.Item>
@@ -369,4 +342,4 @@ const AddStaffScreen = () => {
     );
 };
 
-export default AddStaffScreen;
+export default EditInfoPersonalScreen;

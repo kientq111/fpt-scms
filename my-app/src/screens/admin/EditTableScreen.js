@@ -51,11 +51,12 @@ const EditTableScreen = () => {
     const navigate = useNavigate();
     const onFinish = (values) => {
         dispatch(editTable(location.state.id, location.state.tableNumber, values.description, 1,
-            location.state.status, location.state.type, location.state.createdTime, location.state.createdBy));
+            location.state.status, location.state.type, location.state.createdDate, location.state.createdBy));
     };
 
 
     useEffect(() => {
+        console.log(location.state.createdBy)
         form.setFieldsValue({
             tableNumber: location.state.tableNumber,
             description: location.state.description,
@@ -84,21 +85,7 @@ const EditTableScreen = () => {
             <Card
                 style={{ marginTop: 30, width: 1100, height: 700, borderRadius: 25 }}
             >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>UPDATE TABLE</h1></Divider>
-                {error && <h1 style={{ color: 'red', fontSize: 20 }}>{error}</h1>}
-                {(() => {
-                    if (loading === false) {
-                        if (table.success === false) {
-                            return (
-                                <h2 style={{ color: 'red', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>{table.data}</h2>
-                            )
-                        } else if (table.success === true) {
-                            return (
-                                <h2 style={{ color: 'green', fontSize: 15, position: 'relative', left: 400, bottom: -35 }}>UPDATE TABLE SUCCESSFUL</h2>
-                            )
-                        }
-
-                    }
-                })()}
+            
                 <Form style={{ marginTop: 50, marginRight: 100 }}
                     {...formItemLayout}
                     form={form}

@@ -40,3 +40,16 @@ export const changeOrderStatusReducer = (state = {}, action) => {
             return state
     }
 }
+
+export const changeOrderDetailStatusReducer = (state = {}, action) => {
+    switch (action.type) {
+        case orderConstants.ORDER_CHANGE_STATUS_DETAIL_REQUEST:
+            return { loading: true }
+        case orderConstants.ORDER_CHANGE_STATUS_DETAIL_SUCCESS:
+            return { loading: false, orderDetailStatus: action.payload, success: true }
+        case orderConstants.ORDER_CHANGE_STATUS_DETAIL_FAIL:
+            return { loading: false, error: action.payload }
+        default:
+            return state
+    }
+}
