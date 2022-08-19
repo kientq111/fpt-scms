@@ -240,7 +240,8 @@ const ListTableScreen = () => {
                     basedOn='letters'
                 />)} />
                 <Column title="Status" dataIndex="status" key="status"
-                    render={(_, record) => (record.status === 1 ? "Table Booked" : record.status === 2 ? "Table Free" : record.status === 4 ? "Table Cancel" : "Table Unavailable")}
+
+                    render={(_, record) => (record.status === 1 ? (<p style={{ color: 'green' }}>Booked</p>) : record.status === 2 ? (<p style={{ color: 'blue' }}>Free</p>) : record.status === 4 ? (<p style={{ color: 'red' }}>Cancel</p>) : (<p style={{ color: 'gray' }}>Unavailable</p>) )}
                     filters={[
                         {
                             text: 'Table Booked',

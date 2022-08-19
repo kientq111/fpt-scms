@@ -134,21 +134,19 @@ const ListBlogScreen = () => {
     const dataBlog = useSelector((state) => state.blogList);
     const dataBlogStatus = useSelector((state) => state.blogChangeStatus);
     const dataBlogDelete = useSelector((state) => state.blogDelete);
+    const blogEditSelector = useSelector((state) => state.blogEdit);
+    const blogEditSuccess = blogEditSelector.success;
     const { loading, blogs } = dataBlog
     const changeStatusSuccess = dataBlogStatus.success;
     const deleteBlogSuccess = dataBlogDelete.success;
 
     useEffect(() => {
+        if (blogEditSuccess === true) {
+            message.success("EDIT BLOG SUCCESSFUL")
+        }
         dispatch(listBlog());
     }, [changeStatusSuccess, deleteBlogSuccess]);
 
-    // const dishDetailHandler = (id) => {
-    //     navigate('/admin/dishdetail', {
-    //         state: {
-    //             id: id
-    //         }
-    //     })
-    // }
 
     const deleteBlogHandle = (id) => {
         dispatch(deleteBlog(id))
@@ -225,9 +223,9 @@ const ListBlogScreen = () => {
                         value: 0,
                     },]} onFilter={(value, record) => record.status === value}
                 />
-                <Column title="Created Time" dataIndex="created_time" key="created_time" render={(_, record) => (moment(record.created_time).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.created_time).unix() - moment(b.created_time).unix()}/>
+                <Column title="Created Time" dataIndex="created_time" key="created_time" render={(_, record) => (moment(record.created_time).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.created_time).unix() - moment(b.created_time).unix()} />
                 <Column title="Created By" dataIndex="created_by" key="created_by" {...getColumnSearchProps('created_by')} />
-                <Column title="Updated Time" dataIndex="updated_time" key="updated_time" render={(_, record) => (moment(record.updated_time).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.updated_time).unix() - moment(b.updated_time).unix()}/>
+                <Column title="Updated Time" dataIndex="updated_time" key="updated_time" render={(_, record) => (moment(record.updated_time).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.updated_time).unix() - moment(b.updated_time).unix()} />
                 <Column title="Updated By" dataIndex="updated_by" key="updated_by" {...getColumnSearchProps('updated_by')} />
 
                 <Column

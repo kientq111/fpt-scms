@@ -139,7 +139,9 @@ const ListMenuScreen = () => {
     const navigate = useNavigate();
     const menuListSelector = useSelector((state) => state.menuList);
     const updateMenuSelector = useSelector((state) => state.menuEdit);
-    const updateMenuSuccess = updateMenuSelector.success
+
+    const updateMenuSuccess = updateMenuSelector.menus
+    const updateMenuLoading = updateMenuSelector.loading
     const changeMenuStatusSelector = useSelector((state) => state.menuChangeStatus);
     const { success } = changeMenuStatusSelector;
     const { loading, menus } = menuListSelector;
@@ -150,8 +152,10 @@ const ListMenuScreen = () => {
 
 
     useEffect(() => {
-        if (updateMenuSuccess === true) {
-            openNotificationWithIcon('success', 'UPDATE MENU SUCCESSFUL');
+        if (updateMenuLoading === false) {
+            if (updateMenuSuccess.success === true) {
+                openNotificationWithIcon('success', 'UPDATE MENU SUCCESSFUL');
+            }
         }
         dispatch(listMenus());
     }, [changeMenuStatusSelector]);

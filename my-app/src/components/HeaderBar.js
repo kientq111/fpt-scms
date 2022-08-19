@@ -16,14 +16,14 @@ const HeaderBar = () => {
     const menu = (
         <Menu
             items={[
-                {
-                    key: '1',
-                    label: (
-                        <Link to={"admin/personalize"}>
-                            Change Profile
-                        </Link>
-                    ),
-                },
+                // {
+                //     key: '1',
+                //     label: (
+                //         <Link to={"admin/personalize"}>
+                //             Change Profile
+                //         </Link>
+                //     ),
+                // },
                 {
                     key: '2',
                     label: (

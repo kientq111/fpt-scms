@@ -239,7 +239,7 @@ const ListFeedBackScreen = () => {
                     <p><b>Phone:</b> {userDetailModal.phone}</p>
                     <p><b>Email:</b> {userDetailModal.email}</p>
                     <p><b>Time:</b> {moment(userDetailModal.created_time).format('DD/MM/YYYY')}</p>
-                    <p><b>Feedback Content:</b> {userDetailModal.content}</p>
+                    <p><b>Content:</b> {userDetailModal.content}</p>
                 </Modal>
             </>
         </>

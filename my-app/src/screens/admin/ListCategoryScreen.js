@@ -1,5 +1,5 @@
 import {
-    Space, Table, Breadcrumb, message, Divider, Button, Col, Row, Input, notification
+    Space, Table, Breadcrumb, message, Divider, Button, Col, Row, Input, notification, Modal
 } from 'antd';
 import { React, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,7 +8,7 @@ import { changeCategoryStatus, listCategory } from '../../actions/categoryAction
 import { LargeLoader } from '../../components/Loader';
 import moment from 'moment'
 import styled from 'styled-components';
-import { DeleteOutlined, EditOutlined, } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 const { Column, ColumnGroup } = Table;
@@ -38,8 +38,8 @@ const ListCategoryScreen = () => {
     const { success } = categoryChangeStatusSelector;
     const { loading, categoryInfo } = dataCategory
     const navigate = useNavigate();
-
-
+    const [userDetailModal, setUserDetailModal] = useState({});
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
@@ -170,6 +170,47 @@ const ListCategoryScreen = () => {
         openNotificationWithIcon('success', 'CATEGORY CHANGE STATUS SUCCESSFUL');
         dispatch(changeCategoryStatus(id, status))
     }
+
+    const showModal = (record) => {
+        setUserDetailModal({
+            categoryName: record.categoryName,
+            description: record.description,
+            createdTime: record.createdTime,
+            createdBy: record.createdBy,
+            updatedBy: record.updatedBy,
+            updatedTime: record.updatedTime,
+            subcategory: record.subcategory
+        })
+        setIsModalVisible(true);
+    };
+
+    const dataSource = userDetailModal.subcategory;
+
+
+    const columns = [
+        {
+            title: 'SubCategory Name',
+            dataIndex: 'subCategoryName',
+            key: 'subCategoryName',
+        },
+        {
+            title: 'Description',
+            dataIndex: 'description',
+            key: 'description',
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (text, record) => {
+                return record.status === 1 ? <p style={{color:'green'}}>Enable</p> :<p style={{color:'red'}}>Disable</p>; // just for decoration
+            }
+        },
+    ];
+
+    const handleOk = () => {
+        setIsModalVisible(false);
+    };
     return (
         <>
 
@@ -191,7 +232,8 @@ const ListCategoryScreen = () => {
                 </Row></>}
             {loading === false && <StyledTable dataSource={categoryInfo} className="table-striped-rows">
                 <Column title="categoryName" dataIndex="categoryName" key="categoryName" {...getColumnSearchProps('categoryName')} />
-                <Column title="description" dataIndex="description" key="description" />
+                <Column title="description" dataIndex="description" key="description" width={'15%'} />
+                <Column title="Total Subcategory" dataIndex="subcategory" render={(_, record) => record.subcategory.length} key="sub" sorter={(a, b) => a.subcategory.length - b.subcategory.length} />
                 <Column title="Status" dataIndex="status"
                     filters={[
                         {
@@ -219,6 +261,7 @@ const ListCategoryScreen = () => {
                     key="action"
                     render={(_, record) => (
                         <Space size="middle">
+                            <a onClick={() => showModal(record)}><EyeOutlined /></a>
                             <a onClick={() => changeCategoryStatusHandle(record.id, record.status)} style={{ color: 'blue' }} className='txtLink'>Change Status</a>
                             <a onClick={() => editCategoryHandle(record.id, record.categoryName, record.description, record.createdBy, record.createdTime)}><EditOutlined /></a>
                         </Space>
@@ -226,6 +269,17 @@ const ListCategoryScreen = () => {
                 />
             </StyledTable>}
 
+
+            <>
+                <Modal title="Category Detail" visible={isModalVisible} onOk={handleOk} onCancel={handleOk} width={'50%'}>
+                    <p><b>Category Name:</b> {userDetailModal.categoryName}</p>
+                    <p><b>Created Time:</b> {moment(userDetailModal.created_time).format('DD/MM/YYYY')}</p>
+                    <p><b>Updated Time:</b> {moment(userDetailModal.updatedTime).format('DD/MM/YYYY')}</p>
+                    <p><b>Description:</b> {userDetailModal.description}</p>
+                    <h5>SubCategory Table</h5>
+                    <Table dataSource={dataSource} columns={columns} />;
+                </Modal>
+            </>
         </>
     )
 }

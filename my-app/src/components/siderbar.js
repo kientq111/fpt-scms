@@ -63,7 +63,6 @@ const itemsAdmin = [
 
 
 const itemsStaff = [
-    getItem('Dashboard', '/admin/dashboard', <PieChartOutlined />),
     getItem('Order Manager', '2', <TagOutlined />, [
         getItem('List Order', '/admin/listorder'),
     ]),
@@ -95,11 +94,14 @@ const SiderBar = () => {
     const navigate = useNavigate();
     const userLogin = useSelector((state) => state.userLogin)
     const { userInfo } = userLogin
-    if (userInfo.role[0].authority === "ROLE_ADMIN") {
-        items = itemsAdmin
-    } else {
-        items = itemsStaff
+    if (userInfo.data !== null) {
+        if (userInfo.role[0].authority === "ROLE_ADMIN") {
+            items = itemsAdmin
+        } else {
+            items = itemsStaff
+        }
     }
+
     const handleSiderClick = (e) => {
         if (e.key === '/') {
             dispatch(logout());

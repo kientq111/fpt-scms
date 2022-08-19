@@ -220,7 +220,14 @@ const EditDishScreen = () => {
               scrollToFirstError
             >
               {/* <h4 style={{ marginLeft: 140, fontSize: 15, color: 'green'}}>ADD DISH SUCCESSFUL!</h4> */}
-              <Form.Item label="Dish Name" name="dishname">
+              <Form.Item label="Dish Name" name="dishname"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input dish name!',
+                  },
+                ]}
+              >
                 <Input />
               </Form.Item>
               <Form.Item label="Price" name="price"
@@ -265,7 +272,7 @@ const EditDishScreen = () => {
                 />
               </Form.Item>
               <Form.Item label="Description" name="description">
-              <TextArea rows={4} maxLength={500} showCount/>
+                <TextArea rows={4} maxLength={500} showCount />
               </Form.Item>
               <Form.Item label="Image" name="dishimg" >
                 <input type="file" onChange={ImageHandler} />
