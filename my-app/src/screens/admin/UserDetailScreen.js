@@ -10,6 +10,7 @@ import {
     Button, Divider, Card, Breadcrumb
 } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
+import moment from 'moment';
 const { Option } = Select;
 
 const formItemLayout = {
@@ -62,13 +63,13 @@ const UserDetailScreen = () => {
             last_name: location.state.lastname,
             username: location.state.username,
             email: location.state.email,
-            dob: '2022-03-03',
+            dob: moment(location.state.dob).format('DD-MM-YYYY'),
             country: location.state.country,
             city: location.state.city,
             district: location.state.district,
             street: location.state.street,
             phone: location.state.phone,
-            gender: 'Male'
+            gender: location.state.gender
         })
         console.log('phone: ', location.state.phone);
     }, []);
@@ -110,7 +111,7 @@ const UserDetailScreen = () => {
                     <Form.Item
                         name="first_name"
                         label="First Name"
-                        tooltip="What do you want others to call you?"
+                     
 
 
                     >
@@ -133,7 +134,7 @@ const UserDetailScreen = () => {
                     <Form.Item
                         name="username"
                         label="User Name"
-                        tooltip="user name used to login to your account"
+                 
 
                         rules={[
                             {

@@ -9,7 +9,8 @@ import {
     LogoutOutlined,
     FormOutlined,
     CoffeeOutlined,
-    TagOutlined
+    TagOutlined,
+    BankOutlined
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -57,6 +58,11 @@ const itemsAdmin = [
         getItem('Add Blog', '/admin/addblog'),
         getItem('List Blog', '/admin/listblog'),
     ]),
+    getItem('Canteen Manager', '6', <BankOutlined />, [
+        getItem('Add Canteen Info', '/admin/addcanteen'),
+        getItem('Canteen Information', '/admin/canteendetail'),
+
+    ]),
     getItem("Contact", '/admin/listcontact', <FormOutlined />),
     getItem('Logout', '/', <LogoutOutlined />),
 ];
@@ -84,6 +90,7 @@ const itemsStaff = [
         getItem('Add Blog', '/admin/addblog'),
         getItem('List Blog', '/admin/listblog'),
     ]),
+
     getItem("Contact", '/admin/listcontact', <FormOutlined />),
     getItem('Logout', '/', <LogoutOutlined />),
 ];

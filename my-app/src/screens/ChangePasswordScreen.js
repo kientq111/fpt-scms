@@ -89,7 +89,7 @@ const ChangePasswordScreen = () => {
                                 ]}
                                 hasFeedback
                             >
-                                <Input.Password />
+                                <Input.Password width={100} />
                             </Form.Item>
 
                             <Form.Item

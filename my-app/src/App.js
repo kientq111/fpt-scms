@@ -43,6 +43,8 @@ import ListBookingTableScreen from './screens/admin/ListBookingTableScreen';
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
 import ChangePasswordScreen from './screens/ChangePasswordScreen';
 import EditInfoPersonalScreen from './screens/admin/EditInfoPersonalScreen';
+import AddCanteenInfoScreen from './screens/admin/AddCanteenInfoScreen';
+import CanteenDetailScreen from './screens/admin/CanteenDetailScreen';
 const { Header, Content, Sider, Footer } = Layout;
 
 const App = () => {
@@ -138,8 +140,9 @@ const App = () => {
             <Route path='/admin/changepassword' element={<ChangePasswordScreen />} />
             <Route path='/admin/personalize' element={<EditInfoPersonalScreen />} />
             <Route path='/test' element={<Test />} />
-
-
+            {/* Canteen */}
+            <Route path='/admin/addcanteen' element={<AddCanteenInfoScreen />} />
+            <Route path='/admin/canteendetail' element={<CanteenDetailScreen />} />
           </Routes>
         </Content>
         <Footer

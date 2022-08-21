@@ -94,7 +94,7 @@ export const changeDishStatus = (id, status) => async (dispatch, getState) => {
             },
         }
 
-        await axios.put(`${base_url}/dish/changeDishStatus?status=${status === 1 ? 0 : 1}&dishID=${id}`, {}, config)
+        const { data } = await axios.put(`${base_url}/dish/changeDishStatus?status=${status === 1 ? 0 : 1}&dishID=${id}`, {}, config)
 
         dispatch({ type: dishConstants.DISH_CHANGE_STATUS_SUCCESS })
     } catch (error) {
@@ -112,7 +112,7 @@ export const changeDishStatus = (id, status) => async (dispatch, getState) => {
     }
 }
 
-export const addDish = (dishName, price, description, rawMenu, rawSubCategory, image, finishedTime) => async (dispatch, getState) => {
+export const addDish = (dishName, price, description, rawMenu, rawSubCategory, file, finishedTime) => async (dispatch, getState) => {
     try {
         dispatch({
 
@@ -122,13 +122,29 @@ export const addDish = (dishName, price, description, rawMenu, rawSubCategory, i
             userLogin: { userInfo },
         } = getState()
 
-        const config = {
+        const configImg = {
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-        //Rename key of obj block
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.accessToken}`,
+            },
+        }
+        let image = file
+        if (typeof (file) === 'object') {
+            const res = await axios.post(
+                `/image/upload`,
+                { file },
+                configImg
+            );
+            image = res.data?.data?.imageUrl
+        }
+
+
         const listMenuId = [];
         if (rawMenu !== undefined) {
             rawMenu.forEach(element => {
@@ -167,7 +183,7 @@ export const addDish = (dishName, price, description, rawMenu, rawSubCategory, i
     }
 }
 
-export const editDish = (id, dishName, description, rawMenu, rawSubCategory, createdTime, createdBy, price, image, status, finishedTime) => async (dispatch, getState) => {
+export const editDish = (id, dishName, description, rawMenu, rawSubCategory, createdTime, createdBy, price, file, status, finishedTime) => async (dispatch, getState) => {
     try {
         dispatch({
 
@@ -177,13 +193,31 @@ export const editDish = (id, dishName, description, rawMenu, rawSubCategory, cre
             userLogin: { userInfo },
         } = getState()
 
-        const config = {
+        const configImg = {
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-        //Rename value  of obj block
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.accessToken}`,
+            },
+        }
+
+        let image = file
+        if (typeof (file) === 'object') {
+            const res = await axios.post(
+                `/image/upload`,
+                { file },
+                configImg
+            );
+            image = res.data?.data?.imageUrl
+        }
+
+        console.log(image)
+
         const listMenuId = [];
         if (rawMenu !== undefined) {
             rawMenu.forEach(element => {

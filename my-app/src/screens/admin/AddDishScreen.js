@@ -99,7 +99,7 @@ const AddDishScreen = () => {
   const ImageHandler = e => {
     const files = e.target.files;
     const file = files[0];
-    getBase64(file);
+    setDishImg(file);
   };
 
 

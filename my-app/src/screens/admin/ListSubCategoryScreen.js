@@ -1,5 +1,5 @@
 import {
-    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col, notification
+    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col, notification, Modal
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -38,6 +38,16 @@ const ListSubCategoryScreen = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
+    const navigate = useNavigate();
+    const subCategoryData = useSelector((state) => state.subcategoryList);
+    const subCategoryEditSelector = useSelector((state) => state.subCategoryEdit);
+    const isSubCategoryEditSuccess = subCategoryEditSelector.success
+    const changeSubCategoryStatusSelector = useSelector((state) => state.subCategoryChangeStatus);
+    const { success } = changeSubCategoryStatusSelector;
+    const { loading, subcategoryInfo } = subCategoryData;
+    const [form] = Form.useForm();
+    const [userDetailModal, setUserDetailModal] = useState({});
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -135,17 +145,24 @@ const ListSubCategoryScreen = () => {
             ),
     });
 
-    //Get data from API
-    const navigate = useNavigate();
-    const subCategoryData = useSelector((state) => state.subcategoryList);
-    const subCategoryEditSelector = useSelector((state) => state.subCategoryEdit);
-    const isSubCategoryEditSuccess = subCategoryEditSelector.success
-    const changeSubCategoryStatusSelector = useSelector((state) => state.subCategoryChangeStatus);
-    const { success } = changeSubCategoryStatusSelector;
-    const { loading, subcategoryInfo } = subCategoryData;
-    const [form] = Form.useForm();
 
 
+    const showModal = (record) => {
+        setUserDetailModal({
+            subCategoryName: record.subCategoryName,
+            description: record.description,
+            createdTime: record.createdTime,
+            createdBy: record.createdBy,
+            updatedBy: record.updatedBy,
+            updatedTime: record.updatedTime,
+            categoryName: record.category.categoryName
+        })
+        setIsModalVisible(true);
+    };
+
+    const handleOk = () => {
+        setIsModalVisible(false);
+    };
 
     //Called when when mounting
     const dispatch = useDispatch();
@@ -224,17 +241,27 @@ const ListSubCategoryScreen = () => {
                     key="action"
                     render={(_, record) => (
                         <Space size="middle">
+                            <a onClick={() => showModal(record)}><EyeOutlined /></a>
                             <a onClick={() => editSubCategoryHandle(record.id, record.subCategoryName, record.description, record.createdTime, record.createdBy, record.category)}>
                                 <EditOutlined style={{ fontSize: 17 }} />
                             </a>
-
                             <a onClick={() => changeSubCategoryStatusHandle(record.id, record.status)} style={{ color: 'blue' }}>Change Status</a>
-
-
                         </Space>
                     )}
                 />
             </StyledTable>}
+
+
+            <>
+                <Modal title="SubCategory Detail" visible={isModalVisible} onOk={handleOk} onCancel={handleOk} width={'50%'}>
+                    <p><b>Subcategory Name:</b> {userDetailModal.subCategoryName}</p>
+                    <p><b>Created Time:</b> {moment(userDetailModal.created_time).format('DD/MM/YYYY')}</p>
+                    <p><b>Updated Time:</b> {moment(userDetailModal.updatedTime).format('DD/MM/YYYY')}</p>
+                    <p><b>Description:</b> {userDetailModal.description}</p>
+                    <p><b>Category Name:</b> {userDetailModal.categoryName}</p>
+               
+                </Modal>
+            </>
 
         </>
 

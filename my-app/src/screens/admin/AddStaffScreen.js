@@ -49,6 +49,7 @@ const AddStaffScreen = () => {
     const dispatch = useDispatch();
     const [provin, setProvin] = useState([{ name: "", code: "" }]);
     const [district, setDistrict] = useState([{ name: "", code: "" }]);
+    const [wards, setWards] = useState([{ name: "", code: "" }])
 
     useEffect(() => {
         axios.get(`https://provinces.open-api.vn/api/p/`)
@@ -74,6 +75,17 @@ const AddStaffScreen = () => {
         })
     }
 
+    function handleDistrictSelect(value) {
+        axios.get(`https://provinces.open-api.vn/api/d/${value.code}?depth=2`)
+            .then(res => {
+                const dataRes = res.data;
+                setWards(dataRes.wards);
+            })
+            .catch(error => console.log(error));
+        form.setFieldsValue({
+            wards: "",
+        })
+    }
 
     //get data from store
     const userAddSelector = useSelector((state) => state.staffAdd)
@@ -82,7 +94,7 @@ const AddStaffScreen = () => {
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
         const address = {
-            street: `${values.street}`,
+            street: `${values.street}, ${values.wards.name}`,
             district: values.district.name,
             city: values.city.name,
             country: "VIET NAM",
@@ -312,7 +324,20 @@ const AddStaffScreen = () => {
                         <Select
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
+                            onChange={handleDistrictSelect}
                             options={district}
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="wards"
+                        label="Wards"
+                        Size="small "
+                    >
+                        <Select
+                            getOptionLabel={option => option.name}
+                            getOptionValue={option => option.code}
+                            options={wards}
                         />
                     </Form.Item>
 

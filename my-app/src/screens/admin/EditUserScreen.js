@@ -58,7 +58,8 @@ const EditUserScreen = () => {
     const { success, loading } = userUpdateSelector;
     const [provin, setProvin] = useState([{ name: location.state.city, code: "" }]);
     const [district, setDistrict] = useState([{ name: location.state.district, code: "" }]);
-    const streetSplit = location.state.street.split("-");
+    const streetSplit = location.state.street.split(", ");
+    const [wards, setWards] = useState([{ name: streetSplit[1], code: "" }])
     let [isProvinChance, setIsProvinChange] = useState(false);
     let [isDistrictChance, setIsDistrictChange] = useState(false);
     let [isWardChange, setIsWardChange] = useState(false);
@@ -76,9 +77,7 @@ const EditUserScreen = () => {
             username: location.state.username,
             email: location.state.email,
             dob: `${formatDob}`,
-            // street: streetSplit[0],
-            street: location.state.street,
-
+            street: streetSplit[0],
             phone: location.state.phone,
         })
 
@@ -111,6 +110,7 @@ const EditUserScreen = () => {
                     .then(res => {
                         const dataWard = res.data;
                         console.log(dataWard);
+                        setWards(dataWard.wards);
                     })
             })
             .catch(error => console.log(error));
@@ -133,6 +133,16 @@ const EditUserScreen = () => {
     }
 
     function handleDistrictSelect(value) {
+        axios.get(`https://provinces.open-api.vn/api/d/${value.code}?depth=2`)
+            .then(res => {
+                const dataRes = res.data;
+                setWards(dataRes.wards);
+            })
+            .catch(error => console.log(error));
+        //Clear select when district changed
+        form.setFieldsValue({
+            wards: "",
+        })
         setIsDistrictChange(true)
     }
 
@@ -154,17 +164,18 @@ const EditUserScreen = () => {
         if (isDistrictChance === true) {
             district = values.district.name;
         }
-
+        if (isWardChange === true) {
+            ward = values.wards.name;
+        }
 
         gender = (oldGender === 0 ? true : false)
 
         if (isOptionGenderChange === true) {
             gender = values.gender.value
-            console.log(gender);
         }
 
         const address = {
-            street: `${values.street}`,
+            street: `${values.street}, ${ward}`,
             district: district,
             city: city,
             country: 'Việt Nam',
@@ -207,6 +218,7 @@ const EditUserScreen = () => {
         label: "Female"
     }
     ]
+
 
     return (
         <Row>
@@ -325,6 +337,20 @@ const EditUserScreen = () => {
                     </Form.Item>
 
                     <Form.Item
+                        name="wards"
+                        label="Wards"
+                        Size="small "
+                    >
+                        <Select
+                            getOptionLabel={option => option.name}
+                            getOptionValue={option => option.code}
+                            onChange={handleWardSelect}
+                            defaultValue={[wards[0]]}
+                            options={wards}
+                        />
+                    </Form.Item>
+
+                    <Form.Item
                         name="street"
                         label="Street"
                         Size="small "
@@ -372,8 +398,6 @@ const EditUserScreen = () => {
                                 Cancel
                             </Button>
                         </Space>
-
-
                     </Form.Item>
                 </Form>
             </Card>

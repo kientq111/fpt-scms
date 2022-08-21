@@ -212,7 +212,7 @@ const ListUserScreen = () => {
   };
 
 
-  const userDetailHandler = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street) => {
+  const userDetailHandler = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street, gender) => {
     console.log(id);
     navigate('/admin/userdetail', {
       state:
@@ -229,7 +229,8 @@ const ListUserScreen = () => {
         city: city,
         district: district,
         street: street,
-        history: location.pathname
+        history: location.pathname,
+        gender: gender
       }
     })
   }
@@ -381,7 +382,7 @@ const ListUserScreen = () => {
             render={(_, record) => (
               <Space size="middle">
                 <a><EyeOutlined onClick={() => userDetailHandler(record.id, record.username, record['first_name'], record['last_name'],
-                  record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street)} /></a>
+                  record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street, record.gender)} /></a>
                 <a onClick={() => editUser(record.id, record.username, record['first_name'], record['last_name'],
                   record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street, record.gender)}><EditOutlined style={{ fontSize: 17 }} /></a>
                 <Popconfirm
