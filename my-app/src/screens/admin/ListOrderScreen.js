@@ -387,7 +387,7 @@ const ListOrderScreen = () => {
                 //     countdown = 0;
                 // }
                 return <Countdown
-                    date={parseInt(moment(record.createdDate).format('x')) + (countdown * 60 * 1000)} renderer={countdownRederer}
+                    date={parseInt(moment(record.createdDate).format('x')) + (countdown *  1000)} renderer={countdownRederer}
                     onComplete={() => dishFinishHandle(orderDetailModal.orderId, orderDetailModal.status)} />; // just for decoration
             }
         },

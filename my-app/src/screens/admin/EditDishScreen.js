@@ -16,6 +16,14 @@ import Select from "react-select";
 const { TextArea } = Input;
 
 
+const style = {
+  control: (base) => ({
+    ...base,
+    borderColor: 'black'
+  })
+}
+
+
 const EditDishScreen = () => {
 
   const [form] = Form.useForm();
@@ -261,6 +269,7 @@ const EditDishScreen = () => {
                   onChange={handleMenuSelect}
                   isSearchable={true}
                   isMulti
+                  styles={style}
                 />
               </Form.Item>
 
@@ -271,6 +280,7 @@ const EditDishScreen = () => {
                   defaultValue={optionListSubCategory[indexSubCategoryOption]}
                   onChange={handleSubCategorySelect}
                   isSearchable={true}
+                  styles={style}
                 />
               </Form.Item>
               <Form.Item label="Description" name="description"
@@ -284,7 +294,7 @@ const EditDishScreen = () => {
                 <TextArea rows={4} maxLength={500} showCount />
               </Form.Item>
               <Form.Item label="Image" name="dishimg" >
-                <input type="file" onChange={ImageHandler} />
+                <input type="file" onChange={ImageHandler} accept="image/png, image/gif, image/jpeg" />
                 <h1></h1>
                 <Image
                   width={200}

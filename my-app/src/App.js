@@ -45,6 +45,8 @@ import ChangePasswordScreen from './screens/ChangePasswordScreen';
 import EditInfoPersonalScreen from './screens/admin/EditInfoPersonalScreen';
 import AddCanteenInfoScreen from './screens/admin/AddCanteenInfoScreen';
 import CanteenDetailScreen from './screens/admin/CanteenDetailScreen';
+import AddPromoScreen from './screens/admin/promotion/AddPromoScreen';
+import ListPromoScreen from './screens/admin/promotion/ListPromoScreen';
 const { Header, Content, Sider, Footer } = Layout;
 
 const App = () => {
@@ -143,6 +145,11 @@ const App = () => {
             {/* Canteen */}
             <Route path='/admin/addcanteen' element={<AddCanteenInfoScreen />} />
             <Route path='/admin/canteendetail' element={<CanteenDetailScreen />} />
+            /
+            {/* Promo */}
+            <Route path='/admin/addpromo' element={<AddPromoScreen />} />
+            <Route path='/admin/listpromo' element={<ListPromoScreen />} />
+            {/* <Route path='/admin/editpromo' element={<CanteenDetailScreen />} />  */}
           </Routes>
         </Content>
         <Footer

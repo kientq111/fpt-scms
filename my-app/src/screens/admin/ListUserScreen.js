@@ -161,7 +161,7 @@ const ListUserScreen = () => {
 
   const [form] = Form.useForm();
   const location = useLocation();
-  const editUser = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street, gender) => {
+  const editUser = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, wards, street, gender) => {
 
     navigate('/admin/edituser', {
       state:
@@ -178,6 +178,7 @@ const ListUserScreen = () => {
         country: country,
         city: city,
         district: district,
+        wards: wards,
         street: street,
         history: location.pathname
       }
@@ -364,6 +365,7 @@ const ListUserScreen = () => {
           <Column title="Country" dataIndex="address" render={(_, record) => record.address.country} key="country" />
           <Column title="City" dataIndex="address" render={(_, record) => record.address.city} key="city" />
           <Column title="District" dataIndex="address" render={(_, record) => record.address.district} key="district" />
+          <Column title="Wart" dataIndex="ward" render={(_, record) => record.address.wards} key="wards" />
           <Column title="Street" dataIndex="address" render={(_, record) => <LinesEllipsis
             text={record.address.street}
             maxLine='1'
@@ -384,7 +386,7 @@ const ListUserScreen = () => {
                 <a><EyeOutlined onClick={() => userDetailHandler(record.id, record.username, record['first_name'], record['last_name'],
                   record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street, record.gender)} /></a>
                 <a onClick={() => editUser(record.id, record.username, record['first_name'], record['last_name'],
-                  record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street, record.gender)}><EditOutlined style={{ fontSize: 17 }} /></a>
+                  record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.wards, record.address.street, record.gender)}><EditOutlined style={{ fontSize: 17 }} /></a>
                 <Popconfirm
                   title="Are you sure to delete this task?"
                   onConfirm={() => confirm(record.id)}

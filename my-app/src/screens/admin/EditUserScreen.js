@@ -46,6 +46,13 @@ const tailFormItemLayout = {
     },
 };
 
+const style = {
+    control: (base) => ({
+        ...base,
+        borderColor: 'black'
+    })
+}
+
 const EditUserScreen = () => {
     const [form] = Form.useForm();
     //useLocation to get state from previous screen
@@ -59,7 +66,7 @@ const EditUserScreen = () => {
     const [provin, setProvin] = useState([{ name: location.state.city, code: "" }]);
     const [district, setDistrict] = useState([{ name: location.state.district, code: "" }]);
     const streetSplit = location.state.street.split(", ");
-    const [wards, setWards] = useState([{ name: streetSplit[1], code: "" }])
+    const [wards, setWards] = useState([{ name: location.state.wards, code: "" }])
     let [isProvinChance, setIsProvinChange] = useState(false);
     let [isDistrictChance, setIsDistrictChange] = useState(false);
     let [isWardChange, setIsWardChange] = useState(false);
@@ -154,7 +161,7 @@ const EditUserScreen = () => {
     //Submit edit form to action
     const onFinish = (values) => {
         let gender;
-        let ward = streetSplit[1]
+        let ward = location.state.wards
         let district = location.state.district;
         let city = location.state.city;
 
@@ -175,7 +182,8 @@ const EditUserScreen = () => {
         }
 
         const address = {
-            street: `${values.street}, ${ward}`,
+            street: `${values.street}`,
+            wards: ward,
             district: district,
             city: city,
             country: 'Việt Nam',
@@ -299,6 +307,7 @@ const EditUserScreen = () => {
                             onChange={optionGenderChangeHandle}
                             defaultValue={[optionGender[oldGender]]}
                             options={optionGender}
+                            styles={style}
                         />
                     </Form.Item>
                     <Form.Item name="dob" label="Date of Birth" rules={[
@@ -321,6 +330,7 @@ const EditUserScreen = () => {
                             onChange={handleProvinSelect}
                             defaultValue={[provin[0]]}
                             options={provin}
+                            styles={style}
                         />
                     </Form.Item>
                     <Form.Item
@@ -333,6 +343,7 @@ const EditUserScreen = () => {
                             onChange={handleDistrictSelect}
                             defaultValue={[district[0]]}
                             options={district}
+                            styles={style}
                         />
                     </Form.Item>
 
@@ -347,6 +358,7 @@ const EditUserScreen = () => {
                             onChange={handleWardSelect}
                             defaultValue={[wards[0]]}
                             options={wards}
+                            styles={style}
                         />
                     </Form.Item>
 

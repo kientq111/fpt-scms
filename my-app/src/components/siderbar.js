@@ -59,8 +59,7 @@ const itemsAdmin = [
         getItem('List Blog', '/admin/listblog'),
     ]),
     getItem('Canteen Manager', '6', <BankOutlined />, [
-        getItem('Add Canteen Info', '/admin/addcanteen'),
-        getItem('Canteen Information', '/admin/canteendetail'),
+        getItem('Canteen Information', '/admin/addcanteen'),
 
     ]),
     getItem("Contact", '/admin/listcontact', <FormOutlined />),

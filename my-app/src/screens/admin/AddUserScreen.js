@@ -43,6 +43,13 @@ const tailFormItemLayout = {
         },
     },
 };
+
+const style = {
+    control: (base) => ({
+        ...base,
+        borderColor: 'black'
+    })
+}
 // iter2: if add success => redirect success screen
 const AddUserScreen = () => {
     const [form] = Form.useForm();
@@ -94,7 +101,8 @@ const AddUserScreen = () => {
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
         const address = {
-            street: `${values.street}, ${values.wards.name}`,
+            street: `${values.street}`,
+            wards: values.wards.name,
             district: values.district.name,
             city: values.city.name,
             country: "VIET NAM",
@@ -225,7 +233,7 @@ const AddUserScreen = () => {
                         ]}
                         hasFeedback
                     >
-                        <Input.Password />
+                        <Input.Password style={{ borderColor: 'black', borderRadius: 4 }} />
                     </Form.Item>
 
                     <Form.Item
@@ -250,7 +258,7 @@ const AddUserScreen = () => {
                             }),
                         ]}
                     >
-                        <Input.Password />
+                        <Input.Password style={{ borderColor: 'black', borderRadius: 4 }} />
                     </Form.Item>
 
 
@@ -298,6 +306,7 @@ const AddUserScreen = () => {
                             getOptionLabel={option => option.Label}
                             getOptionValue={option => option.Value}
                             options={genderOptions}
+                            styles={style}
                         />
                     </Form.Item>
 
@@ -315,17 +324,24 @@ const AddUserScreen = () => {
                             getOptionValue={option => option.code}
                             onChange={handleProvinSelect}
                             options={provin}
+                            styles={style}
                         />
                     </Form.Item>
                     <Form.Item
                         name="district"
                         label="District"
+                        rules={[
+                            {
+                                required: true,
+                            },
+                        ]}
                     >
                         <Select
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
                             onChange={handleDistrictSelect}
                             options={district}
+                            styles={style}
                         />
                     </Form.Item>
 
@@ -333,11 +349,17 @@ const AddUserScreen = () => {
                         name="wards"
                         label="Wards"
                         Size="small "
+                        rules={[
+                            {
+                                required: true,
+                            },
+                        ]}
                     >
                         <Select
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
                             options={wards}
+                            styles={style}
                         />
                     </Form.Item>
 

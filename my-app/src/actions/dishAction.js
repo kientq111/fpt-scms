@@ -23,7 +23,7 @@ export const listDishes = (status) => async (dispatch, getState) => {
             status = "";
         }
 
-        const { data } = await axios.get(`${base_url}/dish/getListDish?dishName=&status=${status}&subcategoryId=&startDate&endDate&createdBy&pageIndex=0&pageSize=1000`, config)
+        const { data } = await axios.get(`${base_url}/dish/getListDish?dishName=&status=${status}&subcategoryId=&startDate&endDate&createdBy&pageIndex=1&pageSize=1000`, config)
         dispatch({
             type: dishConstants.DISH_LIST_SUCCESS,
             payload: data.data,

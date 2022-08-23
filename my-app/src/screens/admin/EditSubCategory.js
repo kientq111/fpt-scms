@@ -44,6 +44,14 @@ const tailFormItemLayout = {
         },
     },
 };
+
+const style = {
+    control: (base) => ({
+        ...base,
+        borderColor: 'black'
+    })
+}
+
 const EditSubCategoryScreen = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -118,7 +126,7 @@ const EditSubCategoryScreen = () => {
 
                     <Form.Item
                         name="subCategoryName"
-                        label="subCategory Name"
+                        label="SubCategory Name"
                         rules={[
                             {
                                 required: true,
@@ -142,6 +150,7 @@ const EditSubCategoryScreen = () => {
                             onChange={handleCategorySelect}
                             defaultValue={optionListSubCategoryMenu[oldCategoryIndex]}
                             isSearchable={true}
+                            styles={style}
                         />
                     </Form.Item>
 
@@ -155,7 +164,7 @@ const EditSubCategoryScreen = () => {
                             },
                         ]}
                     >
-                        <Input.TextArea showCount maxLength={300} style={{height:300}} />
+                        <Input.TextArea showCount maxLength={300} style={{ height: 300 }} />
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>

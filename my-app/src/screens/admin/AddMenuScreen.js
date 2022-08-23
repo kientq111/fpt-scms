@@ -43,6 +43,14 @@ const tailFormItemLayout = {
         },
     },
 };
+
+const style = {
+    control: (base) => ({
+      ...base,
+      borderColor: 'black'
+    })
+  }
+  
 const AddMenuScreen = () => {
     const dispatch = useDispatch()
     const [form] = Form.useForm();
@@ -136,6 +144,7 @@ const AddMenuScreen = () => {
                             getOptionValue={option => option.id}
                             options={listDishOption}
                             isMulti
+                            styles={style}
                         />
                     </Form.Item>
 
