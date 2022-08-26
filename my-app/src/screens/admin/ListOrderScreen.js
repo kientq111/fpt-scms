@@ -226,7 +226,7 @@ const ListOrderScreen = () => {
                     createdBy: '',
                     orderId: '',
                     pageSize: 100,
-                    pageIndex: 0,
+                    pageIndex: 1,
                 },
                 headers: {
                     Authorization: `Bearer ${userInfo.accessToken}`,
@@ -285,15 +285,15 @@ const ListOrderScreen = () => {
         let tomorrowDate = currentDate.setDate(currentDate.getDate() + 1);
         let today = currentDate.setDate(currentDate.getDate() - 1);
         // dispatch(listOrders(moment(today).format('YYYY-MM-DD'), moment(tomorrowDate).format('YYYY-MM-DD')));
-        getOrder(moment(today).format('YYYY-MM-DD'), moment(tomorrowDate).format('YYYY-MM-DD'))
+        getOrder(moment(today).format('YYYY-MM-DD hh:mm:ss'), moment(tomorrowDate).format('YYYY-MM-DD hh:mm:ss'))
     }
     const dateOnchangeHandle = (value) => {
         if (value === null) {
             return
         }
-        const startDate = moment(value[0]).format('YYYY-MM-DD');
-        const endDate = moment(value[1]).format('YYYY-MM-DD')
-        getOrder(moment(startDate).format('YYYY-MM-DD'), moment(endDate).format('YYYY-MM-DD'))
+        const startDate = moment(value[0]).format('YYYY-MM-DD hh:mm:ss');
+        const endDate = moment(value[1]).format('YYYY-MM-DD hh:mm:ss')
+        getOrder(startDate, endDate)
         // dispatch(listOrders(startDate, endDate));
     }
 
@@ -387,7 +387,7 @@ const ListOrderScreen = () => {
                 //     countdown = 0;
                 // }
                 return <Countdown
-                    date={parseInt(moment(record.createdDate).format('x')) + (countdown *  1000)} renderer={countdownRederer}
+                    date={parseInt(moment(record.createdDate).format('x')) + (countdown * 1000)} renderer={countdownRederer}
                     onComplete={() => dishFinishHandle(orderDetailModal.orderId, orderDetailModal.status)} />; // just for decoration
             }
         },
@@ -470,7 +470,7 @@ const ListOrderScreen = () => {
         let currentDate = new Date();
         let tomorrowDate = currentDate.setDate(currentDate.getDate() + 1);
         let today = currentDate.setDate(currentDate.getDate() - 1);
-        getOrder(moment(today).format('YYYY-MM-DD'), moment(tomorrowDate).format('YYYY-MM-DD'))
+        getOrder(moment(today).format('YYYY-MM-DD hh:mm:ss'), moment(tomorrowDate).format('YYYY-MM-DD hh:mm:ss'))
         // getOrder()
 
     }, [success]);

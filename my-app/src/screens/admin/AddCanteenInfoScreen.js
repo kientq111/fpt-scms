@@ -3,7 +3,7 @@ import {
     Form,
     Input,
     Row,
-    Breadcrumb, Card, Divider, TimePicker, Image
+    Breadcrumb, Card, Divider, TimePicker, Image, message
 } from 'antd';
 import Loader from '../../components/Loader';
 import { useState, useEffect } from 'react';
@@ -57,19 +57,19 @@ const AddCanteenInfoScreen = () => {
 
     const userLoginInfo = useSelector((state) => state.userLogin);
     const { userInfo } = userLoginInfo;
-    const [disableInput, setDisableInput] = useState(true);
     const [loadingCanteenInfo, setLoadingCanteeInfo] = useState();
     const [canteenImgPreview, setCanteenImgPreview] = useState();
     const [canteenInfo, setCanteenInfo] = useState({});
-
     const [provin, setProvin] = useState([]);
     const [district, setDistrict] = useState([]);
     const [wards, setWards] = useState([])
-    let [isProvinChance, setIsProvinChange] = useState(false);
-    let [isDistrictChance, setIsDistrictChange] = useState(false);
-    let [isWardChange, setIsWardChange] = useState(false);
-
-
+    const [isProvinChange, setIsProvinChange] = useState(false);
+    const [isDistrictChange, setIsDistrictChange] = useState(false);
+    const [isWardChange, setIsWardChange] = useState(false);
+    const [isFromDayChange, setIsFromDayChange] = useState(false);
+    const [isToDayChange, setIsToDayChange] = useState(false);
+    const [canteenImg, setCanteenImg] = useState('');
+    const [canteenMessage, setCanteenMessage] = useState()
     useEffect(() => {
         axios.get(`https://provinces.open-api.vn/api/p/`)
             .then(res => {
@@ -108,6 +108,8 @@ const AddCanteenInfoScreen = () => {
     }, [loadingCanteenInfo]);
 
 
+
+
     // Function triggered on selection
     function handleProvinSelect(value) {
         axios.get(`https://provinces.open-api.vn/api/p/${value.code}?depth=3`)
@@ -120,6 +122,7 @@ const AddCanteenInfoScreen = () => {
             district: "",
             wards: ""
         })
+        setIsProvinChange(true)
     }
 
     function handleDistrictSelect(value) {
@@ -132,11 +135,18 @@ const AddCanteenInfoScreen = () => {
         form.setFieldsValue({
             wards: "",
         })
+        setIsDistrictChange(true)
     }
 
-    const addCanteen = async (id, canteenName, phone, description, createdTime, createdBy, updatedTime, updatedBy, logoUrl, openTime, closeTime, fromDateOfWeek, toDateOfWeek, userId, address) => {
+    const addCanteen = async (id, canteenName, phone, description, openTime, closeTime, fromDateOfWeek, toDateOfWeek, address) => {
+        const createdTime = canteenInfo.createdDate;
+        const updatedTime = null;
+        const createdBy = canteenInfo.createdBy
+        const updatedBy = null;
+        const userId = userInfo.id;
+        let logoUrl = canteenImg;
         try {
-            const res = await axios.post(`/order/getListOrderDish`,
+            const res = await axios.post(`/canteen/addOrUpdate`,
                 {
                     id, canteenName, phone, description, createdTime, createdBy, updatedTime, updatedBy, logoUrl, openTime, closeTime, fromDateOfWeek, toDateOfWeek, userId, address
                 }
@@ -144,12 +154,40 @@ const AddCanteenInfoScreen = () => {
                     params: {
                     },
                     headers: {
+                        'Content-Type': 'application/json',
                         Authorization: `Bearer ${userInfo.accessToken}`,
                     },
                 })
-
+            console.log(res.data)
+            setCanteenMessage(res.data)
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    const imageOnChangeHandle = async (file) => {
+        try {
+            const configImg = {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            }
+
+            if (typeof (file) === 'object') {
+                const resImg = await axios.post(
+                    `/image/upload`,
+                    { file },
+                    configImg
+                )
+                if (resImg.data?.success === false) {
+                    message.error("Opps, There's something error when you upload! please re-upload image")
+                    return
+                }
+                setCanteenImg(resImg.data?.data?.imageUrl)
+            }
+        } catch (error) {
+
         }
     }
 
@@ -158,6 +196,8 @@ const AddCanteenInfoScreen = () => {
         const files = e.target.files;
         const file = files[0];
         getBase64(file);
+        // setCanteenImg(file);
+        imageOnChangeHandle(file)
     };
 
     const onLoad = fileString => {
@@ -189,6 +229,7 @@ const AddCanteenInfoScreen = () => {
             console.log(res.data?.data.address.wards);
             setCanteenInfo(res.data?.data)
             setCanteenImgPreview(res.data?.data.logoUrl)
+            setCanteenImg(res.data?.data.logoUrl)
         } catch (error) {
             console.log(error);
         }
@@ -197,23 +238,100 @@ const AddCanteenInfoScreen = () => {
     const [form] = Form.useForm();
 
     const onFinish = (values) => {
-        console.log(values)
-        // addCanteen(values.id, values.canteenName, values.description, values)
+        const openTime = moment(values.openCloseTime[0]).format('HH:MM A')
+        const closedTime = moment(values.openCloseTime[1]).format('HH:MM A')
+        let provinceValue = canteenInfo.address.city
+        let districtValue = canteenInfo.address.district
+        let wardsValue = canteenInfo.address.wards
+        let openDayValue = canteenInfo.fromDateOfWeek
+        let closeDayValue = canteenInfo.toDateOfWeek
+        if (isProvinChange === true) {
+            provinceValue = values.city.name
+        }
+
+        if (isDistrictChange === true) {
+            districtValue = values.district.name
+        }
+
+        if (isWardChange === true) {
+            wardsValue = values.wards.name
+        }
+
+        if (isFromDayChange === true) {
+            openDayValue = values.fromDay.name
+        }
+
+        if (isToDayChange === true) {
+            closeDayValue = values.toDay.name
+        }
+
+        let addressValue = {
+            street: values.street,
+            wards: wardsValue,
+            district: districtValue,
+            city: provinceValue,
+            country: "VIET NAM"
+        }
+
+
+        addCanteen(1, values.canteenName, values.phone, values.description, openTime, closedTime, openDayValue, closeDayValue, addressValue)
     };
 
     useEffect(() => {
         getCanteenById();
     }, [])
 
-    if (loadingCanteenInfo === false) {
-        form.setFieldsValue({
-            canteenName: canteenInfo.name,
-            description: canteenInfo.description,
-            phone: canteenInfo.phone,
+    useEffect(() => {
+        if (loadingCanteenInfo === false) {
+            form.setFieldsValue({
+                canteenName: canteenInfo.name,
+                description: canteenInfo.description,
+                phone: canteenInfo.phone,
+                street: canteenInfo.address.street,
+                openCloseTime: [moment(canteenInfo.openTime, format), moment(canteenInfo.closedTime, format)],
+            })
+        }
+    }, [loadingCanteenInfo])
 
-            openCloseTime: [moment("08:00 AM", format), moment("11:00 AM", format)],
-            fromDay: 'Monday'
-        })
+    let optionCityDefault;
+    let optionDistrictDefault;
+    let optionWardDefault;
+    let optionFromDay;
+    let optionToDay;
+    if (loadingCanteenInfo === false) {
+
+        optionCityDefault = {
+            code: '',
+            name: canteenInfo.address.city
+        }
+        optionDistrictDefault = {
+            code: '',
+            name: canteenInfo.address.district
+        }
+        optionWardDefault = {
+            code: '',
+            name: canteenInfo.address.wards
+        }
+        optionFromDay = {
+            name: canteenInfo.fromDateOfWeek
+        }
+        optionToDay = {
+            name: canteenInfo.toDateOfWeek
+        }
+
+    }
+
+
+    const isOptionWardChange = () => {
+        setIsWardChange(true)
+    }
+
+    const isOptionFromDayChange = () => {
+        setIsFromDayChange(true)
+    }
+
+    const isOptionToDayChange = () => {
+        setIsToDayChange(true)
     }
 
 
@@ -266,22 +384,17 @@ const AddCanteenInfoScreen = () => {
                         ]}
                     >
                         <TimePicker.RangePicker format={format} />
-
                     </Form.Item>
-
 
                     <Form.Item
                         name="fromDay"
                         label="From Day"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
                     >
                         <Select
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.name}
+                            defaultValue={optionFromDay}
+                            onChange={isOptionFromDayChange}
                             options={optionDay}
                             styles={style}
                         />
@@ -290,15 +403,13 @@ const AddCanteenInfoScreen = () => {
                     <Form.Item
                         name="toDay"
                         label="To Day"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
+
                     >
                         <Select
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.name}
+                            defaultValue={optionToDay}
+                            onChange={isOptionToDayChange}
                             options={optionDay}
                             styles={style}
                         />
@@ -337,39 +448,30 @@ const AddCanteenInfoScreen = () => {
                         />
                     </Form.Item>
 
-
                     <Form.Item
                         name="city"
                         label="City"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
+
                     >
                         <Select
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
                             onChange={handleProvinSelect}
                             options={provin}
-                            defaultValue={[provin[0]]}
+                            defaultValue={[optionCityDefault]}
                             styles={style}
                         />
                     </Form.Item>
                     <Form.Item
                         name="district"
                         label="District"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
+
                     >
                         <Select
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
                             options={district}
-                            defaultValue={[district[0]]}
+                            defaultValue={optionDistrictDefault}
                             onChange={handleDistrictSelect}
                             styles={style}
                         />
@@ -379,17 +481,13 @@ const AddCanteenInfoScreen = () => {
                         name="wards"
                         label="Wards"
                         Size="small "
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
                     >
                         <Select
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
                             options={wards}
-                            defaultValue={[wards[0]]}
+                            onChange={isOptionWardChange}
+                            defaultValue={optionWardDefault}
                             styles={style}
                         />
                     </Form.Item>
@@ -420,9 +518,11 @@ const AddCanteenInfoScreen = () => {
                             src={`${canteenImgPreview}`}
                         />
                     </Form.Item>
-
-
                     <Form.Item {...tailFormItemLayout}>
+                        {canteenMessage?.success === false ?
+                            <h6 style={{ color: 'red' }}>{canteenMessage?.data?.message}</h6> : <h6 style={{ color: 'green' }}>{canteenMessage?.data?.message}</h6>
+                        }
+
                         <Button type="primary" htmlType="submit">
                             Update Canteen
                         </Button>

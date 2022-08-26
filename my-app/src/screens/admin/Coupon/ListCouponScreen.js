@@ -28,7 +28,7 @@ const openNotificationWithIcon = (type, message) => {
 };
 
 
-const ListPromoScreen = () => {
+const ListCouponScreen = () => {
     const userLoginInfo = useSelector((state) => state.userLogin);
     const { userInfo } = userLoginInfo;
     const dispatch = useDispatch();
@@ -37,7 +37,8 @@ const ListPromoScreen = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
-    const [listPromo, setListPromo] = useState([]);
+    const [listCoupon, setListCoupon] = useState([]);
+
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -135,37 +136,36 @@ const ListPromoScreen = () => {
     });
 
 
-    const getListPromo = async (startDate, endDate) => {
+    const getListCoupon = async (startDate, endDate) => {
 
         try {
             setLoading(true)
-            const res = await axios.get(`/promotion/getListPromotion`, {
+            const res = await axios.get(`/coupon/getListCoupon`, {
                 params: {
-                    promotionName: '',
-                    promotionType: '',
-                    promotionStatus: '',
-                    promotionFromDateCreated: '2022-08-21',
-                    promotionToDateCreated: '2022-12-25',
+                    type: '',
+                    status: '',
+                    fromStartDate: '',
+                    toEndDate: '',
                     createdBy: '',
-                    pageSize: 100,
                     pageIndex: 1,
+                    pageSize: 100,
                 },
                 headers: {
                     Authorization: `Bearer ${userInfo.accessToken}`,
                 },
             })
             setLoading(false)
-            setListPromo(res.data?.data)
-            console.log(res.data?.data);
+
+            setListCoupon(res?.data?.data)
         } catch (error) {
             console.log(error);
         }
     }
 
-    const changePromoStatus = async (id, status) => {
+    const changeCouponStatus = async (id, status) => {
         try {
 
-            const res = await axios.put(`/promotion/changeStatusPromotion`, {}, {
+            const res = await axios.put(`/coupon/changeStatusCoupon`, {}, {
                 params: {
                     status: status === 1 ? 0 : 1,
                     id: id,
@@ -182,35 +182,14 @@ const ListPromoScreen = () => {
 
 
     const changeStatusHandle = (id, status) => {
-        changePromoStatus(id, status);
-        getListPromo()
-    }
-
-
-    const editPromoHandle = (promo) => {
-        navigate('/admin/editpromo', {
-            state:
-            {
-                id: promo.id,
-                promoName: promo.name,
-                description: promo.description,
-                promotionPercent: promo.promotionPercent,
-                salePrice: promo.salePrice,
-                promotionStartDate: promo.promotionStartDate,
-                promotionStartDate: promo.promotionStartDate,
-                promotionEndDate: promo.promotionEndDate,
-                status: promo.status,
-                listDish: promo.listDish,
-                createdDate: promo.createdDate,
-                createdBy: promo.createdBy,
-                type: promo.type,
-            }
-        })
+        changeCouponStatus(id, status);
+        getListCoupon()
     }
 
     useEffect(() => {
-        getListPromo();
+        getListCoupon();
     }, []);
+
 
     return (
         <>
@@ -218,45 +197,56 @@ const ListPromoScreen = () => {
             <Breadcrumb style={{ marginTop: 10 }}>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>
-                    <a href="">List Promotion</a>
+                    <a href="">List Coupon</a>
                 </Breadcrumb.Item>
             </Breadcrumb>
-            <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/addpromo'} style={{ textDecoration: 'none' }}>Add Promotion</Link></Button></Divider>
+            <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/addcoupon'} style={{ textDecoration: 'none' }}>Add Coupon</Link></Button></Divider>
 
 
-            <StyledTable dataSource={listPromo} className="table-striped-rows">
-                <Column title="Promotion Name" dataIndex="name" key="name" {...getColumnSearchProps('name')} />
-                <Column title="Description" dataIndex="description" key="description" width={'15%'} />
-                <Column title="Promotion Percent" dataIndex="promotionPercent" key="promotionPercent" width={'2%'} render={(_, record) => `${record.promotionPercent}%`} sorter={(a, b) => a.promotionPercent - b.promotionPercent} />
-                <Column title="Sale Price" dataIndex="salePrice" key="salePrice" width={'2%'} sorter={(a, b) => a.salePrice - b.salePrice} />
-                <Column title="Status" dataIndex="status"
-                    filters={[
-                        {
-                            text: 'Enable',
-                            value: 1,
-                        },
-                        {
-                            text: 'Disable',
-                            value: 0,
-                        },
-
-                    ]}
-                    render={(_, record) => record.status === 1 ? <p style={{ color: 'green' }}>Enable<b></b></p> : <p style={{ color: 'red' }}>Disable<b></b></p>}
-                    onFilter={(value, record) => record.status === value}
-                    key="status"
+            <StyledTable dataSource={listCoupon} className="table-striped-rows"
+                scroll={{
+                    x: '200vw',
+                }}
+            >
+                <Column title="CouponCode" dataIndex="couponCode" key="couponCode" {...getColumnSearchProps('couponCode')} />
+                <Column title="Description" dataIndex="description" key="description" render={(_, record) => record.description.length > 50 ? `${record.description.substring(0, 40)}...` : record.description} />
+                <Column title="Status" dataIndex="status" key="status" align={'center'}
+                    render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>Active</p> : <p style={{ color: 'red' }}>Expire</p>)}
+                    filters={[{
+                        text: 'Active',
+                        value: 1,
+                    }, {
+                        text: 'Expire',
+                        value: 0,
+                    },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
                 />
-                <Column title="Start Date" dataIndex="promotionStartDate" key="promotionStartDate" render={(_, record) => (moment(record.promotionStartDate).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.promotionStartDate).unix() - moment(b.promotionStartDate).unix()} />
-                <Column title="End Date" dataIndex="promotionEndDate" key="promotionEndDate" render={(_, record) => (moment(record.promotionEndDate).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.promotionEndDate).unix() - moment(b.promotionEndDate).unix()} />
-                <Column title="Created Time" dataIndex="createdTime" key="createdTime" render={(_, record) => (moment(record.createdDate).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.createdDate).unix() - moment(b.createdDate).unix()} />
-                <Column title="Created By" dataIndex="createdBy" key="createdBy" {...getColumnSearchProps('createdBy')} />
-                <Column title="Updated Time" dataIndex="updatedTime" key="updatedTime" render={(_, record) => (moment(record.updatedDate).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.updatedDate).unix() - moment(b.updatedDate).unix()} />
-                <Column title="Updated By" dataIndex="updatedBy" key="updatedBy" {...getColumnSearchProps('updatedBy')} />
+                <Column title="Use Promotion" dataIndex="usePromotion" key="usePromotion" align={'center'}
+                    render={(_, record) => (record.status === true ? <p style={{ color: 'green' }}>Yes</p> : <p style={{ color: 'red' }}>No</p>)}
+                    filters={[{
+                        text: 'Yes',
+                        value: true,
+                    }, {
+                        text: 'No',
+                        value: false,
+                    },]} onFilter={(value, record) => record.usePromotion.indexOf(value) === 0}
+                />
+                <Column title="Discount Percent" dataIndex="percentDiscount" key="percentDiscount" render={(_, record) => `${record.percentDiscount === null ? '0' : record.percentDiscount}%`} sorter={(a, b) => a.percentDiscount - b.percentDiscount} align={'center'} />
+                <Column title="Max Discount Money" dataIndex="maxDiscountMoney" key="maxDiscountMoney" render={(_, record) => `${record.maxDiscountMoney === null ? '0' : record.maxDiscountMoney}`} sorter={(a, b) => a.maxDiscountMoney - b.maxDiscountMoney} align={'center'}
+
+                />
+                <Column title="Min Value Order" dataIndex="minValueOrder" key="minValueOrder" render={(_, record) => `${record.minValueOrder === null ? '0' : record.minValueOrder}`} sorter={(a, b) => a.minValueOrder - b.minValueOrder} align={'center'} />
+                {/* <Column title="Min Quantity Product" dataIndex="minQuantityProduct" key="minQuantityProduct" render={(_, record) => `${record.minQuantityProduct === null ? '0' : record.minQuantityProduct}`} sorter={(a, b) => a.minQuantityProduct - b.minQuantityProduct} align={'center'} /> */}
+                <Column title="Number Of Coupon" dataIndex="numberOfCoupon" key="numberOfCoupon" render={(_, record) => `${record.numberOfCoupon}`} sorter={(a, b) => a.numberOfCoupon - b.numberOfCoupon} align={'center'} />
+                <Column title="Number Of Customer Use" dataIndex="numberOfCustomerUse" key="numberOfCustomerUse" render={(_, record) => `${record.numberOfCustomerUse}`} sorter={(a, b) => a.numberOfCustomerUse - b.numberOfCustomerUse} align={'center'} />
+                <Column title="Coupon From Date" dataIndex="couponFromDate" key="couponFromDate" render={(_, record) => (moment(record.couponFromDate).format('DD/MM/YYYY hh:mm'))} sorter={(a, b) => moment(a.couponFromDate).unix() - moment(b.couponFromDate).unix()} />
+                <Column title="Coupon To Date" dataIndex="couponToDate" key="couponToDate" render={(_, record) => (moment(record.couponToDate).format('DD/MM/YYYY hh:mm'))} sorter={(a, b) => moment(a.couponToDate).unix() - moment(b.couponToDate).unix()} />
                 <Column
                     title="Action"
                     key="action"
+                    fixed={"right"}
                     render={(_, record) => (
                         <Space size="middle">
-                            <a onClick={() => editPromoHandle(record)}><EditOutlined /></a>
+                            <a><EditOutlined /></a>
                             <a className='txtLink' onClick={() => changeStatusHandle(record.id, record.status)}>Change Status</a>
                         </Space>
                     )}
@@ -266,4 +256,4 @@ const ListPromoScreen = () => {
     )
 }
 
-export default ListPromoScreen;
+export default ListCouponScreen;

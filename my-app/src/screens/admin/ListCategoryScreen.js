@@ -232,7 +232,7 @@ const ListCategoryScreen = () => {
                 </Row></>}
             {loading === false && <StyledTable dataSource={categoryInfo} className="table-striped-rows">
                 <Column title="categoryName" dataIndex="categoryName" key="categoryName" {...getColumnSearchProps('categoryName')} />
-                <Column title="description" dataIndex="description" key="description" width={'15%'} />
+                <Column title="description" dataIndex="description" key="description" width={'15%'} render={(_, record) => record.description.length > 50 ? `${record.description.substring(0, 40)}...` : record.description}/>
                 <Column title="Total Subcategory" dataIndex="subcategory" render={(_, record) => record.subcategory.length} key="sub" sorter={(a, b) => a.subcategory.length - b.subcategory.length} />
                 <Column title="Status" dataIndex="status"
                     filters={[

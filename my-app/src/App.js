@@ -47,13 +47,19 @@ import AddCanteenInfoScreen from './screens/admin/AddCanteenInfoScreen';
 import CanteenDetailScreen from './screens/admin/CanteenDetailScreen';
 import AddPromoScreen from './screens/admin/promotion/AddPromoScreen';
 import ListPromoScreen from './screens/admin/promotion/ListPromoScreen';
+import AddCouponScreen from './screens/admin/Coupon/AddCouponScreen';
+import ListCouponScreen from './screens/admin/Coupon/ListCouponScreen';
+import EditPromoScreen from './screens/admin/promotion/EditPromoScreen';
 const { Header, Content, Sider, Footer } = Layout;
 
 const App = () => {
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
   const [collapsed, setCollapsed] = useState(false);
+  useEffect(() => {
+    document.title = "Smart Canteen Management"
 
+  }, []);
 
   return (
     <Layout
@@ -149,7 +155,10 @@ const App = () => {
             {/* Promo */}
             <Route path='/admin/addpromo' element={<AddPromoScreen />} />
             <Route path='/admin/listpromo' element={<ListPromoScreen />} />
-            {/* <Route path='/admin/editpromo' element={<CanteenDetailScreen />} />  */}
+            <Route path='/admin/editpromo' element={<EditPromoScreen />} />
+            {/* Coupon */}
+            <Route path='/admin/addcoupon' element={<AddCouponScreen />} />
+            <Route path='/admin/listcoupon' element={<ListCouponScreen />} />
           </Routes>
         </Content>
         <Footer

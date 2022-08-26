@@ -1,7 +1,7 @@
 import { dishConstants } from "../constants/Constants"
 import axios from "axios"
 import { base_url } from "../api/api"
-
+import moment from "moment"
 
 export const listDishes = (status) => async (dispatch, getState) => {
     try {
@@ -94,7 +94,7 @@ export const changeDishStatus = (id, status) => async (dispatch, getState) => {
             },
         }
 
-        const { data } = await axios.put(`${base_url}/dish/changeDishStatus?status=${status === 1 ? 0 : 1}&dishID=${id}`, {}, config)
+        const res = await axios.put(`${base_url}/dish/changeDishStatus?status=${status === 1 ? 0 : 1}&dishID=${id}`, {}, config)
 
         dispatch({ type: dishConstants.DISH_CHANGE_STATUS_SUCCESS })
     } catch (error) {
@@ -229,10 +229,11 @@ export const editDish = (id, dishName, description, rawMenu, rawSubCategory, cre
         const subcategoryId = rawSubCategory.value
 
 
-        //End of rename key block
-        const updatedTime = new Date();
+        //End of rename key block 
+        let d = new Date()
+        const updatedTime = moment(d).format('YYYY-MM-DD hh:mm:ss')
         const updatedBy = userInfo.username;
-        const { data } = await axios.post(`${base_url}/dish/addOrUpdate`, { id, dishName, description, createdBy, listMenuId, subcategoryId, updatedBy, createdTime, updatedTime, price, image, status, finishedTime }, config)
+        const { data } = await axios.post(`${base_url}/dish/addOrUpdate`, { id, dishName, description, createdBy, listMenuId, subcategoryId, updatedBy, price, image, status, finishedTime }, config)
 
         dispatch({ type: dishConstants.DISH_EDIT_SUCCESS, payload: data })
     } catch (error) {

@@ -52,6 +52,9 @@ const style = {
         borderColor: 'black'
     })
 }
+
+const optionTypePromo = [{ label: 'Promotion By Percent', value: 1 }, { label: 'Promotion By Sale Price', value: 2 }]
+
 const AddPromoScreen = () => {
     const listDishSelector = useSelector((state) => state.dishList);
     const dishLoading = listDishSelector.loading;
@@ -61,6 +64,7 @@ const AddPromoScreen = () => {
     const [loading, setLoading] = useState();
     const dispatch = useDispatch()
     const [message, setMessage] = useState();
+    const [promotionType, setPromotionType] = useState(1);
     let optionListDish = []
     const [form] = Form.useForm();
 
@@ -72,7 +76,7 @@ const AddPromoScreen = () => {
                 listDish.push(item.id);
             });
         }
-        addPromo(values.promotionName, values.description, values.promotionPercent, values.salePrice, moment(values.start_date).format("YYYY-MM-DD"), moment(values.end_date).format("YYYY-MM-DD"), listDish)
+        addPromo(values.promotionName, values.description, values.promotionPercent, values.salePrice, moment(values.start_date).format("YYYY-MM-DD HH:mm:ss"), moment(values.end_date).format("YYYY-MM-DD HH:mm:ss"), listDish)
     };
 
     if (dishLoading === false) {
@@ -84,22 +88,24 @@ const AddPromoScreen = () => {
             setLoading(true)
             let createdBy = userInfo.username;
             let updatedBy = userInfo.username;
-            let createdDate = new Date();
-            let updatedDate = new Date();
             let status = 1;
-            let promotionType = 2;
-            const res = await axios.post(`/promotion/addOrUpdatePromotion`, { promotionName, description, promotionPercent, salePrice, promotionStartDate, promotionEndDate, listDishId, createdBy, updatedBy, createdDate, updatedDate, status, promotionType }, {
+            promotionType === 1 ? salePrice = null : promotionPercent = null
+            const res = await axios.post(`/promotion/addOrUpdatePromotion`, { promotionName, description, promotionPercent, salePrice, promotionStartDate, promotionEndDate, listDishId, createdBy, updatedBy, status, promotionType }, {
                 params: {
                 },
                 headers: {
                     Authorization: `Bearer ${userInfo.accessToken}`,
                 },
             })
-            console.log(res.data?.data);
+            console.log(res.data);
             setLoading(false)
-            setMessage(res.data?.data?.message);
+            setMessage(res.data);
         } catch (error) {
         }
+    }
+
+    const optionTypeHandle = (promoType) => {
+        setPromotionType(promoType.value)
     }
 
     useEffect(() => {
@@ -144,39 +150,56 @@ const AddPromoScreen = () => {
                         <Input size='large ' />
                     </Form.Item>
 
-
                     <Form.Item
-                        name="promotionPercent"
-                        label="Promotion Percent"
-                        prefix="%"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input promotion percent!',
-                            },
-                        ]}
+                        name="promoType"
+                        label="Promo Type"
                     >
-                        <InputNumber
-                            defaultValue={0}
-                            min={0}
-                            max={100}
-                            formatter={(value) => `${value}%`}
-                            parser={(value) => value.replace('%', '')}
+                        <Select
+                            options={optionTypePromo}
+                            onChange={optionTypeHandle}
+                            placeholder="Select type promotion"
+                            defaultValue={optionTypePromo[0]}
+                            isSearchable={true}
+                            styles={style}
                         />
                     </Form.Item>
 
-                    <Form.Item
-                        name="salePrice"
-                        label="Sale Price"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input sale price!',
-                            },
-                        ]}
-                    >
-                        <InputNumber min={0} max={9999999} defaultValue={0} />
-                    </Form.Item>
+                    {promotionType === 1 ?
+                        <Form.Item
+                            name="promotionPercent"
+                            label="Promotion Percent"
+                            prefix="%"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input promotion percent!',
+                                },
+                            ]}
+                        >
+                            <InputNumber
+                                defaultValue={0}
+                                min={0}
+                                max={100}
+                                formatter={(value) => `${value}%`}
+                                parser={(value) => value.replace('%', '')}
+                            />
+                        </Form.Item>
+                        :
+                        <Form.Item
+                            name="salePrice"
+                            label="Sale Price"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input sale price!',
+                                },
+                            ]}
+                        >
+                            <InputNumber min={0} max={9999999} defaultValue={0} />
+                        </Form.Item>
+
+                    }
+
 
                     <Form.Item
                         name="dishPromo"
@@ -209,7 +232,7 @@ const AddPromoScreen = () => {
                             },
                         ]}
                     >
-                        <DatePicker />
+                        <DatePicker format={"DD/MM/YYYY hh:mm:ss"}  showTime />
                     </Form.Item>
 
                     <Form.Item
@@ -222,7 +245,7 @@ const AddPromoScreen = () => {
                             },
                         ]}
                     >
-                        <DatePicker />
+                        <DatePicker format={"DD/MM/YYYY hh:mm:ss"}  showTime />
                     </Form.Item>
 
                     <Form.Item
@@ -241,7 +264,8 @@ const AddPromoScreen = () => {
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>
-                        {loading === false && <p style={{ color: 'green' }}>{message}</p>}
+                        {loading === false && message?.success === false && <p style={{ color: 'red' }}>{message?.data?.message}</p>}
+                        {loading === false && message?.success === true && <p style={{ color: 'green' }}>{message?.data?.message}</p>}
                         <Button type="primary" htmlType="submit">
                             Add Promotion
                         </Button>

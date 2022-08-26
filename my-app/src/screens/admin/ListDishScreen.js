@@ -227,7 +227,7 @@ const ListDishScreen = () => {
 
                 <Column title="SubCategory" dataIndex={["subCategory", "subCategoryName"]} key="subCategory" {...getColumnSearchProps(["subCategory", "subCategoryName"])} />
                 <Column title="Price" dataIndex="price" render={(_, record) => record.price === null ? "null" : record.price} key="price" sorter={(a, b) => a.price - b.price} />
-                <Column title="Dish Status" dataIndex="status" 
+                <Column title="Dish Status" dataIndex="status"
                     filters={[{
                         text: 'enable',
                         value: 1,

@@ -1,5 +1,5 @@
-import { Button, Card, Descriptions, PageHeader, Statistic, Tabs, Table } from 'antd';
-import { Avatar, Divider, List, Skeleton, Image } from 'antd';
+import { Button, Card, Descriptions, PageHeader, Statistic, Tabs, Table, Popconfirm, message, Image } from 'antd';
+import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import moment from 'moment';
 import { getDishById } from '../../actions/dishAction';
 import styled from 'styled-components';
 import Loader from '../../components/Loader';
+import axios from 'axios';
 const { TabPane } = Tabs;
 
 
@@ -29,17 +30,58 @@ const StyledTable = styled((props) => <Table {...props} />)`
 
 const DishDetailScreen = () => {
     let dataImg;
-    const [loading, setLoading] = useState(false);
-    const [data, setData] = useState([]);
+    const userLoginInfo = useSelector((state) => state.userLogin);
+    const { userInfo } = userLoginInfo;
     const location = useLocation()
     const navigate = useNavigate();
     const dispatch = useDispatch()
     const getDishByIdSelector = useSelector((state) => state.dishGetById);
     const dishLoading = getDishByIdSelector.loading;
     const dishInfo = getDishByIdSelector.dish;
+    const [listComment, setListComment] = useState([])
+
+    const getListComment = async (id) => {
+        try {
+            const res = await axios.get(`/comment/getListCommentByDishId`, {
+                params: {
+                    dishId: id,
+                    page: 1,
+                    pageSize: 100,
+                },
+                headers: {
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            })
+
+            if (res?.data?.success === false) {
+                return
+            }
+            setListComment(res.data?.data)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const deleteComment = async (id) => {
+        try {
+            const res = await axios.delete(`/comment/removeComment/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            })
+            console.log(res.data)
+            if (res?.data?.success === true) {
+                getListComment(location.state.id)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 
     useEffect(() => {
         dispatch(getDishById(location.state.id));
+        getListComment(location.state.id);
     }, []);
 
     if (dishLoading === false) {
@@ -73,8 +115,18 @@ const DishDetailScreen = () => {
                 </Descriptions.Item>
             </Descriptions>
         </>
-
     );
+
+    // Delete Update Form
+    const confirm = (id) => {
+        console.log(id);
+        deleteComment(id);
+    };
+
+    const cancel = (e) => {
+        console.log(e);
+    };
+
 
     const extraContent = (
         <div
@@ -105,18 +157,37 @@ const DishDetailScreen = () => {
 
     const columns = [
         {
-            title: 'Menu Name',
-            dataIndex: 'menuName',
-            render: (text) => <a>{text}</a>,
+            title: 'User Name',
+            dataIndex: 'created_by',
         },
         {
-            title: 'Description',
-            dataIndex: 'description',
+            title: 'Comment',
+            dataIndex: 'content',
         },
         {
-            title: 'Status',
-            dataIndex: 'status',
-            render: (text) => <a>{text === 1 ? <p style={{ color: 'green' }}>Enable</p> : <p style={{ color: 'red' }}>Disable</p>}</a>,
+            title: 'Time Comment',
+            dataIndex: 'created_time',
+            render: (_, record) => moment(record.created_time).format('DD/MM/YYYY hh:mm:ss')
+        },
+        {
+            title: 'Time Edit Comment',
+            dataIndex: 'updated_time',
+            render: (_, record) => moment(record.updated_time).format('DD/MM/YYYY hh:mm:ss')
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            render: (_, record) => (
+                <Popconfirm
+                    title="Are you sure to delete this task?"
+                    onConfirm={() => confirm(record.id)}
+                    onCancel={cancel}
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    <a><DeleteOutlined style={{ fontSize: 17 }} /></a>
+                </Popconfirm>
+            ),
         },
     ];
 
@@ -132,7 +203,7 @@ const DishDetailScreen = () => {
 
                     footer={
                         <Tabs defaultActiveKey="1">
-                            <TabPane tab="Menu" key="1" />
+                            <TabPane tab="List User Comment" key="1" />
                         </Tabs>
                     }
                 >
@@ -141,7 +212,7 @@ const DishDetailScreen = () => {
                     <div>
                         <StyledTable className="table-striped-rows"
                             columns={columns}
-                            dataSource={dishInfo.menu}
+                            dataSource={listComment}
                         />
                     </div>
                 </>

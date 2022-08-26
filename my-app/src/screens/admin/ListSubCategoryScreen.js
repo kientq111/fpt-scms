@@ -173,7 +173,7 @@ const ListSubCategoryScreen = () => {
         dispatch(listSubcategory());
     }, [success]);
 
-    const editSubCategoryHandle = (id, name, description, createdTime, createdBy, category) => {
+    const editSubCategoryHandle = (id, name, description, createdTime, createdBy, category, status) => {
         console.log(id, name, description, createdTime, createdBy, category);
         navigate('/admin/editsubcategory', {
             state: {
@@ -182,7 +182,8 @@ const ListSubCategoryScreen = () => {
                 description: description,
                 createdBy: createdBy,
                 createdTime: createdTime,
-                category: category
+                category: category,
+                status: status
             }
         })
     }
@@ -214,7 +215,7 @@ const ListSubCategoryScreen = () => {
 
             {loading === false && <StyledTable dataSource={subcategoryInfo} className="table-striped-rows" >
                 <Column title="SubCategory Name" dataIndex="subCategoryName" key="subCategoryName" {...getColumnSearchProps('subCategoryName')} />
-                <Column title="Description" dataIndex="description" key="description" width={'15%'} />
+                <Column title="Description" dataIndex="description" key="description" width={'15%'} render={(_, record) => record.description.length > 50 ? `${record.description.substring(0, 40)}...` : record.description}/>
                 <Column title="Status" dataIndex="status" key="status"
                     filters={[
                         {
@@ -242,7 +243,7 @@ const ListSubCategoryScreen = () => {
                     render={(_, record) => (
                         <Space size="middle">
                             <a onClick={() => showModal(record)}><EyeOutlined /></a>
-                            <a onClick={() => editSubCategoryHandle(record.id, record.subCategoryName, record.description, record.createdTime, record.createdBy, record.category)}>
+                            <a onClick={() => editSubCategoryHandle(record.id, record.subCategoryName, record.description, record.createdTime, record.createdBy, record.category, record.status)}>
                                 <EditOutlined style={{ fontSize: 17 }} />
                             </a>
                             <a onClick={() => changeSubCategoryStatusHandle(record.id, record.status)} style={{ color: 'blue' }}>Change Status</a>
@@ -259,7 +260,7 @@ const ListSubCategoryScreen = () => {
                     <p><b>Updated Time:</b> {moment(userDetailModal.updatedTime).format('DD/MM/YYYY')}</p>
                     <p><b>Description:</b> {userDetailModal.description}</p>
                     <p><b>Category Name:</b> {userDetailModal.categoryName}</p>
-               
+
                 </Modal>
             </>
 

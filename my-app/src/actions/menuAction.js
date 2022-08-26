@@ -156,7 +156,7 @@ export const editMenu = (id, menuName, description, status, listDish, createdBy,
 
         const { data } = await axios.post(
             `${base_url}/menu/addOrUpdate`,
-            { id, menuName, description, status, listDishId, createdBy, updatedBy, updatedTime, createdTime },
+            { id, menuName, description, status, listDishId, createdBy, updatedBy, },
             config
         )
 

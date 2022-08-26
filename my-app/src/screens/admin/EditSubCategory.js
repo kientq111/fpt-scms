@@ -6,7 +6,7 @@ import {
     Input,
     InputNumber,
     Row,
-    Breadcrumb, Card, Divider, Space
+    Breadcrumb, Card, Divider, Space, message
 } from 'antd';
 import Loader from '../../components/Loader';
 import { useState, useEffect } from 'react';
@@ -63,6 +63,7 @@ const EditSubCategoryScreen = () => {
     const { loading, categoryInfo } = categoryData;
     const editLoading = subCategoryEditSelector.loading;
     const editSuccess = subCategoryEditSelector.success;
+    const subCategoryInfo = subCategoryEditSelector.subCategoryInfo;
 
     const [form] = Form.useForm();
 
@@ -75,7 +76,7 @@ const EditSubCategoryScreen = () => {
         if (IsCategoryOptionChanged === true) {
             category = values.category;
         }
-        dispatch(editSubCategory(location.state.id, values.subCategoryName, category, values.description, location.state.createdBy, location.state.createdTime));
+        dispatch(editSubCategory(location.state.id, values.subCategoryName, category, values.description, location.state.createdBy, location.state.createdTime, location.state.status));
     };
 
 
@@ -88,8 +89,14 @@ const EditSubCategoryScreen = () => {
         })
     }, [])
 
+
     useEffect(() => {
         if (editSuccess === true) {
+            console.log(subCategoryInfo);
+            if (subCategoryInfo.success === false) {
+                message.error(subCategoryInfo?.data?.message)
+                return
+            }
             navigate('/admin/listsubcategory')
         }
     }, [editSuccess])
