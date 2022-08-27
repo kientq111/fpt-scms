@@ -247,7 +247,7 @@ const ListOrderScreen = () => {
                     fromDate: '',
                     toDate: '',
                     createdBy: '',
-                    pageIndex: 0,
+                    pageIndex: 1,
                     pageSize: 100,
                 },
                 headers: {

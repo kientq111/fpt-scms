@@ -12,7 +12,7 @@ import { listMenus } from '../../actions/menuAction';
 import Loader from '../../components/Loader';
 import Select from "react-select";
 import { dishConstants } from '../../constants/Constants';
-
+import axios from 'axios';
 
 const { TextArea } = Input;
 
@@ -33,8 +33,8 @@ const AddDishScreen = () => {
   // const [subCategoryState, SetSubCategoryState] = useState();
   const [dishImg, setDishImg] = useState('');
   const dispatch = useDispatch();
-
-
+  const userLoginInfo = useSelector((state) => state.userLogin);
+  const { userInfo } = userLoginInfo;
   const selectSubcategorySelector = useSelector((state) => state.subcategoryList);
   const selectMenuSelector = useSelector((state) => state.menuList);
   const addDishSelector = useSelector((state) => state.dishAdd);
@@ -42,7 +42,7 @@ const AddDishScreen = () => {
   const { subcategoryInfo } = selectSubcategorySelector;
   const loadingSubcategory = selectSubcategorySelector.loading;
   const { loading, menus } = selectMenuSelector;
-
+  const [img, setImg] = useState('');
   useEffect(() => {
     if (addDishSelector) {
       dispatch({
@@ -96,7 +96,7 @@ const AddDishScreen = () => {
   //CALL API ZONEEE
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
-    dispatch(addDish(values.dishname, values.price, values.description, values.menu, values.subcategory, dishImg, values.finishedTime));
+    dispatch(addDish(values.dishname, values.price, values.description, values.menu, values.subcategory, img, values.finishedTime));
   };
 
 
@@ -105,6 +105,7 @@ const AddDishScreen = () => {
     const files = e.target.files;
     const file = files[0];
     setDishImg(file);
+    imageOnChangeHandle(file)
   };
 
 
@@ -112,6 +113,35 @@ const AddDishScreen = () => {
     console.log(fileString);
     setDishImg(fileString);
   };
+
+
+
+  const imageOnChangeHandle = async (file) => {
+    try {
+      const configImg = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${userInfo.accessToken}`,
+        },
+      }
+
+      if (typeof (file) === 'object') {
+        const resImg = await axios.post(
+          `/image/upload`,
+          { file },
+          configImg
+        )
+        if (resImg.data?.success === false) {
+          message.error("Opps, There's something error when you upload! please re-upload image")
+          return
+        }
+        setImg(resImg.data?.data?.imageUrl)
+      }
+    } catch (error) {
+
+    }
+  }
+
 
   const getBase64 = file => {
     let reader = new FileReader();

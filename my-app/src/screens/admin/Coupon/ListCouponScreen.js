@@ -180,6 +180,11 @@ const ListCouponScreen = () => {
         }
     }
 
+    const editCouponHandle = (coupon) => {
+        navigate('/admin/editcoupon', {
+            state: coupon
+        })
+    }
 
     const changeStatusHandle = (id, status) => {
         changeCouponStatus(id, status);
@@ -210,25 +215,37 @@ const ListCouponScreen = () => {
             >
                 <Column title="CouponCode" dataIndex="couponCode" key="couponCode" {...getColumnSearchProps('couponCode')} />
                 <Column title="Description" dataIndex="description" key="description" render={(_, record) => record.description.length > 50 ? `${record.description.substring(0, 40)}...` : record.description} />
-                <Column title="Status" dataIndex="status" key="status" align={'center'}
-                    render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>Active</p> : <p style={{ color: 'red' }}>Expire</p>)}
-                    filters={[{
-                        text: 'Active',
-                        value: 1,
-                    }, {
-                        text: 'Expire',
-                        value: 0,
-                    },]} onFilter={(value, record) => record.status.indexOf(value) === 0}
+                <Column title="Status" dataIndex="status"
+                    filters={[
+                        {
+                            text: 'Active',
+                            value: 1,
+                        },
+                        {
+                            text: 'Expire',
+                            value: 0,
+                        },
+
+                    ]}
+                    render={(_, record) => record.status === 1 ? <p style={{ color: 'green' }}>Active<b></b></p> : <p style={{ color: 'red' }}>Expire<b></b></p>}
+                    onFilter={(value, record) => record.status === value}
+                    key="status"
                 />
-                <Column title="Use Promotion" dataIndex="usePromotion" key="usePromotion" align={'center'}
-                    render={(_, record) => (record.status === true ? <p style={{ color: 'green' }}>Yes</p> : <p style={{ color: 'red' }}>No</p>)}
-                    filters={[{
-                        text: 'Yes',
-                        value: true,
-                    }, {
-                        text: 'No',
-                        value: false,
-                    },]} onFilter={(value, record) => record.usePromotion.indexOf(value) === 0}
+                <Column title="Apply with Promotion" dataIndex="usePromotion"
+                    filters={[
+                        {
+                            text: 'Yes',
+                            value: true,
+                        },
+                        {
+                            text: 'No',
+                            value: false,
+                        },
+
+                    ]}
+                    render={(_, record) => record.usePromotion === true ? <p style={{ color: 'green' }}>Yes<b></b></p> : <p style={{ color: 'red' }}>No<b></b></p>}
+                    onFilter={(value, record) => record.usePromotion === value}
+                    key="promotion"
                 />
                 <Column title="Discount Percent" dataIndex="percentDiscount" key="percentDiscount" render={(_, record) => `${record.percentDiscount === null ? '0' : record.percentDiscount}%`} sorter={(a, b) => a.percentDiscount - b.percentDiscount} align={'center'} />
                 <Column title="Max Discount Money" dataIndex="maxDiscountMoney" key="maxDiscountMoney" render={(_, record) => `${record.maxDiscountMoney === null ? '0' : record.maxDiscountMoney}`} sorter={(a, b) => a.maxDiscountMoney - b.maxDiscountMoney} align={'center'}
@@ -246,7 +263,7 @@ const ListCouponScreen = () => {
                     fixed={"right"}
                     render={(_, record) => (
                         <Space size="middle">
-                            <a><EditOutlined /></a>
+                            <a onClick={() => editCouponHandle(record)}><EditOutlined /></a>
                             <a className='txtLink' onClick={() => changeStatusHandle(record.id, record.status)}>Change Status</a>
                         </Space>
                     )}

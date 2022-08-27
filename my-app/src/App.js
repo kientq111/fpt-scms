@@ -50,6 +50,7 @@ import ListPromoScreen from './screens/admin/promotion/ListPromoScreen';
 import AddCouponScreen from './screens/admin/Coupon/AddCouponScreen';
 import ListCouponScreen from './screens/admin/Coupon/ListCouponScreen';
 import EditPromoScreen from './screens/admin/promotion/EditPromoScreen';
+import EditCouponScreen from './screens/admin/Coupon/EditCouponScreen';
 const { Header, Content, Sider, Footer } = Layout;
 
 const App = () => {
@@ -159,6 +160,7 @@ const App = () => {
             {/* Coupon */}
             <Route path='/admin/addcoupon' element={<AddCouponScreen />} />
             <Route path='/admin/listcoupon' element={<ListCouponScreen />} />
+            <Route path='/admin/editcoupon' element={<EditCouponScreen />} />
           </Routes>
         </Content>
         <Footer

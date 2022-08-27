@@ -94,7 +94,7 @@ export const changeDishStatus = (id, status) => async (dispatch, getState) => {
             },
         }
 
-        const res = await axios.put(`${base_url}/dish/changeDishStatus?status=${status === 1 ? 0 : 1}&dishID=${id}`, {}, config)
+        const res = await axios.put(`${base_url}/dish/changeDishStatus?status=${status}&dishID=${id}`, {}, config)
 
         dispatch({ type: dishConstants.DISH_CHANGE_STATUS_SUCCESS })
     } catch (error) {
@@ -112,7 +112,7 @@ export const changeDishStatus = (id, status) => async (dispatch, getState) => {
     }
 }
 
-export const addDish = (dishName, price, description, rawMenu, rawSubCategory, file, finishedTime) => async (dispatch, getState) => {
+export const addDish = (dishName, price, description, rawMenu, rawSubCategory, image, finishedTime) => async (dispatch, getState) => {
     try {
         dispatch({
 
@@ -134,16 +134,6 @@ export const addDish = (dishName, price, description, rawMenu, rawSubCategory, f
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-        let image = file
-        if (typeof (file) === 'object') {
-            const res = await axios.post(
-                `/image/upload`,
-                { file },
-                configImg
-            );
-            image = res.data?.data?.imageUrl
-        }
-
 
         const listMenuId = [];
         if (rawMenu !== undefined) {
@@ -183,7 +173,7 @@ export const addDish = (dishName, price, description, rawMenu, rawSubCategory, f
     }
 }
 
-export const editDish = (id, dishName, description, rawMenu, rawSubCategory, createdTime, createdBy, price, file, status, finishedTime) => async (dispatch, getState) => {
+export const editDish = (id, dishName, description, rawMenu, rawSubCategory, createdTime, createdBy, price, image, status, finishedTime) => async (dispatch, getState) => {
     try {
         dispatch({
 
@@ -205,18 +195,6 @@ export const editDish = (id, dishName, description, rawMenu, rawSubCategory, cre
                 Authorization: `Bearer ${userInfo.accessToken}`,
             },
         }
-
-        let image = file
-        if (typeof (file) === 'object') {
-            const res = await axios.post(
-                `/image/upload`,
-                { file },
-                configImg
-            );
-            image = res.data?.data?.imageUrl
-        }
-
-        console.log(image)
 
         const listMenuId = [];
         if (rawMenu !== undefined) {

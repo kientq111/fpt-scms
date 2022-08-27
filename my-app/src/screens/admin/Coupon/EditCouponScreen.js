@@ -13,6 +13,7 @@ import moment from 'moment';
 import { listDishes } from '../../../actions/dishAction';
 import axios from 'axios';
 import { forEach, fromPairs } from 'lodash';
+import { useLocation } from 'react-router-dom';
 
 const { RangePicker } = DatePicker;
 const { Search } = Input;
@@ -55,8 +56,8 @@ const style = {
 }
 const optionTypeDiscount = [{ label: 'Discount Percent', value: 1 }, { label: 'Discount Money', value: 2 }]
 const optionIsUsePromotion = [{ label: 'No', value: false }, { label: 'Yes', value: true }]
-const AddCouponScreen = () => {
-
+const EditCouponScreen = () => {
+    const location = useLocation()
     const userLoginInfo = useSelector((state) => state.userLogin);
     const { userInfo } = userLoginInfo;
     const [loading, setLoading] = useState();
@@ -64,10 +65,10 @@ const AddCouponScreen = () => {
     const [message, setMessage] = useState();
     const [genCode, setGenCode] = useState();
     const [form] = Form.useForm();
-    const [type, setType] = useState(1)
-    const [isUsePromotion, setIsUsePromotion] = useState(false)
-    const [typeDiscount, setTypeDiscount] = useState(1)
-
+    const [isUsePromotion, setIsUsePromotion] = useState(location.state.usePromotion)
+    const [typeDiscount, setTypeDiscount] = useState(location.state.typeDiscount)
+    let oldUsePromotionOption = location.state.usePromotion === false ? 0 : 1;
+    let oldTypeDiscount = location.state.typeDiscount === 1 ? 0 : 1;
     const onFinish = (values) => {
         addCoupon(values.couponCode, values.description, values.percentDiscount, values.discountMoney,
             values.maxDiscountMoney, values.minValueOrder, values.numberOfCoupon, values.numberOfCustomerUse,
@@ -100,13 +101,14 @@ const AddCouponScreen = () => {
             let createdDate = null;
             let updatedDate = null;
             let status = 1;
-            setType(2)
+            let type = 2;
+            let id = location.state.id
             typeDiscount === 1 ? discountMoney = null : percentDiscount = null;
             if (typeDiscount !== 1) {
                 maxDiscountMoney = null;
             }
             const res = await axios.post(`/coupon/addOrUpdate`, {
-                couponCode, description, percentDiscount, discountMoney, maxDiscountMoney, typeDiscount,
+                id, couponCode, description, percentDiscount, discountMoney, maxDiscountMoney, typeDiscount,
                 type, minValueOrder,
                 numberOfCoupon, numberOfCustomerUse, couponFromDate,
                 couponToDate, status, createdBy, updatedBy, createdDate, updatedDate, isUsePromotion
@@ -124,9 +126,6 @@ const AddCouponScreen = () => {
         }
     }
 
-    const optionTypeHandle = (couponType) => {
-        setType(couponType.value)
-    }
 
     const optionUsePromoHandle = (isUsePromo) => {
         setIsUsePromotion(isUsePromo.value)
@@ -136,13 +135,30 @@ const AddCouponScreen = () => {
         setTypeDiscount(typeDiscount.value)
     }
 
+    useEffect(() => {
+        console.log(location.state.couponCode)
+        form.setFieldsValue({
+            couponCode: location.state.couponCode,
+            percentDiscount: location.state.percentDiscount,
+            maxDiscountMoney: location.state.maxDiscountMoney,
+            discountMoney: location.state.discountMoney,
+            minValueOrder: location.state.minValueOrder,
+            numberOfCoupon: location.state.numberOfCoupon,
+            numberOfCustomerUse: location.state.numberOfCustomerUse,
+            couponFromDate: moment(location.state.couponFromDate, 'YYYY-MM-DD hh:mm:ss'),
+            couponToDate: moment(location.state.couponToDate, 'YYYY-MM-DD hh:mm:ss'),
+            description: location.state.description,
+
+        })
+    }, []);
+
 
     return (
         <Row>
             <Breadcrumb>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>
-                    <a href="" >add coupon</a>
+                    <a href="" >update coupon</a>
                 </Breadcrumb.Item>
 
             </Breadcrumb>
@@ -150,7 +166,7 @@ const AddCouponScreen = () => {
 
             <Card
                 style={{ marginTop: 30, width: 1100, height: 'auto', borderRadius: 25 }}
-            >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>ADD COUPON</h1></Divider>
+            >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>UPDATE COUPON</h1></Divider>
 
                 <Form style={{ marginTop: 50, marginRight: 100 }}
                     {...formItemLayout}
@@ -183,7 +199,7 @@ const AddCouponScreen = () => {
                         <Select
                             options={optionTypeDiscount}
                             onChange={optionTypeDiscountHandle}
-                            defaultValue={optionTypeDiscount[0]}
+                            defaultValue={optionTypeDiscount[oldTypeDiscount]}
                             isSearchable={true}
                             styles={style}
                         />
@@ -245,7 +261,7 @@ const AddCouponScreen = () => {
                         <Select
                             options={optionIsUsePromotion}
                             onChange={optionUsePromoHandle}
-                            defaultValue={optionIsUsePromotion[0]}
+                            defaultValue={optionIsUsePromotion[oldUsePromotionOption]}
                             isSearchable={true}
                             styles={style}
                         />
@@ -306,7 +322,7 @@ const AddCouponScreen = () => {
                             },
                         ]}
                     >
-                        <DatePicker style={{ width: '50%' }} showTime />
+                        <DatePicker style={{ width: '50%' }} format={"DD/MM/YYYY hh:mm:ss"} showTime />
                     </Form.Item>
 
                     <Form.Item
@@ -319,7 +335,7 @@ const AddCouponScreen = () => {
                             },
                         ]}
                     >
-                        <DatePicker style={{ width: '50%' }} showTime />
+                        <DatePicker style={{ width: '50%' }} format={"DD/MM/YYYY hh:mm:ss"} showTime />
                     </Form.Item>
 
                     <Form.Item
@@ -341,7 +357,7 @@ const AddCouponScreen = () => {
                         {loading === false && message?.success === false && <p style={{ color: 'red' }}>{message?.data?.message}</p>}
                         {loading === false && message?.success === true && <p style={{ color: 'green' }}>{message?.data?.message}</p>}
                         <Button type="primary" htmlType="submit">
-                            Add Promotion
+                            Update Promotion
                         </Button>
                     </Form.Item>
                 </Form>
@@ -351,4 +367,4 @@ const AddCouponScreen = () => {
     );
 };
 
-export default AddCouponScreen;
+export default EditCouponScreen;
