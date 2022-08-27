@@ -3,7 +3,7 @@ import {
   Form,
   Input,
   InputNumber,
-  Switch, Card, Space, Divider, Breadcrumb, Image
+  Switch, Card, Space, Divider, Breadcrumb, Image, message
 } from 'antd';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +13,7 @@ import { listMenus } from '../../actions/menuAction';
 import Loader from '../../components/Loader';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Select from "react-select";
+import axios from 'axios';
 const { TextArea } = Input;
 
 
@@ -41,7 +42,8 @@ const EditDishScreen = () => {
   const editDishSelector = useSelector((state) => state.dishEdit);
   const selectSubcategorySelector = useSelector((state) => state.subcategoryList);
   const selectMenuSelector = useSelector((state) => state.menuList);
-
+  const userLoginInfo = useSelector((state) => state.userLogin);
+  const { userInfo } = userLoginInfo;
   const editDishLoading = editDishSelector.loading;
   const editDishSuccess = editDishSelector.success;
   const { subcategoryInfo } = selectSubcategorySelector;
@@ -124,9 +126,37 @@ const EditDishScreen = () => {
   const ImageHandler = e => {
     const files = e.target.files;
     const file = files[0];
-    setDishImage(file)
+    imageOnChangeHandle(file)
     getBase64(file);
   };
+
+
+  const imageOnChangeHandle = async (file) => {
+    try {
+      const configImg = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${userInfo.accessToken}`,
+        },
+      }
+
+      if (typeof (file) === 'object') {
+        const resImg = await axios.post(
+          `/image/upload`,
+          { file },
+          configImg
+        )
+        if (resImg.data?.success === false) {
+          message.error("Opps, There's something error when you upload! please re-upload image")
+          return
+        }
+        setDishImage(resImg.data?.data?.imageUrl)
+      }
+    } catch (error) {
+
+    }
+  }
+
 
   const onLoad = fileString => {
     setDishImagePreview(fileString);
