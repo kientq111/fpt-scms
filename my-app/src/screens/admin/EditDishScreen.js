@@ -16,6 +16,14 @@ import Select from "react-select";
 const { TextArea } = Input;
 
 
+const style = {
+  control: (base) => ({
+    ...base,
+    borderColor: 'black'
+  })
+}
+
+
 const EditDishScreen = () => {
 
   const [form] = Form.useForm();
@@ -43,6 +51,7 @@ const EditDishScreen = () => {
   const loadingMenu = selectMenuSelector.loading
   const [isMenuOptionChanged, setIsMenuOptionChanged] = useState(false);
   let [isSubCategoryOptionChanged, setIsSubCategoryOptionChanged] = useState(false);
+  const [dishImagePreview, setDishImagePreview] = useState(location.state.image);
   const [dishImage, setDishImage] = useState(location.state.image);
 
   useEffect(() => {
@@ -115,11 +124,12 @@ const EditDishScreen = () => {
   const ImageHandler = e => {
     const files = e.target.files;
     const file = files[0];
+    setDishImage(file)
     getBase64(file);
   };
 
   const onLoad = fileString => {
-    setDishImage(fileString);
+    setDishImagePreview(fileString);
   };
 
   const getBase64 = file => {
@@ -259,6 +269,7 @@ const EditDishScreen = () => {
                   onChange={handleMenuSelect}
                   isSearchable={true}
                   isMulti
+                  styles={style}
                 />
               </Form.Item>
 
@@ -269,17 +280,25 @@ const EditDishScreen = () => {
                   defaultValue={optionListSubCategory[indexSubCategoryOption]}
                   onChange={handleSubCategorySelect}
                   isSearchable={true}
+                  styles={style}
                 />
               </Form.Item>
-              <Form.Item label="Description" name="description">
+              <Form.Item label="Description" name="description"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please select description!',
+                  },
+                ]}
+              >
                 <TextArea rows={4} maxLength={500} showCount />
               </Form.Item>
               <Form.Item label="Image" name="dishimg" >
-                <input type="file" onChange={ImageHandler} />
+                <input type="file" onChange={ImageHandler} accept="image/png, image/gif, image/jpeg" />
                 <h1></h1>
                 <Image
                   width={200}
-                  src={`${dishImage}`}
+                  src={`${dishImagePreview}`}
                 />
               </Form.Item>
               <Form.Item style={{ marginLeft: 160 }}>

@@ -60,7 +60,6 @@ const AddTableScreen = () => {
             })
         }
         console.log(table);
-
     }, [])
 
     return (

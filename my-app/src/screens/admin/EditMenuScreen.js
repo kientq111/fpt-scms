@@ -43,6 +43,14 @@ const tailFormItemLayout = {
         },
     },
 };
+
+const style = {
+    control: (base) => ({
+      ...base,
+      borderColor: 'black'
+    })
+  }
+  
 const EditMenuScreen = () => {
     const dispatch = useDispatch()
     const [form] = Form.useForm();
@@ -165,6 +173,7 @@ const EditMenuScreen = () => {
                                 onChange={changeDishOptionHandler}
                                 defaultValue={oldDishInMenuIndex.map((index) => (listDishOption[index]))}
                                 isMulti
+                                styles={style}
                             />
                         </Form.Item>
 

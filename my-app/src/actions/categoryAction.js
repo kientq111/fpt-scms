@@ -256,13 +256,12 @@ export const addSubCategory = (subCategoryName, rawCategory, description) => asy
 }
 
 
-export const editSubCategory = (id, subCategoryName, rawCategory, description, createdBy, createdTime) => async (dispatch, getState) => {
+export const editSubCategory = (id, subCategoryName, rawCategory, description, createdBy, createdTime, status) => async (dispatch, getState) => {
     try {
         dispatch({
             type: subCategoryConstatnts.SUB_CATEGORY_EDIT_REQUEST,
         })
         // Dinamic variable
-        const status = 3;
 
         const {
             userLogin: { userInfo },

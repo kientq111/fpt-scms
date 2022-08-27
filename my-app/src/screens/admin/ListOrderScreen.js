@@ -182,7 +182,7 @@ const ListOrderScreen = () => {
     });
 
     const showModal = (order) => {
-        getOrderDetailData(order.orderId)
+        getOrderDetailData(order.orderId, order.status)
         setOrderDetailModal(order);
         flag = false;
         setIsModalVisible(true);
@@ -226,7 +226,7 @@ const ListOrderScreen = () => {
                     createdBy: '',
                     orderId: '',
                     pageSize: 100,
-                    pageIndex: 0,
+                    pageIndex: 1,
                 },
                 headers: {
                     Authorization: `Bearer ${userInfo.accessToken}`,
@@ -238,7 +238,7 @@ const ListOrderScreen = () => {
         }
     }
 
-    const getOrderDetailData = async (id) => {
+    const getOrderDetailData = async (id, orderStatus) => {
         try {
             setLoading(true)
             const res = await axios.get(`/orderDetail/getListOrderDetailByOrderId`, {
@@ -255,6 +255,12 @@ const ListOrderScreen = () => {
                 },
             })
             console.log(res.data?.data);
+            if (orderStatus === 1) {
+                if (res.data?.data?.every(item => item.status === 1)) {
+                    changeStatusAndReloadOrderDetail(id, 2)
+                }
+            }
+
             setListDish(res.data?.data)
             setLoading(false)
             return res.data?.data
@@ -279,22 +285,27 @@ const ListOrderScreen = () => {
         let tomorrowDate = currentDate.setDate(currentDate.getDate() + 1);
         let today = currentDate.setDate(currentDate.getDate() - 1);
         // dispatch(listOrders(moment(today).format('YYYY-MM-DD'), moment(tomorrowDate).format('YYYY-MM-DD')));
-        getOrder(moment(today).format('YYYY-MM-DD'), moment(tomorrowDate).format('YYYY-MM-DD'))
+        getOrder(moment(today).format('YYYY-MM-DD hh:mm:ss'), moment(tomorrowDate).format('YYYY-MM-DD hh:mm:ss'))
     }
     const dateOnchangeHandle = (value) => {
         if (value === null) {
             return
         }
-        const startDate = moment(value[0]).format('YYYY-MM-DD');
-        const endDate = moment(value[1]).format('YYYY-MM-DD')
-        getOrder(moment(startDate).format('YYYY-MM-DD'), moment(endDate).format('YYYY-MM-DD'))
+        const startDate = moment(value[0]).format('YYYY-MM-DD hh:mm:ss');
+        const endDate = moment(value[1]).format('YYYY-MM-DD hh:mm:ss')
+        getOrder(startDate, endDate)
         // dispatch(listOrders(startDate, endDate));
     }
 
     const changeOrderStatusHandle = (id, prevStatus, status) => {
         // console.log({ status });
         if (prevStatus === 2) {
-            message.info('You are not permission to change this status')
+            message.info("Can't not change status of Order Done")
+            return
+        }
+
+        if (prevStatus === 4) {
+            message.info("Can't not change status of Order Cancel")
             return
         }
         dispatch(changeOrderStatus(id, status))
@@ -370,13 +381,13 @@ const ListOrderScreen = () => {
             dataIndex: 'dishTimeFinished',
             key: 'count',
             render: (text, record) => {
-                let countdown = 500000
+                let countdown = record.dishTimeFinished
                 // parseInt(moment(detail.createdDate).format('x')) + (detail.dishTimeFinished * 60 * 1000)
                 // if (doneDish === record.id) {
                 //     countdown = 0;
                 // }
                 return <Countdown
-                    date={parseInt(moment(countdown).format('x')) + (countdown * 60 * 1000) + 1} renderer={countdownRederer}
+                    date={parseInt(moment(record.createdDate).format('x')) + (countdown * 1000)} renderer={countdownRederer}
                     onComplete={() => dishFinishHandle(orderDetailModal.orderId, orderDetailModal.status)} />; // just for decoration
             }
         },
@@ -406,7 +417,7 @@ const ListOrderScreen = () => {
         console.log({ status });
         if (countDish == listDish.length && status == 1 && flag === false) {
             openNotificationWithIcon('success');
-             changeStatusAndReloadOrderDetail(orderId, 2);
+            changeStatusAndReloadOrderDetail(orderId, 2);
         }
     }
 
@@ -459,7 +470,7 @@ const ListOrderScreen = () => {
         let currentDate = new Date();
         let tomorrowDate = currentDate.setDate(currentDate.getDate() + 1);
         let today = currentDate.setDate(currentDate.getDate() - 1);
-        getOrder(moment(today).format('YYYY-MM-DD'), moment(tomorrowDate).format('YYYY-MM-DD'))
+        getOrder(moment(today).format('YYYY-MM-DD hh:mm:ss'), moment(tomorrowDate).format('YYYY-MM-DD hh:mm:ss'))
         // getOrder()
 
     }, [success]);

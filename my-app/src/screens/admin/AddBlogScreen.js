@@ -2,34 +2,57 @@ import {
     Button,
     Form,
     Input,
-    Switch, Card, Space, Divider
+    Switch, Card, Space, Divider, message
 } from 'antd';
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../components/Loader';
 import { Editor } from "@tinymce/tinymce-react";
 import { addBlog, editBlog } from '../../actions/blogAction';
-
+import axios from 'axios';
 
 const AddBlogScreen = () => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
+    const userLoginInfo = useSelector((state) => state.userLogin);
+    const { userInfo } = userLoginInfo;
     const [imageStringBase64, setImageStringBase64] = useState();
     const initialText = 'Type content here';
     const [text, setText] = useState(initialText);
     const addBlogSelector = useSelector((state) => state.blogAdd);
     const { loading, success } = addBlogSelector
+    const [blogImage, setBlogImage] = useState('')
 
+    const imageOnChangeHandle = async (file) => {
+        try {
+            const configImg = {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            }
 
-    useEffect(() => {
+            if (typeof (file) === 'object') {
+                const resImg = await axios.post(
+                    `/image/upload`,
+                    { file },
+                    configImg
+                )
+                if (resImg.data?.success === false) {
+                    message.error("Opps, There's something error when you upload! please re-upload image")
+                    return
+                }
+                setBlogImage(resImg.data?.data?.imageUrl)
+            }
+        } catch (error) {
 
-    }, []);
-
+        }
+    }
 
 
     //CALL API ZONEEE
     const onFinish = (values) => {
-        dispatch(addBlog(values.blogTitle, text, imageStringBase64))
+        dispatch(addBlog(values.blogTitle, text, blogImage))
     };
 
 
@@ -38,6 +61,7 @@ const AddBlogScreen = () => {
         const files = e.target.files;
         const file = files[0];
         getBase64(file);
+        imageOnChangeHandle(file)
     };
 
 
@@ -53,6 +77,7 @@ const AddBlogScreen = () => {
             onLoad(reader.result);
         };
     };
+
     return (
         <>
             <div className="site-card-border-less-wrapper">

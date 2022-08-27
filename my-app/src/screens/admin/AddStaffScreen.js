@@ -43,12 +43,18 @@ const tailFormItemLayout = {
         },
     },
 };
-// iter2: if add success => redirect success screen
+const style = {
+    control: (base) => ({
+        ...base,
+        borderColor: 'black'
+    })
+}
 const AddStaffScreen = () => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
     const [provin, setProvin] = useState([{ name: "", code: "" }]);
     const [district, setDistrict] = useState([{ name: "", code: "" }]);
+    const [wards, setWards] = useState([{ name: "", code: "" }])
 
     useEffect(() => {
         axios.get(`https://provinces.open-api.vn/api/p/`)
@@ -74,6 +80,17 @@ const AddStaffScreen = () => {
         })
     }
 
+    function handleDistrictSelect(value) {
+        axios.get(`https://provinces.open-api.vn/api/d/${value.code}?depth=2`)
+            .then(res => {
+                const dataRes = res.data;
+                setWards(dataRes.wards);
+            })
+            .catch(error => console.log(error));
+        form.setFieldsValue({
+            wards: "",
+        })
+    }
 
     //get data from store
     const userAddSelector = useSelector((state) => state.staffAdd)
@@ -83,12 +100,13 @@ const AddStaffScreen = () => {
         console.log('Received values of form: ', values);
         const address = {
             street: `${values.street}`,
+            wards: `${values.wards.name}`,
             district: values.district.name,
             city: values.city.name,
             country: "VIET NAM",
         }
-        console.log(values.gender.Value);
-        dispatch(addStaff(values.username, values.email, values.password, values.dob, values.first_name, values.last_name, values.gender.Value, values.phone, address));
+        console.log((values.username, values.email, values.password, values.dob, values.first_name, values.last_name, values.gender.Value, values.phone, address));
+        // dispatch(addStaff(values.username, values.email, values.password, values.dob, values.first_name, values.last_name, values.gender.Value, values.phone, address));
     };
 
     useEffect(() => {
@@ -213,7 +231,7 @@ const AddStaffScreen = () => {
                         ]}
                         hasFeedback
                     >
-                        <Input.Password />
+                        <Input.Password style={{ borderColor: 'black', borderRadius: 4 }} />
                     </Form.Item>
 
                     <Form.Item
@@ -238,7 +256,7 @@ const AddStaffScreen = () => {
                             }),
                         ]}
                     >
-                        <Input.Password />
+                        <Input.Password style={{ borderColor: 'black', borderRadius: 4 }} />
                     </Form.Item>
 
 
@@ -286,12 +304,13 @@ const AddStaffScreen = () => {
                             getOptionLabel={option => option.Label}
                             getOptionValue={option => option.Value}
                             options={genderOptions}
+                            styles={style}
                         />
                     </Form.Item>
 
                     <Form.Item
                         name="city"
-                        label="city"
+                        label="City"
                         rules={[
                             {
                                 required: true,
@@ -303,16 +322,42 @@ const AddStaffScreen = () => {
                             getOptionValue={option => option.code}
                             onChange={handleProvinSelect}
                             options={provin}
+                            styles={style}
                         />
                     </Form.Item>
                     <Form.Item
                         name="district"
                         label="District"
+                        rules={[
+                            {
+                                required: true,
+                            },
+                        ]}
                     >
                         <Select
                             getOptionLabel={option => option.name}
                             getOptionValue={option => option.code}
+                            onChange={handleDistrictSelect}
                             options={district}
+                            styles={style}
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="wards"
+                        label="Wards"
+                        Size="small "
+                        rules={[
+                            {
+                                required: true,
+                            },
+                        ]}
+                    >
+                        <Select
+                            getOptionLabel={option => option.name}
+                            getOptionValue={option => option.code}
+                            options={wards}
+                            styles={style}
                         />
                     </Form.Item>
 

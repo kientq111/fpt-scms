@@ -16,7 +16,12 @@ import { dishConstants } from '../../constants/Constants';
 
 const { TextArea } = Input;
 
-
+const style = {
+  control: (base) => ({
+    ...base,
+    borderColor: 'black'
+  })
+}
 
 
 
@@ -99,7 +104,7 @@ const AddDishScreen = () => {
   const ImageHandler = e => {
     const files = e.target.files;
     const file = files[0];
-    getBase64(file);
+    setDishImg(file);
   };
 
 
@@ -179,6 +184,7 @@ const AddDishScreen = () => {
                 // onChange={handleMenuSelect}
                 isSearchable={true}
                 isMulti
+                styles={style}
               />
             </Form.Item>
             <Form.Item label="Sub Category" name="subcategory"
@@ -195,7 +201,7 @@ const AddDishScreen = () => {
                 value={selectedOptions}
                 // onChange={handleSubCategorySelect}
                 isSearchable={true}
-
+                styles={style}
               />
             </Form.Item>
             <Form.Item label="Description" name="description"

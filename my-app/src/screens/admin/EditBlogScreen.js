@@ -2,7 +2,7 @@ import {
     Button,
     Form,
     Input,
-    Switch, Card, Space, Divider, Image, Row, Col
+    Switch, Card, Space, Divider, Image, Row, Col, message
 } from 'antd';
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,7 +10,7 @@ import Loader from '../../components/Loader';
 import { Editor } from "@tinymce/tinymce-react";
 import { editBlog } from '../../actions/blogAction';
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
 
 const EditBlogScreen = () => {
     const [form] = Form.useForm();
@@ -18,6 +18,9 @@ const EditBlogScreen = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [imageStringBase64, setImageStringBase64] = useState(location.state.image);
+    const [blogImage, setBlogImage] = useState(location.state.image);
+    const userLoginInfo = useSelector((state) => state.userLogin);
+    const { userInfo } = userLoginInfo;
     const initialText = location.state.content;
     const [text, setText] = useState(initialText);
 
@@ -34,7 +37,7 @@ const EditBlogScreen = () => {
 
     //CALL API ZONEEE
     const onFinish = (values) => {
-        dispatch(editBlog(location.state.id, values.blogTitle, text, imageStringBase64))
+        dispatch(editBlog(location.state.id, values.blogTitle, text, blogImage))
         console.log(imageStringBase64);
     };
 
@@ -44,8 +47,34 @@ const EditBlogScreen = () => {
         const files = e.target.files;
         const file = files[0];
         getBase64(file);
+        imageOnChangeHandle(file);
     };
 
+    const imageOnChangeHandle = async (file) => {
+        try {
+            const configImg = {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            }
+
+            if (typeof (file) === 'object') {
+                const resImg = await axios.post(
+                    `/image/upload`,
+                    { file },
+                    configImg
+                )
+                if (resImg.data?.success === false) {
+                    message.error("Opps, There's something error when you upload! please re-upload image")
+                    return
+                }
+                setBlogImage(resImg.data?.data?.imageUrl)
+            }
+        } catch (error) {
+
+        }
+    }
 
     const onLoad = fileString => {
         console.log(fileString);
@@ -67,7 +96,7 @@ const EditBlogScreen = () => {
                     style={{
                         borderRadius: 10,
                         marginTop: 20, marginLeft: 150,
-                        width: 1300, height: 800
+                        width: 1300, height: 'auto'
                     }}
                 >
                     <Divider plain>     <h1 style={{ fontSize: 30 }}>Edit Blog</h1></Divider>

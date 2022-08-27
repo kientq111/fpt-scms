@@ -46,7 +46,7 @@ body {
 }
 
 .backgroundLogin {
-    background-image: url("../public/images/292425381_1636800160046535_3933860539575533942_n.png");
+    /* background-image: url("../public/images/292425381_1636800160046535_3933860539575533942_n.png"); */
     background-size: cover;
 }
 
@@ -71,4 +71,29 @@ body {
 
 .txtLink:hover {
     color: green;
+}
+
+.ant-form-item-label label {
+    font-weight: bold;
+}
+
+.ant-input {
+    border-radius: 4px;
+    border-color: #282c34;
+}
+
+.css-1s2u09g-control {
+    border-color: rgb(7, 4, 4);
+}
+
+.css-319lph-ValueContainer {
+    border-color: rgb(7, 4, 4);
+}
+
+.ant-picker {
+    border-color: rgb(7, 4, 4);
+}
+
+.ant-input-number {
+    border-color: rgb(7, 4, 4);
 }

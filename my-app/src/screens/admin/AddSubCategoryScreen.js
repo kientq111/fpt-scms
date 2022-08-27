@@ -44,6 +44,15 @@ const tailFormItemLayout = {
     },
   },
 };
+
+
+const style = {
+  control: (base) => ({
+    ...base,
+    borderColor: 'black'
+  })
+}
+
 const AddSubCategoryScreen = () => {
   const dispatch = useDispatch()
   const categoryData = useSelector((state) => state.categoryList);
@@ -143,6 +152,7 @@ const AddSubCategoryScreen = () => {
               getOptionLabel={option => option.categoryName}
               getOptionValue={option => option.id}
               isSearchable={true}
+              styles={style}
             />
           </Form.Item>
 
