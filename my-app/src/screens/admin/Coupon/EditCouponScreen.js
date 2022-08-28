@@ -186,11 +186,7 @@ const EditCouponScreen = () => {
                             },
                         ]}
                     >
-                        <Search
-                            enterButton="Generate Coupon"
-                            onSearch={genCodeHandle}
-                            readOnly
-                        />
+                        <Input readOnly disabled/>
                     </Form.Item>
                     <Form.Item
                         name="typeDiscount"

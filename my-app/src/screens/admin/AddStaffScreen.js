@@ -106,7 +106,7 @@ const AddStaffScreen = () => {
             country: "VIET NAM",
         }
         console.log((values.username, values.email, values.password, values.dob, values.first_name, values.last_name, values.gender.Value, values.phone, address));
-        // dispatch(addStaff(values.username, values.email, values.password, values.dob, values.first_name, values.last_name, values.gender.Value, values.phone, address));
+         dispatch(addStaff(values.username, values.email, values.password, values.dob, values.first_name, values.last_name, values.gender.Value, values.phone, address));
     };
 
     useEffect(() => {

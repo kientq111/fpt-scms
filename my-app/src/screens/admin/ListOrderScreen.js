@@ -282,10 +282,12 @@ const ListOrderScreen = () => {
 
     const refreshListOrder = () => {
         let currentDate = new Date();
+        let rawToday = new Date();
         let tomorrowDate = currentDate.setDate(currentDate.getDate() + 1);
-        let today = currentDate.setDate(currentDate.getDate() - 1);
-        // dispatch(listOrders(moment(today).format('YYYY-MM-DD'), moment(tomorrowDate).format('YYYY-MM-DD')));
-        getOrder(moment(today).format('YYYY-MM-DD hh:mm:ss'), moment(tomorrowDate).format('YYYY-MM-DD hh:mm:ss'))
+        let today = currentDate.setDate(rawToday.getDate() - 1);
+        console.log(moment(today).format('YYYY-MM-DD HH:mm:ss'))
+        console.log(moment(tomorrowDate).format('YYYY-MM-DD HH:mm:ss'))
+        getOrder(moment(today).format('YYYY-MM-DD HH:mm:ss'), moment(tomorrowDate).format('YYYY-MM-DD HH:mm:ss'))
     }
     const dateOnchangeHandle = (value) => {
         if (value === null) {
@@ -309,7 +311,7 @@ const ListOrderScreen = () => {
             return
         }
         dispatch(changeOrderStatus(id, status))
-        message.success(`Order change id: ${id} to status: ${status === 1 ? 'Pending' : status === 2 ? 'Success' : 'Cancel'}`)
+        message.success(`Change Status Successful!`)
     }
 
     const onDoneHandle = (dishId) => {
@@ -397,7 +399,7 @@ const ListOrderScreen = () => {
 
     const countdownRederer = ({ hours, minutes, seconds, completed }) => {
         if (orderDetailModal.status === 2 || orderDetailModal.status === 4 || orderDetailModal.status === 32) {
-            return
+            return '0'
         }
 
         if (completed) {
@@ -468,9 +470,12 @@ const ListOrderScreen = () => {
     useEffect(() => {
 
         let currentDate = new Date();
+        let rawToday = new Date();
         let tomorrowDate = currentDate.setDate(currentDate.getDate() + 1);
-        let today = currentDate.setDate(currentDate.getDate() - 1);
-        getOrder(moment(today).format('YYYY-MM-DD hh:mm:ss'), moment(tomorrowDate).format('YYYY-MM-DD hh:mm:ss'))
+        let today = currentDate.setDate(rawToday.getDate() - 1);
+        console.log(moment(today).format('YYYY-MM-DD HH:mm:ss'))
+        console.log(moment(tomorrowDate).format('YYYY-MM-DD HH:mm:ss'))
+        getOrder(moment(today).format('YYYY-MM-DD HH:mm:ss'), moment(tomorrowDate).format('YYYY-MM-DD HH:mm:ss'))
         // getOrder()
 
     }, [success]);

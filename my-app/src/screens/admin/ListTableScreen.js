@@ -241,7 +241,7 @@ const ListTableScreen = () => {
                 />)} />
                 <Column title="Status" dataIndex="status" key="status"
 
-                    render={(_, record) => (record.status === 1 ? (<p style={{ color: 'green' }}>Booked</p>) : record.status === 2 ? (<p style={{ color: 'blue' }}>Free</p>) : record.status === 4 ? (<p style={{ color: 'red' }}>Cancel</p>) : (<p style={{ color: 'gray' }}>Unavailable</p>) )}
+                    render={(_, record) => (record.status === 1 ? (<p style={{ color: 'green' }}>Booked</p>) : record.status === 2 ? (<p style={{ color: 'blue' }}>Free</p>) : record.status === 4 ? (<p style={{ color: 'red' }}>Cancel</p>) : (<p style={{ color: 'gray' }}>Unavailable</p>))}
                     filters={[
                         {
                             text: 'Table Booked',
@@ -250,10 +250,6 @@ const ListTableScreen = () => {
                         {
                             text: 'Table Free',
                             value: 2,
-                        },
-                        {
-                            text: 'Table Cancel',
-                            value: 4,
                         },
                         {
                             text: 'Table Unavailable',
@@ -286,7 +282,6 @@ const ListTableScreen = () => {
                                 >
                                     <a className='txtLink' onClick={() => { changeTableStatusHandle(record.id, record.status, 1) }}>Table Booked</a>
                                     <a className='txtLink' onClick={() => { changeTableStatusHandle(record.id, record.status, 2) }}>Table Free</a>
-                                    <a className='txtLink' onClick={() => { changeTableStatusHandle(record.id, record.status, 4) }}>Table Cancel</a>
                                     <a className='txtLink' onClick={() => { changeTableStatusHandle(record.id, record.status, 8) }}>Table Unavailable</a>
                                 </Space>
                             </div>} title="Change Status" trigger="click">

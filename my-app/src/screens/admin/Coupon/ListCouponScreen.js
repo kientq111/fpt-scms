@@ -213,7 +213,7 @@ const ListCouponScreen = () => {
                     x: '200vw',
                 }}
             >
-                <Column title="CouponCode" dataIndex="couponCode" key="couponCode" {...getColumnSearchProps('couponCode')} />
+                <Column title="Coupon Code" dataIndex="couponCode" key="couponCode" {...getColumnSearchProps('couponCode')} />
                 <Column title="Description" dataIndex="description" key="description" render={(_, record) => record.description.length > 50 ? `${record.description.substring(0, 40)}...` : record.description} />
                 <Column title="Status" dataIndex="status"
                     filters={[
@@ -251,7 +251,9 @@ const ListCouponScreen = () => {
                 <Column title="Max Discount Money" dataIndex="maxDiscountMoney" key="maxDiscountMoney" render={(_, record) => `${record.maxDiscountMoney === null ? '0' : record.maxDiscountMoney}`} sorter={(a, b) => a.maxDiscountMoney - b.maxDiscountMoney} align={'center'}
 
                 />
+                   <Column title="Discount Money" dataIndex="discountMoney" key="discountMoney" render={(_, record) => `${record.discountMoney === null ? '0' : record.discountMoney}`} sorter={(a, b) => a.discountMoney - b.discountMoney} align={'center'} />
                 <Column title="Min Value Order" dataIndex="minValueOrder" key="minValueOrder" render={(_, record) => `${record.minValueOrder === null ? '0' : record.minValueOrder}`} sorter={(a, b) => a.minValueOrder - b.minValueOrder} align={'center'} />
+             
                 {/* <Column title="Min Quantity Product" dataIndex="minQuantityProduct" key="minQuantityProduct" render={(_, record) => `${record.minQuantityProduct === null ? '0' : record.minQuantityProduct}`} sorter={(a, b) => a.minQuantityProduct - b.minQuantityProduct} align={'center'} /> */}
                 <Column title="Number Of Coupon" dataIndex="numberOfCoupon" key="numberOfCoupon" render={(_, record) => `${record.numberOfCoupon}`} sorter={(a, b) => a.numberOfCoupon - b.numberOfCoupon} align={'center'} />
                 <Column title="Number Of Customer Use" dataIndex="numberOfCustomerUse" key="numberOfCustomerUse" render={(_, record) => `${record.numberOfCustomerUse}`} sorter={(a, b) => a.numberOfCustomerUse - b.numberOfCustomerUse} align={'center'} />
