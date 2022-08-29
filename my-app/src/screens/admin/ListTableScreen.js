@@ -340,9 +340,36 @@ const ListTableScreen = () => {
                                         display: 'flex',
                                     }}
                                 >
-                                    <a className='txtLink' onClick={() => { changeTableStatusHandle(record.id, record.status, 1) }}>Table Booked</a>
-                                    <a className='txtLink' onClick={() => { changeTableStatusHandle(record.id, record.status, 2) }}>Table Free</a>
-                                    <a className='txtLink' onClick={() => { changeTableStatusHandle(record.id, record.status, 8) }}>Table Unavailable</a>
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeTableStatusHandle(record.id, record.status, 1)}
+                                        onCancel={() => console.log(record.id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <a className='txtLink'>Table Booked</a>
+
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeTableStatusHandle(record.id, record.status, 2)}
+                                        onCancel={() => console.log(record.id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <a className='txtLink'>Table Free</a>
+
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeTableStatusHandle(record.id, record.status, 8)}
+                                        onCancel={() => console.log(record.id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <a className='txtLink' >Table Unavailable</a>
+
+                                    </Popconfirm>
                                 </Space>
                             </div>} title="Change Status" trigger="click">
                                 <a style={{ color: 'blue' }}>Change Status</a>

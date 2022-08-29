@@ -245,7 +245,17 @@ const ListMenuScreen = () => {
                     key="action"
                     render={(_, record) => (
                         <Space size="middle">
-                            <a onClick={() => { changeStatusHandle(record.id, record.status) }}>{record.status == 1 ? <Tag color="error">Change Status</Tag> : <Tag color="green">Change Status</Tag>}</a>
+
+                            <Popconfirm
+                                title="Are you sure to change this status?"
+                                onConfirm={() => changeStatusHandle(record.id, record.status)}
+                                onCancel={() => console.log(record.id)}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <a>{record.status == 1 ? <Tag color="error">Change Status</Tag> : <Tag color="green">Change Status</Tag>}</a>
+
+                            </Popconfirm>
                             <a onClick={() => { menuDetailHandler(record.id) }}><EyeOutlined /></a>
                             <a onClick={() => { editMenuHandle(record.id, record.menuName, record.description, record.status, record.createdBy, record.createdTime) }}><EditOutlined style={{ fontSize: 17 }} /></a>
                         </Space>

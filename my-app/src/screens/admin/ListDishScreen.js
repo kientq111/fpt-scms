@@ -264,10 +264,38 @@ const ListDishScreen = () => {
                                         display: 'flex',
                                     }}
                                 >
-                                    <a className='txtLink' onClick={() => { changeStatusHandle(record.id, record.status, 1) }}>Active</a>
-                                    <a className='txtLink' onClick={() => { changeStatusHandle(record.id, record.status, 2) }}>DeActive</a>
-                                    <a className='txtLink' onClick={() => { changeStatusHandle(record.id, record.status, 4) }}>Out Of Dish</a>
+
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeStatusHandle(record.id, record.status, 1)}
+                                        onCancel={() => console.log(record.id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <a className='txtLink'>Active</a>
+
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeStatusHandle(record.id, record.status, 2)}
+                                        onCancel={() => console.log(record.id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <a className='txtLink'>DeActive</a>
+
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeStatusHandle(record.id, record.status, 4)}
+                                        onCancel={() => console.log(record.id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <a className='txtLink' >Out Of Dish</a>
+                                    </Popconfirm>
                                 </Space>
+
                             </div>} title="Change Status" trigger="click">
                                 <a style={{ color: 'blue' }}>Change Status</a>
                             </Popover>

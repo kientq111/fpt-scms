@@ -610,8 +610,6 @@ const ListOrderScreen = () => {
                             {orderDetailModal.status === 1 &&
                                 <>
 
-
-
                                     <Popconfirm
                                         title="Are you sure to change this status?"
                                         onConfirm={() => changeStatusAndReloadOrderDetail(orderDetailModal.orderId, 2)}
