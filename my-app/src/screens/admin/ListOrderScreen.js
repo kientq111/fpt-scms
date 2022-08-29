@@ -282,10 +282,12 @@ const ListOrderScreen = () => {
 
     const refreshListOrder = () => {
         let currentDate = new Date();
+        let rawToday = new Date();
         let tomorrowDate = currentDate.setDate(currentDate.getDate() + 1);
-        let today = currentDate.setDate(currentDate.getDate() - 1);
-        // dispatch(listOrders(moment(today).format('YYYY-MM-DD'), moment(tomorrowDate).format('YYYY-MM-DD')));
-        getOrder(moment(today).format('YYYY-MM-DD hh:mm:ss'), moment(tomorrowDate).format('YYYY-MM-DD hh:mm:ss'))
+        let today = currentDate.setDate(rawToday.getDate() - 1);
+        console.log(moment(today).format('YYYY-MM-DD HH:mm:ss'))
+        console.log(moment(tomorrowDate).format('YYYY-MM-DD HH:mm:ss'))
+        getOrder(moment(today).format('YYYY-MM-DD HH:mm:ss'), moment(tomorrowDate).format('YYYY-MM-DD HH:mm:ss'))
     }
     const dateOnchangeHandle = (value) => {
         if (value === null) {
@@ -309,7 +311,7 @@ const ListOrderScreen = () => {
             return
         }
         dispatch(changeOrderStatus(id, status))
-        message.success(`Order change id: ${id} to status: ${status === 1 ? 'Pending' : status === 2 ? 'Success' : 'Cancel'}`)
+        message.success(`Change Status Successful!`)
     }
 
     const onDoneHandle = (dishId) => {
@@ -387,8 +389,9 @@ const ListOrderScreen = () => {
                 //     countdown = 0;
                 // }
                 return <Countdown
-                    date={parseInt(moment(record.createdDate).format('x')) + (countdown * 1000)} renderer={countdownRederer}
-                    onComplete={() => dishFinishHandle(orderDetailModal.orderId, orderDetailModal.status)} />; // just for decoration
+                    date={parseInt(moment().format('x')) + (parseInt(countdown) * 1000)} renderer={countdownRederer}
+                />;
+                // onComplete={() => dishFinishHandle(orderDetailModal.orderId, orderDetailModal.status)} />;  
             }
         },
 
@@ -397,7 +400,7 @@ const ListOrderScreen = () => {
 
     const countdownRederer = ({ hours, minutes, seconds, completed }) => {
         if (orderDetailModal.status === 2 || orderDetailModal.status === 4 || orderDetailModal.status === 32) {
-            return
+            return '0'
         }
 
         if (completed) {
@@ -468,9 +471,12 @@ const ListOrderScreen = () => {
     useEffect(() => {
 
         let currentDate = new Date();
+        let rawToday = new Date();
         let tomorrowDate = currentDate.setDate(currentDate.getDate() + 1);
-        let today = currentDate.setDate(currentDate.getDate() - 1);
-        getOrder(moment(today).format('YYYY-MM-DD hh:mm:ss'), moment(tomorrowDate).format('YYYY-MM-DD hh:mm:ss'))
+        let today = currentDate.setDate(rawToday.getDate() - 1);
+        console.log(moment(today).format('YYYY-MM-DD HH:mm:ss'))
+        console.log(moment(tomorrowDate).format('YYYY-MM-DD HH:mm:ss'))
+        getOrder(moment(today).format('YYYY-MM-DD HH:mm:ss'), moment(tomorrowDate).format('YYYY-MM-DD HH:mm:ss'))
         // getOrder()
 
     }, [success]);
@@ -565,25 +571,29 @@ const ListOrderScreen = () => {
                         title="Action"
                         key="action"
                         render={(_, record) => (
-                            <Space size="middle">
-                                <a ><EyeOutlined onClick={() => showModal(record)} /></a>
-                                <Popover content={<div>
-                                    <Space
-                                        direction="vertical"
-                                        size="small"
-                                        style={{
-                                            display: 'flex',
-                                        }}
-                                    >
-                                        <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 2) }}>Change to OrderSuccess</a>
-                                        <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 1) }}>Change to OrderPending</a>
-                                        <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 4) }}>Change to OrderCancel</a>
-                                    </Space>
-                                </div>} title="Change Status" trigger="click">
-                                    <a style={{ color: 'blue' }}>Change Status</a>
-                                </Popover>
-                            </Space>
-                        )}
+                            record.status === 1 ?
+                                <Space size="middle">
+                                    <a ><EyeOutlined onClick={() => showModal(record)} /></a>
+                                    <Popover content={<div>
+                                        <Space
+                                            direction="vertical"
+                                            size="small"
+                                            style={{
+                                                display: 'flex',
+                                            }}
+                                        >
+                                            <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 2) }}>Change to OrderSuccess</a>
+                                            <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 1) }}>Change to OrderPending</a>
+                                            <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 4) }}>Change to OrderCancel</a>
+                                        </Space>
+                                    </div>} title="Change Status" trigger="click">
+                                        <a style={{ color: 'blue' }}>Change Status</a>
+                                    </Popover>
+                                </Space>
+                                : 'No Action'
+                        )
+
+                        }
                     />
                 </StyledTable>
             </>
@@ -599,8 +609,26 @@ const ListOrderScreen = () => {
                         <Col span={6}>
                             {orderDetailModal.status === 1 &&
                                 <>
-                                    <Button type='primary' style={{ marginRight: 20 }} onClick={() => changeStatusAndReloadOrderDetail(orderDetailModal.orderId, 2)}>Done Order</Button>
-                                    <Button type='danger' onClick={() => changeStatusAndReloadOrderDetail(orderDetailModal.orderId, 4)} > Cancel Order</Button>
+
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeStatusAndReloadOrderDetail(orderDetailModal.orderId, 2)}
+                                        onCancel={() => console.log(orderDetailModal.orderId)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <Button type='primary' style={{ marginRight: 20 }} >Done Order</Button>
+                                    </Popconfirm>
+
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeStatusAndReloadOrderDetail(orderDetailModal.orderId, 4)}
+                                        onCancel={() => console.log(orderDetailModal.orderId)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <Button type='danger' > Cancel Order</Button>
+                                    </Popconfirm>
                                 </>
                             }
                         </Col>

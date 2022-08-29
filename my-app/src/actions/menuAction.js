@@ -107,7 +107,7 @@ export const addMenu = (menuName, description, listDish) => async (dispatch, get
         console.log(listDishId);
         const { data } = await axios.post(
             `${base_url}/menu/addOrUpdate`,
-            { menuName, description, listDishId, createdBy, updatedBy, updatedTime, createdTime },
+            { menuName, description, listDishId, createdBy, updatedBy},
             config
         )
 

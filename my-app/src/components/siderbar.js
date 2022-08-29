@@ -75,6 +75,7 @@ const itemsAdmin = [
 
 const itemsStaff = [
     getItem('Order Manager', '2', <TagOutlined />, [
+        // getItem('List User', '/admin/listuser'),
         getItem('List Order', '/admin/listorder'),
     ]),
     getItem('Menu Manager', '3', <DesktopOutlined />, [
@@ -91,7 +92,13 @@ const itemsStaff = [
         getItem('Add Table', '/admin/addtable'),
         getItem('List Table', '/admin/listtable'),
     ]),
-    getItem('Blog Manager', '5', <FormOutlined />, [
+    getItem('Discount Manager', '5', <TagOutlined />, [
+        getItem('Add Coupon', '/admin/addcoupon'),
+        getItem('List Coupon', '/admin/listcoupon'),
+        getItem('Add Promotion', '/admin/addpromo'),
+        getItem('List Promotion', '/admin/listpromo'),
+    ]),
+    getItem('Blog Manager', '7', <FormOutlined />, [
         getItem('Add Blog', '/admin/addblog'),
         getItem('List Blog', '/admin/listblog'),
     ]),

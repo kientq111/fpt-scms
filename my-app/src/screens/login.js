@@ -119,10 +119,7 @@ const LoginScreen = () => {
                                 />
                             </Form.Item>
                             <Form.Item>
-                                <Form.Item name="remember" valuePropName="checked" noStyle>
-                                    <Checkbox>Remember me</Checkbox>
-                                </Form.Item>
-
+                        
                                 <Link className="login-form-forgot" to={'/forgotpassword'}>
                                     Forgot password
                                 </Link>

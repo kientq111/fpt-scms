@@ -11,6 +11,7 @@ import {
 import Loader from '../../components/Loader';
 import Select from "react-select";
 import axios from 'axios';
+import { staffConstants, userConstants } from '../../constants/Constants';
 const { Option } = Select;
 
 const formItemLayout = {
@@ -65,7 +66,14 @@ const AddStaffScreen = () => {
             .catch(error => console.log(error));
     }, []);
 
+    useEffect(() => {
+        if (userAddSelector) {
+            dispatch({
+                type: staffConstants.STAFF_ADD_RESET,
+            })
+        }
 
+    }, [])
     // Function triggered on selection
     function handleProvinSelect(value) {
         axios.get(`https://provinces.open-api.vn/api/p/${value.code}?depth=3`)
@@ -106,7 +114,7 @@ const AddStaffScreen = () => {
             country: "VIET NAM",
         }
         console.log((values.username, values.email, values.password, values.dob, values.first_name, values.last_name, values.gender.Value, values.phone, address));
-        // dispatch(addStaff(values.username, values.email, values.password, values.dob, values.first_name, values.last_name, values.gender.Value, values.phone, address));
+        dispatch(addStaff(values.username.toLowerCase(), values.email.toLowerCase(), values.password, values.dob, values.first_name, values.last_name, values.gender.Value, values.phone, address));
     };
 
     useEffect(() => {

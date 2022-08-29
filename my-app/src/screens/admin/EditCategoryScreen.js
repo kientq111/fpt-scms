@@ -141,7 +141,7 @@ const EditCategoryScreen = () => {
               },
             ]}
           >
-            <Input.TextArea showCount maxLength={100} />
+            <Input.TextArea showCount maxLength={300} />
           </Form.Item>
 
           <Form.Item {...tailFormItemLayout}>

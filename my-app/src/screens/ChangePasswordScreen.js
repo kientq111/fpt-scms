@@ -55,10 +55,10 @@ const ChangePasswordScreen = () => {
                 }}></h1>
 
                 <div className="site-card-border-less-wrapper">
-                    <Card
+                    <Card 
                         size="large"
                         bordered={false}
-                        style={{ backgroundColor: 'rgba(236, 205, 170)', borderRadius: 25 }}
+                        style={{ borderRadius: 25 }}
                     >
                         <Divider plain><h2>CHANGE PASSWORD</h2></Divider>
                         <Form
@@ -89,7 +89,7 @@ const ChangePasswordScreen = () => {
                                 ]}
                                 hasFeedback
                             >
-                                <Input.Password width={100} />
+                                <Input.Password />
                             </Form.Item>
 
                             <Form.Item

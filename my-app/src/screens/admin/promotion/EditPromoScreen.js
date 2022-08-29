@@ -3,7 +3,7 @@ import {
     Form,
     Input,
     Row,
-    Breadcrumb, Card, Divider, DatePicker, InputNumber, Space
+    Breadcrumb, Card, Divider, DatePicker, InputNumber, Space, message as mesNotify
 } from 'antd';
 
 import { useState, useEffect } from 'react';
@@ -73,6 +73,12 @@ const EditPromoScreen = () => {
     let oldDishInPromoIndex = [];
     let isDishOptionChanged = false;
     const onFinish = (values) => {
+        let rawStartDate = moment(values.start_date).format("YYYY-MM-DD")
+        let rawEndDate = moment(values.end_date).format("YYYY-MM-DD")
+        if (rawEndDate < rawStartDate) {
+            mesNotify.error('Start date must be after End Date')
+            return
+        }
         console.log(values);
         let listDish = [];
 

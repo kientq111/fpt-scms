@@ -46,11 +46,11 @@ const tailFormItemLayout = {
 
 const style = {
     control: (base) => ({
-      ...base,
-      borderColor: 'black'
+        ...base,
+        borderColor: 'black'
     })
-  }
-  
+}
+
 const AddMenuScreen = () => {
     const dispatch = useDispatch()
     const [form] = Form.useForm();
@@ -137,7 +137,7 @@ const AddMenuScreen = () => {
 
                     <Form.Item
                         name="dish"
-                        label="dish"
+                        label="List Dishes"
                     >
                         <Select
                             getOptionLabel={option => option.dishName}
@@ -150,11 +150,12 @@ const AddMenuScreen = () => {
 
                     <Form.Item
                         name="description"
-                        label="menu description"
+                        label="Menu Description"
                         rules={[
                             {
                                 required: true,
                                 message: 'Please input description',
+                                whitespace: true
                             },
                         ]}
                     >

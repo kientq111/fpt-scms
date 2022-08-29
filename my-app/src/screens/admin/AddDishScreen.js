@@ -160,7 +160,7 @@ const AddDishScreen = () => {
             width: 1000, height: 'auto', borderRadius: 25
           }}
         >
-          <Divider plain>     <h1 style={{ fontSize: 30 }}>Add Dish</h1></Divider>
+          <Divider plain>     <h1 style={{ fontSize: 30 }}>ADD DISH</h1></Divider>
           <Form style={{ marginLeft: 100 }}
             labelCol={{
               span: 4,
@@ -179,7 +179,8 @@ const AddDishScreen = () => {
               rules={[
                 {
                   required: true,
-                  message: 'Please input dishname!',
+                  message: 'Please input Dish Name!',
+                  whitespace: true
                 },
               ]}
             >
@@ -194,7 +195,7 @@ const AddDishScreen = () => {
                 },
               ]}
             >
-              <InputNumber min={0} defaultValue={0} style={{ width: 250 }} />
+              <InputNumber min={0} max={1000000} defaultValue={0} style={{ width: 250 }} />
             </Form.Item>
             <Form.Item label="Finished Time(min)" name="finishedTime"
               rules={[
@@ -238,13 +239,14 @@ const AddDishScreen = () => {
               rules={[
                 {
                   required: true,
-                  message: 'Please select description!',
+                  message: 'Please input description!',
+                  whitespace: true
                 },
               ]}>
               <TextArea rows={4} maxLength={500} showCount />
             </Form.Item>
-            <Form.Item label="Image" name="dishimg" accept="image/png, image/gif, image/jpeg" >
-              <input type="file" onChange={ImageHandler} />
+            <Form.Item label="Image" name="dishimg" >
+              <input type="file" onChange={ImageHandler}  accept="image/png, image/gif, image/jpeg"/>
 
             </Form.Item>
             <Form.Item style={{ marginLeft: 160 }}>

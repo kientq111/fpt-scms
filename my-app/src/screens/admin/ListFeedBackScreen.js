@@ -195,7 +195,7 @@ const ListFeedBackScreen = () => {
                     <Col span={6}><Search placeholder="input search text" enterButton="Search" loading /></Col>
                 </Row>
             </div> */}
-            {loading === false && <StyledTable dataSource={feedbacks} className="table-striped-rows" >
+            {loading === false && <StyledTable dataSource={feedbacks?.reverse() || []} className="table-striped-rows" >
                 <Column title="Sender" dataIndex="firstName" key="firstName" {...getColumnSearchProps('firstName')}
                 />
                 <Column title="Description" dataIndex="description" key="description"

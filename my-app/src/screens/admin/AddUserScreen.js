@@ -11,6 +11,7 @@ import {
 import Loader from '../../components/Loader';
 import Select from "react-select";
 import axios from 'axios';
+import { userConstants } from '../../constants/Constants';
 const { Option } = Select;
 
 const formItemLayout = {
@@ -58,6 +59,8 @@ const AddUserScreen = () => {
     const [district, setDistrict] = useState([{ name: "", code: "" }]);
     const [wards, setWards] = useState([{ name: "", code: "" }])
 
+
+
     useEffect(() => {
         axios.get(`https://provinces.open-api.vn/api/p/`)
             .then(res => {
@@ -97,6 +100,16 @@ const AddUserScreen = () => {
     //get data from store
     const userAddSelector = useSelector((state) => state.userRegister)
     const { userInfo, loading } = userAddSelector;
+
+    useEffect(() => {
+        if (userAddSelector) {
+            dispatch({
+                type: userConstants.USER_REGISTER_RESET,
+            })
+        }
+
+    }, [])
+
     //Submit register form to action
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
@@ -107,8 +120,9 @@ const AddUserScreen = () => {
             city: values.city.name,
             country: "VIET NAM",
         }
-        console.log(values.gender.Value);
-        dispatch(register(values.username, values.email, values.password, values.dob, values.first_name, values.last_name, values.gender.Value, values.phone, address));
+
+
+        dispatch(register(values.username.toLowerCase(), values.email.toLowerCase(), values.password, values.dob, values.first_name, values.last_name, values.gender.Value, values.phone, address));
     };
 
     useEffect(() => {
@@ -152,7 +166,7 @@ const AddUserScreen = () => {
                     scrollToFirstError
                 >
                     {loading === false && userInfo.success === false && <h5 style={{ marginLeft: 230, color: 'red' }}>{userInfo.message}</h5>}
-                    {loading === false && userInfo.success === true && <h5 style={{ marginLeft: 230, color: 'green' }}>{userInfo.message}</h5>}
+                    {loading === false && userInfo.success === true && <h5 style={{ marginLeft: 230, color: 'green' }}>ADD USER SUCCESSFUL!</h5>}
                     <Form.Item
                         name="email"
                         label="E-mail"

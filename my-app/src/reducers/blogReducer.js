@@ -9,6 +9,8 @@ export const addBlogReducer = (state = {}, action) => {
             return { loading: false, blog: action.payload, success: true }
         case blogConstants.BLOG_ADD_FAIL:
             return { loading: false, error: action.payload }
+        case blogConstants.BLOG_ADD_RESET:
+            return {}
         default:
             return state
     }

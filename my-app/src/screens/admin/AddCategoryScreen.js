@@ -123,6 +123,7 @@ const AddCateScreen = () => {
               {
                 required: true,
                 message: 'Please input description',
+                whitespace: true
               },
             ]}
           >

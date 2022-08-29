@@ -69,7 +69,7 @@ export const editCategory = (id, categoryName, description, createdTime, created
         const updatedTime = new Date();
         const { data } = await axios.post(
             `${base_url}/category/addOrUpdateCategory`,
-            { id, categoryName, description, status, createdTime, createdBy, updatedTime, updatedBy },
+            { id, categoryName, description, status, createdBy, updatedBy },
             config
         )
 
@@ -236,7 +236,7 @@ export const addSubCategory = (subCategoryName, rawCategory, description) => asy
         const updatedTime = new Date();
         const { data } = await axios.post(
             `${base_url}/subcategory/addOrUpdateCategory`,
-            { subCategoryName, categoryId, description, status, createdBy, updatedBy, createdTime, updatedTime },
+            { subCategoryName, categoryId, description, status, createdBy, updatedBy },
             config
         )
         dispatch({
@@ -280,7 +280,7 @@ export const editSubCategory = (id, subCategoryName, rawCategory, description, c
         const updatedTime = new Date();
         const { data } = await axios.post(
             `${base_url}/subcategory/addOrUpdateCategory`,
-            { id, subCategoryName, categoryId, description, status, createdBy, updatedBy, createdTime, updatedTime },
+            { id, subCategoryName, categoryId, description, status, createdBy, updatedBy },
             config
         )
 

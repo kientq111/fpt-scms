@@ -74,16 +74,22 @@ const UserDetailScreen = () => {
         console.log('phone: ', location.state.phone);
     }, []);
 
+
+    const CancelHandle = () => {
+        if (location.state.history === '/admin/liststaff') {
+            navigate('/admin/liststaff')
+        } else {
+            navigate('/admin/listuser')
+        }
+    }
+
     return (
         <Row>
 
             <Breadcrumb style={{ marginTop: 10 }}>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>
-                    <a href="">List Users</a>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                    <a href="">User Detail Profile</a>
+                    <a href="">{location.state.history === '/admin/liststaff' ? 'staff' : 'user'} Detail Profile</a>
                 </Breadcrumb.Item>
             </Breadcrumb>
             <Card
@@ -91,7 +97,7 @@ const UserDetailScreen = () => {
                     width: 900, height: 900, marginTop: 20, marginLeft: 100,
                 }}
             >
-                <Divider plain>     <h1 style={{ fontSize: 30 }}>User Detail Profile</h1></Divider>
+                <Divider plain>     <h1 style={{ fontSize: 30 }}>{location.state.history === '/admin/liststaff' ? 'STAFF' : 'USER'} DETAIL PROFILE</h1></Divider>
                 <Form style={{ marginRight: 150 }}
                     {...formItemLayout}
                     form={form}
@@ -111,7 +117,7 @@ const UserDetailScreen = () => {
                     <Form.Item
                         name="first_name"
                         label="First Name"
-                     
+
 
 
                     >
@@ -134,7 +140,7 @@ const UserDetailScreen = () => {
                     <Form.Item
                         name="username"
                         label="User Name"
-                 
+
 
                         rules={[
                             {
@@ -211,7 +217,7 @@ const UserDetailScreen = () => {
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>
-                        <Button onClick={() => navigate('/admin/listuser')} type='primary'>Back</Button>
+                        <Button onClick={CancelHandle} type='primary'>Back</Button>
                     </Form.Item>
                 </Form>
             </Card>
