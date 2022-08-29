@@ -1,5 +1,5 @@
 import {
-    Space, Table, Breadcrumb, message, Divider, Button, Col, Row, Input, notification, Modal
+    Space, Table, Breadcrumb, message, Divider, Button, Col, Row, Input, notification, Modal, Popconfirm
 } from 'antd';
 import { React, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -175,6 +175,7 @@ const ListPromoScreen = () => {
                 },
             })
             console.log(res.data?.data);
+            getListPromo()
         } catch (error) {
             console.log(error);
         }
@@ -183,7 +184,7 @@ const ListPromoScreen = () => {
 
     const changeStatusHandle = (id, status) => {
         changePromoStatus(id, status);
-        getListPromo()
+
     }
 
 
@@ -224,7 +225,7 @@ const ListPromoScreen = () => {
             <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/addpromo'} style={{ textDecoration: 'none' }}>Add Promotion</Link></Button></Divider>
 
 
-            <StyledTable dataSource={listPromo} className="table-striped-rows">
+            <StyledTable dataSource={listPromo.reverse()} className="table-striped-rows">
                 <Column title="Promotion Name" dataIndex="name" key="name" {...getColumnSearchProps('name')} />
                 <Column title="Description" dataIndex="description" key="description" width={'15%'} />
                 <Column title="Promotion Percent" dataIndex="promotionPercent" key="promotionPercent" width={'2%'} render={(_, record) => `${record.promotionPercent}%`} sorter={(a, b) => a.promotionPercent - b.promotionPercent} />
@@ -257,7 +258,16 @@ const ListPromoScreen = () => {
                     render={(_, record) => (
                         <Space size="middle">
                             <a onClick={() => editPromoHandle(record)}><EditOutlined /></a>
-                            <a className='txtLink' onClick={() => changeStatusHandle(record.id, record.status)}>Change Status</a>
+                            <Popconfirm
+                                title="Are you sure to change this status?"
+                                onConfirm={() => changeStatusHandle(record.id, record.status)}
+                                onCancel={() => console.log(record.id)}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <a style={{ color: 'blue' }}>Change Status</a>
+
+                            </Popconfirm>
                         </Space>
                     )}
                 />

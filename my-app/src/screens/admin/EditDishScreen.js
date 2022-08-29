@@ -265,6 +265,7 @@ const EditDishScreen = () => {
                   {
                     required: true,
                     message: 'Please input dish name!',
+                    whitespace: true
                   },
                 ]}
               >
@@ -318,6 +319,7 @@ const EditDishScreen = () => {
                   {
                     required: true,
                     message: 'Please select description!',
+                    whitespace: true
                   },
                 ]}
               >

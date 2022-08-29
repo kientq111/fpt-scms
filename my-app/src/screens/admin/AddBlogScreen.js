@@ -10,6 +10,7 @@ import Loader from '../../components/Loader';
 import { Editor } from "@tinymce/tinymce-react";
 import { addBlog, editBlog } from '../../actions/blogAction';
 import axios from 'axios';
+import { blogConstants } from '../../constants/Constants';
 
 const AddBlogScreen = () => {
     const [form] = Form.useForm();
@@ -49,6 +50,13 @@ const AddBlogScreen = () => {
         }
     }
 
+    useEffect(() => {
+        if (addBlogSelector) {
+            dispatch({
+                type: blogConstants.BLOG_ADD_RESET,
+            })
+        }
+    }, []);
 
     //CALL API ZONEEE
     const onFinish = (values) => {

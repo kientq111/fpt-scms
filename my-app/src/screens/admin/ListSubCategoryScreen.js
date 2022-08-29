@@ -213,9 +213,9 @@ const ListSubCategoryScreen = () => {
                     <Col span={5}></Col>
                 </Row></>}
 
-            {loading === false && <StyledTable dataSource={subcategoryInfo} className="table-striped-rows" >
+            {loading === false && <StyledTable dataSource={subcategoryInfo?.reverse() || []} className="table-striped-rows" >
                 <Column title="SubCategory Name" dataIndex="subCategoryName" key="subCategoryName" {...getColumnSearchProps('subCategoryName')} />
-                <Column title="Description" dataIndex="description" key="description" width={'15%'} render={(_, record) => record.description.length > 50 ? `${record.description.substring(0, 40)}...` : record.description}/>
+                <Column title="Description" dataIndex="description" key="description" width={'15%'} render={(_, record) => record.description.length > 50 ? `${record.description.substring(0, 40)}...` : record.description} />
                 <Column title="Status" dataIndex="status" key="status"
                     filters={[
                         {
@@ -246,7 +246,17 @@ const ListSubCategoryScreen = () => {
                             <a onClick={() => editSubCategoryHandle(record.id, record.subCategoryName, record.description, record.createdTime, record.createdBy, record.category, record.status)}>
                                 <EditOutlined style={{ fontSize: 17 }} />
                             </a>
-                            <a onClick={() => changeSubCategoryStatusHandle(record.id, record.status)} style={{ color: 'blue' }}>Change Status</a>
+
+                            <Popconfirm
+                                title="Are you sure to change this status?"
+                                onConfirm={() => changeSubCategoryStatusHandle(record.id, record.status)}
+                                onCancel={() => console.log(record.id)}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <a style={{ color: 'blue' }}>Change Status</a>
+
+                            </Popconfirm>
                         </Space>
                     )}
                 />

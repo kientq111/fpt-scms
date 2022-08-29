@@ -228,7 +228,7 @@ const ListTableScreen = () => {
                     <Col span={6}><Search placeholder="input search text" enterButton="Search" loading /></Col>
                 </Row>
             </div> */}
-            {loading === false && <StyledTable dataSource={tables} className="table-striped-rows" >
+            {loading === false && <StyledTable dataSource={tables?.reverse() || []} className="table-striped-rows" >
                 <Column title="Table Number " dataIndex="tableNumber" key="tableNumber" {...getColumnSearchProps('tableNumber')}
 
                 />

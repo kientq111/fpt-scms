@@ -1,5 +1,5 @@
 import {
-    Space, Table, Breadcrumb, message, Divider, Button, Col, Row, Input, notification, Modal
+    Space, Table, Breadcrumb, message, Divider, Button, Col, Row, Input, notification, Modal, Popconfirm
 } from 'antd';
 import { React, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -174,7 +174,7 @@ const ListCouponScreen = () => {
                     Authorization: `Bearer ${userInfo.accessToken}`,
                 },
             })
-            console.log(res.data?.data);
+            getListCoupon()
         } catch (error) {
             console.log(error);
         }
@@ -188,7 +188,6 @@ const ListCouponScreen = () => {
 
     const changeStatusHandle = (id, status) => {
         changeCouponStatus(id, status);
-        getListCoupon()
     }
 
     useEffect(() => {
@@ -208,7 +207,7 @@ const ListCouponScreen = () => {
             <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/addcoupon'} style={{ textDecoration: 'none' }}>Add Coupon</Link></Button></Divider>
 
 
-            <StyledTable dataSource={listCoupon} className="table-striped-rows"
+            <StyledTable dataSource={listCoupon.reverse()} className="table-striped-rows"
                 scroll={{
                     x: '200vw',
                 }}
@@ -251,9 +250,9 @@ const ListCouponScreen = () => {
                 <Column title="Max Discount Money" dataIndex="maxDiscountMoney" key="maxDiscountMoney" render={(_, record) => `${record.maxDiscountMoney === null ? '0' : record.maxDiscountMoney}`} sorter={(a, b) => a.maxDiscountMoney - b.maxDiscountMoney} align={'center'}
 
                 />
-                   <Column title="Discount Money" dataIndex="discountMoney" key="discountMoney" render={(_, record) => `${record.discountMoney === null ? '0' : record.discountMoney}`} sorter={(a, b) => a.discountMoney - b.discountMoney} align={'center'} />
+                <Column title="Discount Money" dataIndex="discountMoney" key="discountMoney" render={(_, record) => `${record.discountMoney === null ? '0' : record.discountMoney}`} sorter={(a, b) => a.discountMoney - b.discountMoney} align={'center'} />
                 <Column title="Min Value Order" dataIndex="minValueOrder" key="minValueOrder" render={(_, record) => `${record.minValueOrder === null ? '0' : record.minValueOrder}`} sorter={(a, b) => a.minValueOrder - b.minValueOrder} align={'center'} />
-             
+
                 {/* <Column title="Min Quantity Product" dataIndex="minQuantityProduct" key="minQuantityProduct" render={(_, record) => `${record.minQuantityProduct === null ? '0' : record.minQuantityProduct}`} sorter={(a, b) => a.minQuantityProduct - b.minQuantityProduct} align={'center'} /> */}
                 <Column title="Number Of Coupon" dataIndex="numberOfCoupon" key="numberOfCoupon" render={(_, record) => `${record.numberOfCoupon}`} sorter={(a, b) => a.numberOfCoupon - b.numberOfCoupon} align={'center'} />
                 <Column title="Number Of Customer Use" dataIndex="numberOfCustomerUse" key="numberOfCustomerUse" render={(_, record) => `${record.numberOfCustomerUse}`} sorter={(a, b) => a.numberOfCustomerUse - b.numberOfCustomerUse} align={'center'} />
@@ -266,7 +265,16 @@ const ListCouponScreen = () => {
                     render={(_, record) => (
                         <Space size="middle">
                             <a onClick={() => editCouponHandle(record)}><EditOutlined /></a>
-                            <a className='txtLink' onClick={() => changeStatusHandle(record.id, record.status)}>Change Status</a>
+                            <Popconfirm
+                                title="Are you sure to change this status?"
+                                onConfirm={() => changeStatusHandle(record.id, record.status)}
+                                onCancel={() => console.log(record.id)}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <a style={{ color: 'blue' }}>Change Status</a>
+
+                            </Popconfirm>
                         </Space>
                     )}
                 />

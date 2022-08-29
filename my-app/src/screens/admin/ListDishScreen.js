@@ -219,7 +219,7 @@ const ListDishScreen = () => {
                     <Col span={5}><LargeLoader /></Col>
                     <Col span={5}></Col>
                 </Row></>}
-            {loading === false && <StyledTable dataSource={dishes} className="table-striped-rows">
+            {loading === false && <StyledTable dataSource={dishes.reverse()} className="table-striped-rows">
                 <Column title="Dish Name" dataIndex="dishName" key="dishName" {...getColumnSearchProps('dishName')} />
                 <Column title="Description" dataIndex="description" width={'15%'} render={(_, record) => (<LinesEllipsis
                     text={record.description}

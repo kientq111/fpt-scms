@@ -389,8 +389,9 @@ const ListOrderScreen = () => {
                 //     countdown = 0;
                 // }
                 return <Countdown
-                    date={parseInt(moment(record.createdDate).format('x')) + (countdown * 1000)} renderer={countdownRederer}
-                    onComplete={() => dishFinishHandle(orderDetailModal.orderId, orderDetailModal.status)} />; // just for decoration
+                    date={parseInt(moment().format('x')) + (parseInt(countdown) * 1000)} renderer={countdownRederer}
+                />;
+                // onComplete={() => dishFinishHandle(orderDetailModal.orderId, orderDetailModal.status)} />;  
             }
         },
 
@@ -570,25 +571,29 @@ const ListOrderScreen = () => {
                         title="Action"
                         key="action"
                         render={(_, record) => (
-                            <Space size="middle">
-                                <a ><EyeOutlined onClick={() => showModal(record)} /></a>
-                                <Popover content={<div>
-                                    <Space
-                                        direction="vertical"
-                                        size="small"
-                                        style={{
-                                            display: 'flex',
-                                        }}
-                                    >
-                                        <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 2) }}>Change to OrderSuccess</a>
-                                        <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 1) }}>Change to OrderPending</a>
-                                        <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 4) }}>Change to OrderCancel</a>
-                                    </Space>
-                                </div>} title="Change Status" trigger="click">
-                                    <a style={{ color: 'blue' }}>Change Status</a>
-                                </Popover>
-                            </Space>
-                        )}
+                            record.status === 1 ?
+                                <Space size="middle">
+                                    <a ><EyeOutlined onClick={() => showModal(record)} /></a>
+                                    <Popover content={<div>
+                                        <Space
+                                            direction="vertical"
+                                            size="small"
+                                            style={{
+                                                display: 'flex',
+                                            }}
+                                        >
+                                            <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 2) }}>Change to OrderSuccess</a>
+                                            <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 1) }}>Change to OrderPending</a>
+                                            <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 4) }}>Change to OrderCancel</a>
+                                        </Space>
+                                    </div>} title="Change Status" trigger="click">
+                                        <a style={{ color: 'blue' }}>Change Status</a>
+                                    </Popover>
+                                </Space>
+                                : 'No Action'
+                        )
+
+                        }
                     />
                 </StyledTable>
             </>
@@ -604,8 +609,28 @@ const ListOrderScreen = () => {
                         <Col span={6}>
                             {orderDetailModal.status === 1 &&
                                 <>
-                                    <Button type='primary' style={{ marginRight: 20 }} onClick={() => changeStatusAndReloadOrderDetail(orderDetailModal.orderId, 2)}>Done Order</Button>
-                                    <Button type='danger' onClick={() => changeStatusAndReloadOrderDetail(orderDetailModal.orderId, 4)} > Cancel Order</Button>
+
+
+
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeStatusAndReloadOrderDetail(orderDetailModal.orderId, 2)}
+                                        onCancel={() => console.log(orderDetailModal.orderId)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <Button type='primary' style={{ marginRight: 20 }} >Done Order</Button>
+                                    </Popconfirm>
+
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeStatusAndReloadOrderDetail(orderDetailModal.orderId, 4)}
+                                        onCancel={() => console.log(orderDetailModal.orderId)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <Button type='danger' > Cancel Order</Button>
+                                    </Popconfirm>
                                 </>
                             }
                         </Col>

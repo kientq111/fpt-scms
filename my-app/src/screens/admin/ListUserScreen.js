@@ -323,7 +323,7 @@ const ListUserScreen = () => {
         </Row></>}
 
       {loading === false &&
-        <StyledTable dataSource={data.users} className="table-striped-rows"
+        <StyledTable dataSource={data.users?.reverse() || []} className="table-striped-rows"
           scroll={{
             x: '200vw',
           }}
@@ -396,7 +396,17 @@ const ListUserScreen = () => {
                 >
                   <a><DeleteOutlined style={{ fontSize: 17 }} /></a>
                 </Popconfirm>
-                <a onClick={() => changeUserStatusHandle(record.username, record.status)} className='txtLink'>{record.status == 1 ? "Block" : "Unblock"}</a>
+
+                <Popconfirm
+                  title="Are you sure to change this status?"
+                  onConfirm={() => changeUserStatusHandle(record.username, record.status)}
+                  onCancel={() => console.log(record.id)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <a className='txtLink'>{record.status == 1 ? "Block" : "Unblock"}</a>
+
+                </Popconfirm>
                 <a onClick={() => verifyAccountHandle(record.first_name, record.last_name, record.email, record.is_active)} className='txtLink'>{record.is_active == true ? <a style={{ color: 'green' }}>Verified</a> : <a style={{ color: 'blue' }}>Verify Email</a>}</a>
               </Space>
             )}

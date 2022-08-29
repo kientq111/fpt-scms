@@ -1,5 +1,5 @@
 import {
-    Space, Table, Breadcrumb, message, Divider, Button, Col, Row, Input, notification, Modal
+    Space, Table, Breadcrumb, message, Divider, Button, Col, Row, Input, notification, Modal, Popconfirm
 } from 'antd';
 import { React, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -203,7 +203,7 @@ const ListCategoryScreen = () => {
             dataIndex: 'status',
             key: 'status',
             render: (text, record) => {
-                return record.status === 1 ? <p style={{color:'green'}}>Enable</p> :<p style={{color:'red'}}>Disable</p>; // just for decoration
+                return record.status === 1 ? <p style={{ color: 'green' }}>Enable</p> : <p style={{ color: 'red' }}>Disable</p>; // just for decoration
             }
         },
     ];
@@ -230,9 +230,9 @@ const ListCategoryScreen = () => {
                     <Col span={5}><LargeLoader /></Col>
                     <Col span={5}></Col>
                 </Row></>}
-            {loading === false && <StyledTable dataSource={categoryInfo} className="table-striped-rows">
+            {loading === false && <StyledTable dataSource={categoryInfo.reverse()} className="table-striped-rows">
                 <Column title="categoryName" dataIndex="categoryName" key="categoryName" {...getColumnSearchProps('categoryName')} />
-                <Column title="description" dataIndex="description" key="description" width={'15%'} render={(_, record) => record.description.length > 50 ? `${record.description.substring(0, 40)}...` : record.description}/>
+                <Column title="description" dataIndex="description" key="description" width={'15%'} render={(_, record) => record.description.length > 50 ? `${record.description.substring(0, 40)}...` : record.description} />
                 <Column title="Total Subcategory" dataIndex="subcategory" render={(_, record) => record.subcategory.length} key="sub" sorter={(a, b) => a.subcategory.length - b.subcategory.length} />
                 <Column title="Status" dataIndex="status"
                     filters={[
@@ -262,7 +262,16 @@ const ListCategoryScreen = () => {
                     render={(_, record) => (
                         <Space size="middle">
                             <a onClick={() => showModal(record)}><EyeOutlined /></a>
-                            <a onClick={() => changeCategoryStatusHandle(record.id, record.status)} style={{ color: 'blue' }} className='txtLink'>Change Status</a>
+                            <Popconfirm
+                                title="Are you sure to change this status?"
+                                onConfirm={() => changeCategoryStatusHandle(record.id, record.status)}
+                                onCancel={() => console.log(record.id)}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <a style={{ color: 'blue' }}>Change Status</a>
+
+                            </Popconfirm>
                             <a onClick={() => editCategoryHandle(record.id, record.categoryName, record.description, record.createdBy, record.createdTime)}><EditOutlined /></a>
                         </Space>
                     )}
