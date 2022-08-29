@@ -100,10 +100,16 @@ if (userInfoFromStorage) {
 }
 
 
+// const store = createStore(
+//     reducers,
+//     initialState,
+//     composeWithDevTools(applyMiddleware(...middleware))
+// )
+
 const store = createStore(
     reducers,
     initialState,
-    composeWithDevTools(applyMiddleware(...middleware))
+    applyMiddleware(...middleware)
 )
 
 export default store;

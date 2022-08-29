@@ -160,7 +160,7 @@ const AddDishScreen = () => {
             width: 1000, height: 'auto', borderRadius: 25
           }}
         >
-          <Divider plain>     <h1 style={{ fontSize: 30 }}>Add Dish</h1></Divider>
+          <Divider plain>     <h1 style={{ fontSize: 30 }}>ADD DISH</h1></Divider>
           <Form style={{ marginLeft: 100 }}
             labelCol={{
               span: 4,

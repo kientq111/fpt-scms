@@ -98,7 +98,7 @@ const AddSubCategoryScreen = () => {
       </Breadcrumb>
       <Card
         style={{ marginTop: 30, width: 1100, height: 'auto', borderRadius: 25 }}
-      >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>Add SubCategory</h1></Divider>
+      >    <Divider plain><h1 style={{ margin: 20, fontSize: 30, position: 'relative' }}>ADD SUBCATEGORY</h1></Divider>
         {subCategoryError && <h1 style={{ color: 'red', fontSize: 20 }}>{subCategoryError}</h1>}
         {(() => {
           if (loadingAddSubCategory === false) {
@@ -128,7 +128,7 @@ const AddSubCategoryScreen = () => {
             rules={[
               {
                 required: true,
-                message: 'Please input sub category name!',
+                message: 'Please input subcategory name!',
                 whitespace: true,
               },
             ]}
@@ -173,7 +173,7 @@ const AddSubCategoryScreen = () => {
             <Space size={'middle'}>
               {loadingAddSubCategory && <Loader />}
               <Button type="primary" htmlType="submit">
-                Add Category
+                Add SubCategory
               </Button>
 
             </Space>

@@ -236,7 +236,7 @@ export const addSubCategory = (subCategoryName, rawCategory, description) => asy
         const updatedTime = new Date();
         const { data } = await axios.post(
             `${base_url}/subcategory/addOrUpdateCategory`,
-            { subCategoryName, categoryId, description, status, createdBy, updatedBy, createdTime, updatedTime },
+            { subCategoryName, categoryId, description, status, createdBy, updatedBy },
             config
         )
         dispatch({

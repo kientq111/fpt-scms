@@ -110,7 +110,7 @@ const AddTableScreen = () => {
                             },
                         ]}
                     >
-                        <Input.TextArea showCount maxLength={100} style={{ height: 200 }} />
+                        <Input.TextArea showCount maxLength={1000} style={{ height: 200 }} />
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>

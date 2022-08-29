@@ -186,7 +186,7 @@ const EditCouponScreen = () => {
                             },
                         ]}
                     >
-                        <Input readOnly disabled/>
+                        <Input readOnly disabled style={{ width: '60%' }}/>
                     </Form.Item>
                     <Form.Item
                         name="typeDiscount"
@@ -213,7 +213,7 @@ const EditCouponScreen = () => {
                                     },
                                 ]}
                             >
-                                <InputNumber style={{ width: '50%' }}
+                                <InputNumber style={{ width: '30%' }}
                                     defaultValue={0}
                                     min={0}
                                     max={100}
@@ -232,7 +232,7 @@ const EditCouponScreen = () => {
                                     },
                                 ]}
                             >
-                                <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '50%' }} />
+                                <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '30%' }} />
                             </Form.Item>
                         </>
                         :
@@ -246,7 +246,7 @@ const EditCouponScreen = () => {
                                 },
                             ]}
                         >
-                            <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '50%' }} />
+                            <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '30%' }} />
                         </Form.Item>
                     }
 
@@ -274,7 +274,7 @@ const EditCouponScreen = () => {
                             },
                         ]}
                     >
-                        <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '50%' }} />
+                        <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '30%' }} />
                     </Form.Item>
 
 
@@ -291,7 +291,7 @@ const EditCouponScreen = () => {
                             },
                         ]}
                     >
-                        <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '50%' }} />
+                        <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '30%' }} />
                     </Form.Item>
                     <Form.Item
                         name="numberOfCustomerUse"
@@ -303,7 +303,7 @@ const EditCouponScreen = () => {
                             },
                         ]}
                     >
-                        <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '50%' }} />
+                        <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '30%' }} />
                     </Form.Item>
 
 
@@ -318,7 +318,7 @@ const EditCouponScreen = () => {
                             },
                         ]}
                     >
-                        <DatePicker style={{ width: '50%' }} format={"DD/MM/YYYY hh:mm:ss"} showTime />
+                        <DatePicker style={{ width: '30%' }} format={"DD/MM/YYYY hh:mm:ss"} showTime />
                     </Form.Item>
 
                     <Form.Item
@@ -331,7 +331,7 @@ const EditCouponScreen = () => {
                             },
                         ]}
                     >
-                        <DatePicker style={{ width: '50%' }} format={"DD/MM/YYYY hh:mm:ss"} showTime />
+                        <DatePicker style={{ width: '30%' }} format={"DD/MM/YYYY hh:mm:ss"} showTime />
                     </Form.Item>
 
                     <Form.Item

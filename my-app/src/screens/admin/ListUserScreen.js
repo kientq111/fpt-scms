@@ -271,7 +271,7 @@ const ListUserScreen = () => {
     console.log(firstName, lastName, email);
     axios.post(`/verifyAccountSignUpOrUpdate`, { firstName, lastName, email }, config)
       .then(res => {
-        message.info(`Sending`)
+        message.info(`Email is sent successful, Please check your verify code in your email ^^ `)
       })
       .catch(error => console.log(error));
     showModal();

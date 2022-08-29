@@ -167,6 +167,7 @@ const AddCouponScreen = () => {
                         ]}
                     >
                         <Search
+                            style={{ width: '60%' }}
                             enterButton="Generate Coupon"
                             onSearch={genCodeHandle}
                             readOnly
@@ -197,7 +198,7 @@ const AddCouponScreen = () => {
                                     },
                                 ]}
                             >
-                                <InputNumber style={{ width: '50%' }}
+                                <InputNumber style={{ width: '30%' }}
                                     defaultValue={0}
                                     min={0}
                                     max={100}
@@ -216,7 +217,7 @@ const AddCouponScreen = () => {
                                     },
                                 ]}
                             >
-                                <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '50%' }} />
+                                <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '30%' }} />
                             </Form.Item>
                         </>
                         :
@@ -230,7 +231,7 @@ const AddCouponScreen = () => {
                                 },
                             ]}
                         >
-                            <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '50%' }} />
+                            <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '30%' }} />
                         </Form.Item>
                     }
 
@@ -258,7 +259,7 @@ const AddCouponScreen = () => {
                             },
                         ]}
                     >
-                        <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '50%' }} />
+                        <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '30%' }} />
                     </Form.Item>
 
 
@@ -275,7 +276,7 @@ const AddCouponScreen = () => {
                             },
                         ]}
                     >
-                        <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '50%' }} />
+                        <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '30%' }} />
                     </Form.Item>
                     <Form.Item
                         name="numberOfCustomerUse"
@@ -287,7 +288,7 @@ const AddCouponScreen = () => {
                             },
                         ]}
                     >
-                        <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '50%' }} />
+                        <InputNumber min={0} max={9999999} defaultValue={0} style={{ width: '30%' }} />
                     </Form.Item>
 
 
@@ -302,7 +303,7 @@ const AddCouponScreen = () => {
                             },
                         ]}
                     >
-                        <DatePicker style={{ width: '50%' }} format={"DD/MM/YYYY hh:mm:ss"} showTime />
+                        <DatePicker style={{ width: '30%' }} format={"DD/MM/YYYY hh:mm:ss"} showTime w />
                     </Form.Item>
 
                     <Form.Item
@@ -315,7 +316,7 @@ const AddCouponScreen = () => {
                             },
                         ]}
                     >
-                        <DatePicker style={{ width: '50%' }} format={"DD/MM/YYYY hh:mm:ss"} showTime />
+                        <DatePicker style={{ width: '30%' }} format={"DD/MM/YYYY hh:mm:ss"} showTime />
                     </Form.Item>
 
                     <Form.Item
