@@ -210,7 +210,7 @@ export const listSubcategory = (status) => async (dispatch, getState) => {
 }
 
 
-export const addSubCategory = (subCategoryName, rawCategory, description) => async (dispatch, getState) => {
+export const addSubCategory = (subCategoryName, description) => async (dispatch, getState) => {
     try {
         dispatch({
             type: subCategoryConstatnts.SUB_CATEGORY_ADD_REQUEST,
@@ -228,12 +228,10 @@ export const addSubCategory = (subCategoryName, rawCategory, description) => asy
                 Authorization: `Bearer ${userInfo.accessToken}`
             },
         }
-        let categoryId = rawCategory.id
+        let categoryId = 1441
 
         const createdBy = userInfo.username;
         const updatedBy = userInfo.username;
-        const createdTime = new Date();
-        const updatedTime = new Date();
         const { data } = await axios.post(
             `${base_url}/subcategory/addOrUpdateCategory`,
             { subCategoryName, categoryId, description, status, createdBy, updatedBy },
@@ -256,7 +254,7 @@ export const addSubCategory = (subCategoryName, rawCategory, description) => asy
 }
 
 
-export const editSubCategory = (id, subCategoryName, rawCategory, description, createdBy, createdTime, status) => async (dispatch, getState) => {
+export const editSubCategory = (id, subCategoryName, description, createdBy, createdTime, status) => async (dispatch, getState) => {
     try {
         dispatch({
             type: subCategoryConstatnts.SUB_CATEGORY_EDIT_REQUEST,
@@ -273,11 +271,11 @@ export const editSubCategory = (id, subCategoryName, rawCategory, description, c
                 Authorization: `Bearer ${userInfo.accessToken}`
             },
         }
-        let categoryId = rawCategory.id
+        let categoryId = 1441;
 
 
         const updatedBy = userInfo.username;
-        const updatedTime = new Date();
+
         const { data } = await axios.post(
             `${base_url}/subcategory/addOrUpdateCategory`,
             { id, subCategoryName, categoryId, description, status, createdBy, updatedBy },

@@ -114,7 +114,7 @@ const AddUserScreen = () => {
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
         const address = {
-            street: `${values.street}`,
+            street: `${values.street.trim()}`,
             wards: values.wards.name,
             district: values.district.name,
             city: values.city.name,
@@ -122,7 +122,7 @@ const AddUserScreen = () => {
         }
 
 
-        dispatch(register(values.username.toLowerCase(), values.email.toLowerCase(), values.password, values.dob, values.first_name, values.last_name, values.gender.Value, values.phone, address));
+        dispatch(register(values.username.toLowerCase(), values.email.toLowerCase(), values.password, values.dob, values.first_name.trim(), values.last_name.trim(), values.gender.Value, values.phone, address));
     };
 
     useEffect(() => {
@@ -198,10 +198,9 @@ const AddUserScreen = () => {
                             },
 
 
-
                             {
                                 pattern: new RegExp('^[a-zA-Z ]*$'),
-                                message: 'First Name do not have number'
+                                message: 'First Name do not have number and special word'
                             }
                         ]}
                     >
@@ -220,7 +219,7 @@ const AddUserScreen = () => {
                             },
                             {
                                 pattern: new RegExp('^[a-zA-Z ]*$'),
-                                message: 'Last Name do not have number'
+                                message: 'Last Name do not have number and special word'
                             }
                         ]}
                     >

@@ -10,7 +10,7 @@ import {
     FormOutlined,
     CoffeeOutlined,
     TagOutlined,
-    BankOutlined
+    BankOutlined, BookOutlined
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -36,22 +36,19 @@ const itemsAdmin = [
         getItem('List Staff', '/admin/liststaff'),
         getItem('List User', '/admin/listuser')
     ]),
-    getItem('Order Manager', '2', <TagOutlined />, [
+    getItem('Order Manager', '2', <DesktopOutlined />, [
         // getItem('List User', '/admin/listuser'),
         getItem('List Order', '/admin/listorder'),
     ]),
-    getItem('Menu Manager', '3', <DesktopOutlined />, [
+    getItem('Menu Manager', '3', <BookOutlined />, [
         getItem('Add Menu', '/admin/addmenu'),
         getItem('List Menu', '/admin/listmenu'),
         getItem('Add Dish', '/admin/adddish'),
         getItem('List Dish', '/admin/listdish'),
-        getItem('Add Category', '/admin/addcategory'),
         getItem('Add SubCategory', '/admin/addsubcategory'),
-        getItem('List Category', '/admin/listcategory'),
         getItem('List Subcategory', '/admin/listsubcategory'),
     ]),
     getItem('Table Manager', '4', <CoffeeOutlined />, [
-        getItem('Add Table', '/admin/addtable'),
         getItem('List Table', '/admin/listtable'),
     ]),
     getItem('Discount Manager', '5', <TagOutlined />, [
@@ -83,9 +80,9 @@ const itemsStaff = [
         getItem('List Menu', '/admin/listmenu'),
         getItem('Add Dish', '/admin/adddish'),
         getItem('List Dish', '/admin/listdish'),
-        getItem('Add Category', '/admin/addcategory'),
+   
         getItem('Add SubCategory', '/admin/addsubcategory'),
-        getItem('List Category', '/admin/listcategory'),
+      
         getItem('List Subcategory', '/admin/listsubcategory'),
     ]),
     getItem('Table Manager', '4', <CoffeeOutlined />, [

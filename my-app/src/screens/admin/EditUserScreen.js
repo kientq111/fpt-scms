@@ -182,14 +182,14 @@ const EditUserScreen = () => {
         }
 
         const address = {
-            street: `${values.street}`,
+            street: `${values.street.trim()}`,
             wards: ward,
             district: district,
             city: city,
             country: 'Việt Nam',
         }
         console.log(gender);
-        dispatch(updateUser(location.state.id, values.username, values.email, values.dob, values.first_name, values.last_name, values.phone, address, gender));
+        dispatch(updateUser(location.state.id, values.username, values.email, values.dob, values.first_name.trim(), values.last_name.trim(), values.phone, address, gender));
 
     };
 

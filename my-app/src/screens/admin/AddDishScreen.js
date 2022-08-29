@@ -96,7 +96,7 @@ const AddDishScreen = () => {
   //CALL API ZONEEE
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
-    dispatch(addDish(values.dishname, values.price, values.description, values.menu, values.subcategory, img, values.finishedTime));
+    dispatch(addDish(values.dishname, values.price, values.description.trim(), values.menu, values.subcategory, img, values.finishedTime));
   };
 
 
@@ -246,7 +246,7 @@ const AddDishScreen = () => {
               <TextArea rows={4} maxLength={500} showCount />
             </Form.Item>
             <Form.Item label="Image" name="dishimg" >
-              <input type="file" onChange={ImageHandler}  accept="image/png, image/gif, image/jpeg"/>
+              <input type="file" onChange={ImageHandler} accept="image/png, image/gif, image/jpeg" />
 
             </Form.Item>
             <Form.Item style={{ marginLeft: 160 }}>

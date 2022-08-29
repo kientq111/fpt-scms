@@ -55,18 +55,14 @@ const style = {
 
 const AddSubCategoryScreen = () => {
   const dispatch = useDispatch()
-  const categoryData = useSelector((state) => state.categoryList);
   const addSubCategorySelector = useSelector((state) => state.subCategoryAdd);
   const loadingAddSubCategory = addSubCategorySelector.loading;
   const subCategoryInfo = addSubCategorySelector.subCategoryInfo;
   const subCategoryError = addSubCategorySelector.error;
-  let optionListSubCategoryMenu = [];
-  const { loading, categoryInfo } = categoryData;
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
-    dispatch(addSubCategory(values.subCategoryName, values.category, values.description));
-    console.log(categoryInfo);
+    dispatch(addSubCategory(values.subCategoryName, values.description));
   };
 
 
@@ -79,14 +75,8 @@ const AddSubCategoryScreen = () => {
 
   }, [])
 
-  useEffect(() => {
-    dispatch(listCategory(1))
-    console.log(subCategoryInfo)
-  }, [subCategoryInfo])
 
-  if (loading === false) {
-    optionListSubCategoryMenu = categoryInfo;
-  }
+
 
   return (
     <Row>
@@ -134,26 +124,6 @@ const AddSubCategoryScreen = () => {
             ]}
           >
             <Input />
-          </Form.Item>
-
-          <Form.Item
-            name="category"
-            label="Category"
-            rules={[
-              {
-                required: true,
-                message: 'Please select Category!',
-              },
-            ]}
-          >
-            <Select
-              options={optionListSubCategoryMenu}
-              placeholder="Select category"
-              getOptionLabel={option => option.categoryName}
-              getOptionValue={option => option.id}
-              isSearchable={true}
-              styles={style}
-            />
           </Form.Item>
 
           <Form.Item
