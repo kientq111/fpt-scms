@@ -1,5 +1,5 @@
 import {
-    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col, DatePicker, Popover, notification
+    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col, DatePicker, Popover, notification, Modal
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,13 +9,30 @@ import Highlighter from 'react-highlight-words';
 import styled from 'styled-components';
 import moment from 'moment'
 import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
-import { Loader, LargeLoader } from '../../components/Loader';
+import { LargeLoader } from '../../components/Loader';
+import Loader from '../../components/Loader';
 import { listSubcategory } from '../../actions/categoryAction';
 import { changeTableStatus, listTables } from '../../actions/tableAction';
 import LinesEllipsis from 'react-lines-ellipsis'
+import axios from 'axios';
+
 const { Column, ColumnGroup } = Table;
 const { RangePicker } = DatePicker;
 const { Search } = Input;
+
+
+const tailFormItemLayout = {
+    wrapperCol: {
+        xs: {
+            span: 20,
+            offset: 0,
+        },
+        sm: {
+            span: 20,
+            offset: 8,
+        },
+    },
+};
 
 
 const StyledTable = styled((props) => <Table {...props} />)`
@@ -39,6 +56,21 @@ const ListTableScreen = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [addLoading, setAddLoading] = useState(false);
+    const userLoginInfo = useSelector((state) => state.userLogin);
+    const { userInfo } = userLoginInfo;
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const handleOk = () => {
+        setIsModalVisible(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -201,6 +233,34 @@ const ListTableScreen = () => {
         })
     }
 
+    const addTable = async (values) => {
+        try {
+
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            }
+            const status = 0;
+            const type = 0;
+            const description = values.description;
+            console.log({ description })
+
+            const canteenId = 1;
+            const { data } = await axios.post(`/table/addOrUpdate`, { description, canteenId, status, type, }, config)
+            dispatch(listTables());
+            setIsModalVisible(false);
+            openNotificationWithIcon("success", "ADD TABLE SUCCESS!")
+
+        } catch (error) {
+            const message =
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message
+            console.log(message);
+        }
+    }
+
     return (
         <>
             <Breadcrumb style={{ marginTop: 10 }}>
@@ -209,7 +269,7 @@ const ListTableScreen = () => {
                     <a href="">List Table</a>
                 </Breadcrumb.Item>
             </Breadcrumb>
-            <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/addtable'} style={{ textDecoration: 'none' }}>Add Table</Link></Button></Divider>
+            <Divider orientation="right">  <Button type="primary" size="middle" onClick={showModal}>Add Table</Button></Divider>
 
             {loading === true && <>
                 <br></br> <br /> <br />
@@ -292,6 +352,39 @@ const ListTableScreen = () => {
                 />
             </StyledTable>}
 
+
+            <Modal title="ADD TABLE" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} width={'30%'}>
+                <Form
+                    onFinish={addTable}
+                >
+                    <Form.Item
+                        label="Description"
+                        name="description"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input code here!',
+                                whitespace: true
+                            },
+                        ]}
+                    >
+                        <Input.TextArea showCount maxLength={1000} style={{ height: 200 }} />
+                    </Form.Item>
+                    <Form.Item  {...tailFormItemLayout}
+                    >
+                        <Space size={'middle'}>
+                            <Button type="primary" htmlType="submit" size='middle' >
+                                ADD TABLE
+                            </Button>
+                            {addLoading && <Loader />}
+                        </Space>
+
+
+                    </Form.Item>
+                    <h1></h1>
+                </Form>
+
+            </Modal>
         </>
 
     );
