@@ -1,5 +1,5 @@
 import {
-    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col, DatePicker, Popover, notification
+    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Row, Col, DatePicker, Popover, notification, Modal
 } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,13 +9,30 @@ import Highlighter from 'react-highlight-words';
 import styled from 'styled-components';
 import moment from 'moment'
 import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
-import { Loader, LargeLoader } from '../../components/Loader';
+import { LargeLoader } from '../../components/Loader';
+import Loader from '../../components/Loader';
 import { listSubcategory } from '../../actions/categoryAction';
 import { changeTableStatus, listTables } from '../../actions/tableAction';
 import LinesEllipsis from 'react-lines-ellipsis'
+import axios from 'axios';
+
 const { Column, ColumnGroup } = Table;
 const { RangePicker } = DatePicker;
 const { Search } = Input;
+
+
+const tailFormItemLayout = {
+    wrapperCol: {
+        xs: {
+            span: 20,
+            offset: 0,
+        },
+        sm: {
+            span: 20,
+            offset: 8,
+        },
+    },
+};
 
 
 const StyledTable = styled((props) => <Table {...props} />)`
@@ -39,6 +56,21 @@ const ListTableScreen = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [addLoading, setAddLoading] = useState(false);
+    const userLoginInfo = useSelector((state) => state.userLogin);
+    const { userInfo } = userLoginInfo;
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const handleOk = () => {
+        setIsModalVisible(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -201,6 +233,34 @@ const ListTableScreen = () => {
         })
     }
 
+    const addTable = async (values) => {
+        try {
+
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            }
+            const status = 0;
+            const type = 0;
+            const description = values.description;
+            console.log({ description })
+
+            const canteenId = 1;
+            const { data } = await axios.post(`/table/addOrUpdate`, { description, canteenId, status, type, }, config)
+            dispatch(listTables());
+            setIsModalVisible(false);
+            openNotificationWithIcon("success", "ADD TABLE SUCCESS!")
+
+        } catch (error) {
+            const message =
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message
+            console.log(message);
+        }
+    }
+
     return (
         <>
             <Breadcrumb style={{ marginTop: 10 }}>
@@ -209,7 +269,7 @@ const ListTableScreen = () => {
                     <a href="">List Table</a>
                 </Breadcrumb.Item>
             </Breadcrumb>
-            <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/addtable'} style={{ textDecoration: 'none' }}>Add Table</Link></Button></Divider>
+            <Divider orientation="right">  <Button type="primary" size="middle" onClick={showModal}>Add Table</Button></Divider>
 
             {loading === true && <>
                 <br></br> <br /> <br />
@@ -228,7 +288,7 @@ const ListTableScreen = () => {
                     <Col span={6}><Search placeholder="input search text" enterButton="Search" loading /></Col>
                 </Row>
             </div> */}
-            {loading === false && <StyledTable dataSource={tables} className="table-striped-rows" >
+            {loading === false && <StyledTable dataSource={tables?.reverse() || []} className="table-striped-rows" >
                 <Column title="Table Number " dataIndex="tableNumber" key="tableNumber" {...getColumnSearchProps('tableNumber')}
 
                 />
@@ -241,7 +301,7 @@ const ListTableScreen = () => {
                 />)} />
                 <Column title="Status" dataIndex="status" key="status"
 
-                    render={(_, record) => (record.status === 1 ? (<p style={{ color: 'green' }}>Booked</p>) : record.status === 2 ? (<p style={{ color: 'blue' }}>Free</p>) : record.status === 4 ? (<p style={{ color: 'red' }}>Cancel</p>) : (<p style={{ color: 'gray' }}>Unavailable</p>) )}
+                    render={(_, record) => (record.status === 1 ? (<p style={{ color: 'green' }}>Booked</p>) : record.status === 2 ? (<p style={{ color: 'blue' }}>Free</p>) : record.status === 4 ? (<p style={{ color: 'red' }}>Cancel</p>) : (<p style={{ color: 'gray' }}>Unavailable</p>))}
                     filters={[
                         {
                             text: 'Table Booked',
@@ -250,10 +310,6 @@ const ListTableScreen = () => {
                         {
                             text: 'Table Free',
                             value: 2,
-                        },
-                        {
-                            text: 'Table Cancel',
-                            value: 4,
                         },
                         {
                             text: 'Table Unavailable',
@@ -284,10 +340,36 @@ const ListTableScreen = () => {
                                         display: 'flex',
                                     }}
                                 >
-                                    <a className='txtLink' onClick={() => { changeTableStatusHandle(record.id, record.status, 1) }}>Table Booked</a>
-                                    <a className='txtLink' onClick={() => { changeTableStatusHandle(record.id, record.status, 2) }}>Table Free</a>
-                                    <a className='txtLink' onClick={() => { changeTableStatusHandle(record.id, record.status, 4) }}>Table Cancel</a>
-                                    <a className='txtLink' onClick={() => { changeTableStatusHandle(record.id, record.status, 8) }}>Table Unavailable</a>
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeTableStatusHandle(record.id, record.status, 1)}
+                                        onCancel={() => console.log(record.id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <a className='txtLink'>Table Booked</a>
+
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeTableStatusHandle(record.id, record.status, 2)}
+                                        onCancel={() => console.log(record.id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <a className='txtLink'>Table Free</a>
+
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeTableStatusHandle(record.id, record.status, 8)}
+                                        onCancel={() => console.log(record.id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <a className='txtLink' >Table Unavailable</a>
+
+                                    </Popconfirm>
                                 </Space>
                             </div>} title="Change Status" trigger="click">
                                 <a style={{ color: 'blue' }}>Change Status</a>
@@ -297,6 +379,39 @@ const ListTableScreen = () => {
                 />
             </StyledTable>}
 
+
+            <Modal title="ADD TABLE" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} width={'30%'}>
+                <Form
+                    onFinish={addTable}
+                >
+                    <Form.Item
+                        label="Description"
+                        name="description"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input code here!',
+                                whitespace: true
+                            },
+                        ]}
+                    >
+                        <Input.TextArea showCount maxLength={1000} style={{ height: 200 }} />
+                    </Form.Item>
+                    <Form.Item  {...tailFormItemLayout}
+                    >
+                        <Space size={'middle'}>
+                            <Button type="primary" htmlType="submit" size='middle' >
+                                ADD TABLE
+                            </Button>
+                            {addLoading && <Loader />}
+                        </Space>
+
+
+                    </Form.Item>
+                    <h1></h1>
+                </Form>
+
+            </Modal>
         </>
 
     );

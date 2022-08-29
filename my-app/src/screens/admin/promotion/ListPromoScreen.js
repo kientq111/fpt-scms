@@ -4,12 +4,11 @@ import {
 import { React, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import { changeCategoryStatus, listCategory } from '../../actions/categoryAction';
-import { LargeLoader } from '../../components/Loader';
 import moment from 'moment'
 import styled from 'styled-components';
 import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { SearchOutlined } from '@ant-design/icons';
+import axios from 'axios';
 import Highlighter from 'react-highlight-words';
 const { Column, ColumnGroup } = Table;
 
@@ -29,21 +28,16 @@ const openNotificationWithIcon = (type, message) => {
 };
 
 
-const ListCategoryScreen = () => {
+const ListPromoScreen = () => {
+    const userLoginInfo = useSelector((state) => state.userLogin);
+    const { userInfo } = userLoginInfo;
     const dispatch = useDispatch();
-    const dataCategory = useSelector((state) => state.categoryList);
-    const categoryChangeStatusSelector = useSelector((state) => state.categoryChangeStatus);
-    const editCategorySelector = useSelector((state) => state.categoryEdit);
-    const editCategorySuccess = editCategorySelector.categoryInfo;
-    const { success } = categoryChangeStatusSelector;
-    const { loading, categoryInfo } = dataCategory
     const navigate = useNavigate();
-    const [userDetailModal, setUserDetailModal] = useState({});
-    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [loading, setLoading] = useState()
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
-
+    const [listPromo, setListPromo] = useState([]);
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -141,99 +135,101 @@ const ListCategoryScreen = () => {
     });
 
 
+    const getListPromo = async (startDate, endDate) => {
 
-
-    useEffect(() => {
-        if (editCategorySuccess) {
-            if (editCategorySuccess.success === true) {
-                openNotificationWithIcon('success', 'UPDATE CATEGORY SUCCESSFUL');
-            }
+        try {
+            setLoading(true)
+            const res = await axios.get(`/promotion/getListPromotion`, {
+                params: {
+                    promotionName: '',
+                    promotionType: '',
+                    promotionStatus: '',
+                    promotionFromDateCreated: '',
+                    promotionToDateCreated: '',
+                    createdBy: '',
+                    pageSize: 100,
+                    pageIndex: 1,
+                },
+                headers: {
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            })
+            setLoading(false)
+            setListPromo(res.data?.data)
+            console.log(res.data?.data);
+        } catch (error) {
+            console.log(error);
         }
+    }
 
-        dispatch(listCategory());
-    }, [success]);
+    const changePromoStatus = async (id, status) => {
+        try {
 
-    const editCategoryHandle = (id, categoryName, description, createdBy, createdTime) => {
-        navigate('/admin/editcategory', {
+            const res = await axios.put(`/promotion/changeStatusPromotion`, {}, {
+                params: {
+                    status: status === 1 ? 0 : 1,
+                    id: id,
+                },
+                headers: {
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            })
+            console.log(res.data?.data);
+            getListPromo()
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    const changeStatusHandle = (id, status) => {
+        changePromoStatus(id, status);
+
+    }
+
+
+    const editPromoHandle = (promo) => {
+        navigate('/admin/editpromo', {
             state:
             {
-                id: id,
-                categoryName: categoryName,
-                description: description,
-                createdTime: createdTime,
-                createdBy: createdBy,
+                id: promo.id,
+                promoName: promo.name,
+                description: promo.description,
+                promotionPercent: promo.promotionPercent,
+                salePrice: promo.salePrice,
+                promotionStartDate: promo.promotionStartDate,
+                promotionStartDate: promo.promotionStartDate,
+                promotionEndDate: promo.promotionEndDate,
+                status: promo.status,
+                listDish: promo.listDish,
+                createdDate: promo.createdDate,
+                createdBy: promo.createdBy,
+                type: promo.type,
             }
         })
     }
 
-    const changeCategoryStatusHandle = (id, status) => {
-        openNotificationWithIcon('success', 'CATEGORY CHANGE STATUS SUCCESSFUL');
-        dispatch(changeCategoryStatus(id, status))
-    }
+    useEffect(() => {
+        getListPromo();
+    }, []);
 
-    const showModal = (record) => {
-        setUserDetailModal({
-            categoryName: record.categoryName,
-            description: record.description,
-            createdTime: record.createdTime,
-            createdBy: record.createdBy,
-            updatedBy: record.updatedBy,
-            updatedTime: record.updatedTime,
-            subcategory: record.subcategory
-        })
-        setIsModalVisible(true);
-    };
-
-    const dataSource = userDetailModal.subcategory;
-
-
-    const columns = [
-        {
-            title: 'SubCategory Name',
-            dataIndex: 'subCategoryName',
-            key: 'subCategoryName',
-        },
-        {
-            title: 'Description',
-            dataIndex: 'description',
-            key: 'description',
-        },
-        {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-            render: (text, record) => {
-                return record.status === 1 ? <p style={{ color: 'green' }}>Enable</p> : <p style={{ color: 'red' }}>Disable</p>; // just for decoration
-            }
-        },
-    ];
-
-    const handleOk = () => {
-        setIsModalVisible(false);
-    };
     return (
         <>
 
             <Breadcrumb style={{ marginTop: 10 }}>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>
-                    <a href="">List category</a>
+                    <a href="">List Promotion</a>
                 </Breadcrumb.Item>
             </Breadcrumb>
-            <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/addcategory'} style={{ textDecoration: 'none' }}>Add Category</Link></Button></Divider>
-            {loading === true && <>
-                <br></br> <br /> <br />
-                <br></br> <br /> <br />
-                <Row>
-                    <Col span={5}></Col>
-                    <Col span={5}></Col>
-                    <Col span={5}><LargeLoader /></Col>
-                    <Col span={5}></Col>
-                </Row></>}
-            {loading === false && <StyledTable dataSource={categoryInfo.reverse()} className="table-striped-rows">
-                <Column title="categoryName" dataIndex="categoryName" key="categoryName" {...getColumnSearchProps('categoryName')} />
-                <Column title="description" dataIndex="description" key="description" width={'15%'} render={(_, record) => record.description.length > 50 ? `${record.description.substring(0, 40)}...` : record.description} />
-                <Column title="Total Subcategory" dataIndex="subcategory" render={(_, record) => record.subcategory.length} key="sub" sorter={(a, b) => a.subcategory.length - b.subcategory.length} />
+            <Divider orientation="right">  <Button type="primary" size="middle" ><Link to={'/admin/addpromo'} style={{ textDecoration: 'none' }}>Add Promotion</Link></Button></Divider>
+
+
+            <StyledTable dataSource={listPromo.reverse()} className="table-striped-rows">
+                <Column title="Promotion Name" dataIndex="name" key="name" {...getColumnSearchProps('name')} />
+                <Column title="Description" dataIndex="description" key="description" width={'15%'} />
+                <Column title="Promotion Percent" dataIndex="promotionPercent" key="promotionPercent" width={'2%'} render={(_, record) => `${record.promotionPercent}%`} sorter={(a, b) => a.promotionPercent - b.promotionPercent} />
+                <Column title="Sale Price" dataIndex="salePrice" key="salePrice" width={'2%'} sorter={(a, b) => a.salePrice - b.salePrice} />
                 <Column title="Status" dataIndex="status"
                     filters={[
                         {
@@ -250,21 +246,21 @@ const ListCategoryScreen = () => {
                     onFilter={(value, record) => record.status === value}
                     key="status"
                 />
-                <Column title="Created Time" dataIndex="createdTime" key="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.createdTime).unix() - moment(b.createdTime).unix()} />
+                <Column title="Start Date" dataIndex="promotionStartDate" key="promotionStartDate" render={(_, record) => (moment(record.promotionStartDate).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.promotionStartDate).unix() - moment(b.promotionStartDate).unix()} />
+                <Column title="End Date" dataIndex="promotionEndDate" key="promotionEndDate" render={(_, record) => (moment(record.promotionEndDate).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.promotionEndDate).unix() - moment(b.promotionEndDate).unix()} />
+                <Column title="Created Time" dataIndex="createdTime" key="createdTime" render={(_, record) => (moment(record.createdDate).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.createdDate).unix() - moment(b.createdDate).unix()} />
                 <Column title="Created By" dataIndex="createdBy" key="createdBy" {...getColumnSearchProps('createdBy')} />
-
-                <Column title="Updated Time" dataIndex="updatedTime" key="updatedTime" render={(_, record) => (moment(record.updatedTime).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.updatedTime).unix() - moment(b.updatedTime).unix()} />
+                <Column title="Updated Time" dataIndex="updatedTime" key="updatedTime" render={(_, record) => (moment(record.updatedDate).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.updatedDate).unix() - moment(b.updatedDate).unix()} />
                 <Column title="Updated By" dataIndex="updatedBy" key="updatedBy" {...getColumnSearchProps('updatedBy')} />
-
                 <Column
                     title="Action"
                     key="action"
                     render={(_, record) => (
                         <Space size="middle">
-                            <a onClick={() => showModal(record)}><EyeOutlined /></a>
+                            <a onClick={() => editPromoHandle(record)}><EditOutlined /></a>
                             <Popconfirm
                                 title="Are you sure to change this status?"
-                                onConfirm={() => changeCategoryStatusHandle(record.id, record.status)}
+                                onConfirm={() => changeStatusHandle(record.id, record.status)}
                                 onCancel={() => console.log(record.id)}
                                 okText="Yes"
                                 cancelText="No"
@@ -272,25 +268,12 @@ const ListCategoryScreen = () => {
                                 <a style={{ color: 'blue' }}>Change Status</a>
 
                             </Popconfirm>
-                            <a onClick={() => editCategoryHandle(record.id, record.categoryName, record.description, record.createdBy, record.createdTime)}><EditOutlined /></a>
                         </Space>
                     )}
                 />
-            </StyledTable>}
-
-
-            <>
-                <Modal title="Category Detail" visible={isModalVisible} onOk={handleOk} onCancel={handleOk} width={'50%'}>
-                    <p><b>Category Name:</b> {userDetailModal.categoryName}</p>
-                    <p><b>Created Time:</b> {moment(userDetailModal.created_time).format('DD/MM/YYYY')}</p>
-                    <p><b>Updated Time:</b> {moment(userDetailModal.updatedTime).format('DD/MM/YYYY')}</p>
-                    <p><b>Description:</b> {userDetailModal.description}</p>
-                    <h5>SubCategory Table</h5>
-                    <Table dataSource={dataSource} columns={columns} />;
-                </Modal>
-            </>
+            </StyledTable>
         </>
     )
 }
 
-export default ListCategoryScreen;
+export default ListPromoScreen;

@@ -161,7 +161,7 @@ const ListUserScreen = () => {
 
   const [form] = Form.useForm();
   const location = useLocation();
-  const editUser = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street, gender) => {
+  const editUser = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, wards, street, gender) => {
 
     navigate('/admin/edituser', {
       state:
@@ -178,6 +178,7 @@ const ListUserScreen = () => {
         country: country,
         city: city,
         district: district,
+        wards: wards,
         street: street,
         history: location.pathname
       }
@@ -212,7 +213,7 @@ const ListUserScreen = () => {
   };
 
 
-  const userDetailHandler = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street) => {
+  const userDetailHandler = (id, username, firstname, lastname, dob, email, phone, status, country, city, district, street, gender) => {
     console.log(id);
     navigate('/admin/userdetail', {
       state:
@@ -229,7 +230,8 @@ const ListUserScreen = () => {
         city: city,
         district: district,
         street: street,
-        history: location.pathname
+        history: location.pathname,
+        gender: gender
       }
     })
   }
@@ -363,6 +365,7 @@ const ListUserScreen = () => {
           <Column title="Country" dataIndex="address" render={(_, record) => record.address.country} key="country" />
           <Column title="City" dataIndex="address" render={(_, record) => record.address.city} key="city" />
           <Column title="District" dataIndex="address" render={(_, record) => record.address.district} key="district" />
+          <Column title="Wards" dataIndex="wards" render={(_, record) => record.address.wards} key="wards" />
           <Column title="Street" dataIndex="address" render={(_, record) => <LinesEllipsis
             text={record.address.street}
             maxLine='1'
@@ -381,9 +384,9 @@ const ListUserScreen = () => {
             render={(_, record) => (
               <Space size="middle">
                 <a><EyeOutlined onClick={() => userDetailHandler(record.id, record.username, record['first_name'], record['last_name'],
-                  record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street)} /></a>
+                  record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street, record.gender)} /></a>
                 <a onClick={() => editUser(record.id, record.username, record['first_name'], record['last_name'],
-                  record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.street, record.gender)}><EditOutlined style={{ fontSize: 17 }} /></a>
+                  record.dob, record.email, record.phone, record.status, record.address.country, record.address.city, record.address.district, record.address.wards, record.address.street, record.gender)}><EditOutlined style={{ fontSize: 17 }} /></a>
                 <Popconfirm
                   title="Are you sure to delete this task?"
                   onConfirm={() => confirm(record.id)}
@@ -393,7 +396,16 @@ const ListUserScreen = () => {
                 >
                   <a><DeleteOutlined style={{ fontSize: 17 }} /></a>
                 </Popconfirm>
-                <a onClick={() => changeUserStatusHandle(record.username, record.status)} className='txtLink'>{record.status == 1 ? "Block" : "Unblock"}</a>
+                <Popconfirm
+                  title="Are you sure to change this status?"
+                  onConfirm={() => changeUserStatusHandle(record.username, record.status)}
+                  onCancel={() => console.log(record.id)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <a className='txtLink'>{record.status == 1 ? "Block" : "Unblock"}</a>
+
+                </Popconfirm>
                 <a onClick={() => verifyAccountHandle(record.first_name, record.last_name, record.email, record.is_active)} className='txtLink'>{record.is_active == true ? <a style={{ color: 'green' }}>Verified</a> : <a style={{ color: 'blue' }}>Verify Email</a>}</a>
               </Space>
             )}

@@ -224,7 +224,7 @@ const ListMenuScreen = () => {
 
             {loading === false && <StyledTable dataSource={menus} className="table-striped-rows" >
                 <Column title="Menu Name" dataIndex="menuName" key="menuName" {...getColumnSearchProps('menuName')} />
-                <Column title="Description" dataIndex="description" key="description" />
+                <Column title="Description" dataIndex="description" key="description" render={(_, record) => record.description.length > 50 ? `${record.description.substring(0, 40)}...` : record.description} />
                 <Column title="Menu Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: "green" }}>Enable</p> : <p style={{ color: "red" }}>Disable</p>)}
                     filters={[{
                         text: 'Enable',
@@ -245,7 +245,17 @@ const ListMenuScreen = () => {
                     key="action"
                     render={(_, record) => (
                         <Space size="middle">
-                            <a onClick={() => { changeStatusHandle(record.id, record.status) }}>{record.status == 1 ? <Tag color="error">Change Status</Tag> : <Tag color="green">Change Status</Tag>}</a>
+
+                            <Popconfirm
+                                title="Are you sure to change this status?"
+                                onConfirm={() => changeStatusHandle(record.id, record.status)}
+                                onCancel={() => console.log(record.id)}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <a>{record.status == 1 ? <Tag color="error">Change Status</Tag> : <Tag color="green">Change Status</Tag>}</a>
+
+                            </Popconfirm>
                             <a onClick={() => { menuDetailHandler(record.id) }}><EyeOutlined /></a>
                             <a onClick={() => { editMenuHandle(record.id, record.menuName, record.description, record.status, record.createdBy, record.createdTime) }}><EditOutlined style={{ fontSize: 17 }} /></a>
                         </Space>

@@ -38,6 +38,8 @@ export const userRegisterReducer = (state = { users: [] }, action) => {
       return { loading: false, userInfo: action.payload }
     case userConstants.USER_REGISTER_FAIL:
       return { loading: false, error: action.payload }
+    case userConstants.USER_REGISTER_RESET:
+      return {}
     case userConstants.USER_LOGOUT:
       return {}
     default:
@@ -111,6 +113,8 @@ export const AddStaffReducer = (state = { users: [] }, action) => {
       return { loading: false, userInfo: action.payload }
     case staffConstants.STAFF_ADD_FAIL:
       return { loading: false, error: action.payload }
+    case staffConstants.STAFF_ADD_RESET:
+      return {}
     default:
       return state
   }

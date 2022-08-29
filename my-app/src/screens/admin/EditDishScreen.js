@@ -3,7 +3,7 @@ import {
   Form,
   Input,
   InputNumber,
-  Switch, Card, Space, Divider, Breadcrumb, Image
+  Switch, Card, Space, Divider, Breadcrumb, Image, message
 } from 'antd';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,7 +13,16 @@ import { listMenus } from '../../actions/menuAction';
 import Loader from '../../components/Loader';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Select from "react-select";
+import axios from 'axios';
 const { TextArea } = Input;
+
+
+const style = {
+  control: (base) => ({
+    ...base,
+    borderColor: 'black'
+  })
+}
 
 
 const EditDishScreen = () => {
@@ -33,7 +42,8 @@ const EditDishScreen = () => {
   const editDishSelector = useSelector((state) => state.dishEdit);
   const selectSubcategorySelector = useSelector((state) => state.subcategoryList);
   const selectMenuSelector = useSelector((state) => state.menuList);
-
+  const userLoginInfo = useSelector((state) => state.userLogin);
+  const { userInfo } = userLoginInfo;
   const editDishLoading = editDishSelector.loading;
   const editDishSuccess = editDishSelector.success;
   const { subcategoryInfo } = selectSubcategorySelector;
@@ -43,6 +53,7 @@ const EditDishScreen = () => {
   const loadingMenu = selectMenuSelector.loading
   const [isMenuOptionChanged, setIsMenuOptionChanged] = useState(false);
   let [isSubCategoryOptionChanged, setIsSubCategoryOptionChanged] = useState(false);
+  const [dishImagePreview, setDishImagePreview] = useState(location.state.image);
   const [dishImage, setDishImage] = useState(location.state.image);
 
   useEffect(() => {
@@ -115,11 +126,40 @@ const EditDishScreen = () => {
   const ImageHandler = e => {
     const files = e.target.files;
     const file = files[0];
+    imageOnChangeHandle(file)
     getBase64(file);
   };
 
+
+  const imageOnChangeHandle = async (file) => {
+    try {
+      const configImg = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${userInfo.accessToken}`,
+        },
+      }
+
+      if (typeof (file) === 'object') {
+        const resImg = await axios.post(
+          `/image/upload`,
+          { file },
+          configImg
+        )
+        if (resImg.data?.success === false) {
+          message.error("Opps, There's something error when you upload! please re-upload image")
+          return
+        }
+        setDishImage(resImg.data?.data?.imageUrl)
+      }
+    } catch (error) {
+
+    }
+  }
+
+
   const onLoad = fileString => {
-    setDishImage(fileString);
+    setDishImagePreview(fileString);
   };
 
   const getBase64 = file => {
@@ -225,6 +265,7 @@ const EditDishScreen = () => {
                   {
                     required: true,
                     message: 'Please input dish name!',
+                    whitespace: true
                   },
                 ]}
               >
@@ -259,6 +300,7 @@ const EditDishScreen = () => {
                   onChange={handleMenuSelect}
                   isSearchable={true}
                   isMulti
+                  styles={style}
                 />
               </Form.Item>
 
@@ -269,17 +311,26 @@ const EditDishScreen = () => {
                   defaultValue={optionListSubCategory[indexSubCategoryOption]}
                   onChange={handleSubCategorySelect}
                   isSearchable={true}
+                  styles={style}
                 />
               </Form.Item>
-              <Form.Item label="Description" name="description">
+              <Form.Item label="Description" name="description"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please select description!',
+                    whitespace: true
+                  },
+                ]}
+              >
                 <TextArea rows={4} maxLength={500} showCount />
               </Form.Item>
               <Form.Item label="Image" name="dishimg" >
-                <input type="file" onChange={ImageHandler} />
+                <input type="file" onChange={ImageHandler} accept="image/png, image/gif, image/jpeg" />
                 <h1></h1>
                 <Image
                   width={200}
-                  src={`${dishImage}`}
+                  src={`${dishImagePreview}`}
                 />
               </Form.Item>
               <Form.Item style={{ marginLeft: 160 }}>

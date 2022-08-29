@@ -203,7 +203,7 @@ const ListBlogScreen = () => {
                     <Col span={5}><LargeLoader /></Col>
                     <Col span={5}></Col>
                 </Row></>}
-            {loading === false && <StyledTable dataSource={blogs} className="table-striped-rows">
+            {loading === false && <StyledTable dataSource={blogs?.reverse() || []} className="table-striped-rows">
                 <Column title="Blog Name" dataIndex="name" key="name" {...getColumnSearchProps('dishName')} />
                 {/* <Column title="Content" dataIndex="content" key="content" width={'25%'} {...getColumnSearchProps('content')}
                     render={(_, record) => (<LinesEllipsis
@@ -244,7 +244,17 @@ const ListBlogScreen = () => {
                             >
                                 <a><DeleteOutlined style={{ fontSize: 17 }} /></a>
                             </Popconfirm>
-                            <a onClick={() => changeBlogStatusHandle(record.id, record.status)}>{record.status == 1 ? <Tag color="error">Change Status</Tag> : <Tag color="green">Change Status</Tag>}</a>
+
+                            <Popconfirm
+                                title="Are you sure to change this status?"
+                                onConfirm={() => changeBlogStatusHandle(record.id, record.status)}
+                                onCancel={() => console.log(record.id)}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <a>{record.status == 1 ? <Tag color="error">Change Status</Tag> : <Tag color="green">Change Status</Tag>}</a>
+
+                            </Popconfirm>
                             <a onClick={() => editBlogHandle(record.id, record.name, record.content, record.image, record.created_by, record.created_time)}><EditOutlined style={{ fontSize: 17 }} /></a>
                         </Space>
                     )}

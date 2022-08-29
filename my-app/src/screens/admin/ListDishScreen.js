@@ -1,5 +1,5 @@
 import {
-    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Col, Row, notification
+    Space, Table, Breadcrumb, message, Popconfirm, Form, Button, Input, Divider, Tag, Col, Row, notification, Popover
 } from 'antd';
 import { React, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -158,9 +158,13 @@ const ListDishScreen = () => {
 
 
     //Delete Update Form
-    const changeStatusHandle = (id, status) => {
-        console.log(id, status);
-        dispatch(changeDishStatus(id, status));
+    const changeStatusHandle = (id, status, statusChanged) => {
+        if (status === statusChanged) {
+            openNotificationWithIcon('error', 'CAN NOT UPDATE WITH SAME STATUS');
+            return
+        }
+
+        dispatch(changeDishStatus(id, statusChanged));
         openNotificationWithIcon('success', 'UPDATE DISH STATUS SUCCESSFUL');
     };
 
@@ -215,7 +219,7 @@ const ListDishScreen = () => {
                     <Col span={5}><LargeLoader /></Col>
                     <Col span={5}></Col>
                 </Row></>}
-            {loading === false && <StyledTable dataSource={dishes} className="table-striped-rows">
+            {loading === false && <StyledTable dataSource={dishes.reverse()} className="table-striped-rows">
                 <Column title="Dish Name" dataIndex="dishName" key="dishName" {...getColumnSearchProps('dishName')} />
                 <Column title="Description" dataIndex="description" width={'15%'} render={(_, record) => (<LinesEllipsis
                     text={record.description}
@@ -227,14 +231,19 @@ const ListDishScreen = () => {
 
                 <Column title="SubCategory" dataIndex={["subCategory", "subCategoryName"]} key="subCategory" {...getColumnSearchProps(["subCategory", "subCategoryName"])} />
                 <Column title="Price" dataIndex="price" render={(_, record) => record.price === null ? "null" : record.price} key="price" sorter={(a, b) => a.price - b.price} />
-                <Column title="Dish Status" dataIndex="status" render={(_, record) => (record.status == 1 ? <p style={{ color: 'green' }}>Enable</p> : <p style={{ color: 'red' }}>Disable</p>)}
+                <Column title="Dish Status" dataIndex="status" render={(_, record) => record.status === 1 ? <p style={{ color: 'green' }}>Active</p> : record.status === 2 ? <p style={{ color: 'red' }}>Inactive</p> : <p style={{ color: 'purple' }}>Out Of Dish</p>}
                     filters={[{
-                        text: 'enable',
+                        text: 'Active',
                         value: 1,
                     }, {
-                        text: 'disable',
-                        value: 0,
-                    },]} onFilter={(value, record) => record.status === value}
+                        text: 'InActive',
+                        value: 2,
+                    },
+                    {
+                        text: 'Out Of Dish',
+                        value: 4,
+                    },
+                    ]} onFilter={(value, record) => record.status === value}
                     key="status" />
                 <Column title="Finished Time" dataIndex="finishedTime" key="finishedTime" render={(_, record) => (record.finishedTime + ' minute')} sorter={(a, b) => a.finishedTime - b.finishedTime} />
                 <Column title="Created Time" dataIndex="createdTime" key="createdTime" render={(_, record) => (moment(record.createdTime).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.createdTime).unix() - moment(b.createdTime).unix()} />
@@ -247,7 +256,49 @@ const ListDishScreen = () => {
                     render={(_, record) => (
                         <Space size="middle">
                             <a onClick={() => { dishDetailHandler(record.id) }}><EyeOutlined /></a>
-                            <a onClick={() => { changeStatusHandle(record.id, record.status) }}>{record.status == 1 ? <Tag color="error">Change Status</Tag> : <Tag color="green">Change Status</Tag>}</a>
+                            <Popover content={<div>
+                                <Space
+                                    direction="vertical"
+                                    size="small"
+                                    style={{
+                                        display: 'flex',
+                                    }}
+                                >
+
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeStatusHandle(record.id, record.status, 1)}
+                                        onCancel={() => console.log(record.id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <a className='txtLink'>Active</a>
+
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeStatusHandle(record.id, record.status, 2)}
+                                        onCancel={() => console.log(record.id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <a className='txtLink'>DeActive</a>
+
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeStatusHandle(record.id, record.status, 4)}
+                                        onCancel={() => console.log(record.id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <a className='txtLink' >Out Of Dish</a>
+                                    </Popconfirm>
+                                </Space>
+
+                            </div>} title="Change Status" trigger="click">
+                                <a style={{ color: 'blue' }}>Change Status</a>
+                            </Popover>
                             <a onClick={() => { updateDishHandle(record.id, record.dishName, record.subCategory, record.description, record.createdTime, record.createdBy, record.price, record.image, record.finishedTime, record.status) }}><EditOutlined style={{ fontSize: 17 }} /></a>
                         </Space>
                     )}

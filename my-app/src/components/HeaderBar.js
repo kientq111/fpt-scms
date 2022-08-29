@@ -1,11 +1,12 @@
 import { useSelector } from "react-redux";
 import { Menu, Dropdown, Row, Col } from 'antd';
 import { Link } from "react-router-dom";
-
+import { useDispatch } from "react-redux";
+import { logout } from "../actions/userActions";
 const HeaderBar = () => {
     const userLogin = useSelector((state) => state.userLogin)
     const { userInfo } = userLogin
-
+    const dispatch = useDispatch()
     const items1 = [
         {
             key: '1',
@@ -30,6 +31,14 @@ const HeaderBar = () => {
                         <Link to={'admin/changepassword'}>
                             Change Password
                         </Link>
+                    ),
+                },
+                {
+                    key: '3',
+                    label: (
+                        <a href="" onClick={() => dispatch(logout())}>
+                            Logout
+                        </a>
                     ),
                 },
             ]}

@@ -12,11 +12,16 @@ import { listMenus } from '../../actions/menuAction';
 import Loader from '../../components/Loader';
 import Select from "react-select";
 import { dishConstants } from '../../constants/Constants';
-
+import axios from 'axios';
 
 const { TextArea } = Input;
 
-
+const style = {
+  control: (base) => ({
+    ...base,
+    borderColor: 'black'
+  })
+}
 
 
 
@@ -28,8 +33,8 @@ const AddDishScreen = () => {
   // const [subCategoryState, SetSubCategoryState] = useState();
   const [dishImg, setDishImg] = useState('');
   const dispatch = useDispatch();
-
-
+  const userLoginInfo = useSelector((state) => state.userLogin);
+  const { userInfo } = userLoginInfo;
   const selectSubcategorySelector = useSelector((state) => state.subcategoryList);
   const selectMenuSelector = useSelector((state) => state.menuList);
   const addDishSelector = useSelector((state) => state.dishAdd);
@@ -37,7 +42,7 @@ const AddDishScreen = () => {
   const { subcategoryInfo } = selectSubcategorySelector;
   const loadingSubcategory = selectSubcategorySelector.loading;
   const { loading, menus } = selectMenuSelector;
-
+  const [img, setImg] = useState('');
   useEffect(() => {
     if (addDishSelector) {
       dispatch({
@@ -91,7 +96,7 @@ const AddDishScreen = () => {
   //CALL API ZONEEE
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
-    dispatch(addDish(values.dishname, values.price, values.description, values.menu, values.subcategory, dishImg, values.finishedTime));
+    dispatch(addDish(values.dishname, values.price, values.description, values.menu, values.subcategory, img, values.finishedTime));
   };
 
 
@@ -99,7 +104,8 @@ const AddDishScreen = () => {
   const ImageHandler = e => {
     const files = e.target.files;
     const file = files[0];
-    getBase64(file);
+    setDishImg(file);
+    imageOnChangeHandle(file)
   };
 
 
@@ -107,6 +113,35 @@ const AddDishScreen = () => {
     console.log(fileString);
     setDishImg(fileString);
   };
+
+
+
+  const imageOnChangeHandle = async (file) => {
+    try {
+      const configImg = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${userInfo.accessToken}`,
+        },
+      }
+
+      if (typeof (file) === 'object') {
+        const resImg = await axios.post(
+          `/image/upload`,
+          { file },
+          configImg
+        )
+        if (resImg.data?.success === false) {
+          message.error("Opps, There's something error when you upload! please re-upload image")
+          return
+        }
+        setImg(resImg.data?.data?.imageUrl)
+      }
+    } catch (error) {
+
+    }
+  }
+
 
   const getBase64 = file => {
     let reader = new FileReader();
@@ -125,7 +160,7 @@ const AddDishScreen = () => {
             width: 1000, height: 'auto', borderRadius: 25
           }}
         >
-          <Divider plain>     <h1 style={{ fontSize: 30 }}>Add Dish</h1></Divider>
+          <Divider plain>     <h1 style={{ fontSize: 30 }}>ADD DISH</h1></Divider>
           <Form style={{ marginLeft: 100 }}
             labelCol={{
               span: 4,
@@ -144,7 +179,8 @@ const AddDishScreen = () => {
               rules={[
                 {
                   required: true,
-                  message: 'Please input dishname!',
+                  message: 'Please input Dish Name!',
+                  whitespace: true
                 },
               ]}
             >
@@ -159,7 +195,7 @@ const AddDishScreen = () => {
                 },
               ]}
             >
-              <InputNumber min={0} defaultValue={0} style={{ width: 250 }} />
+              <InputNumber min={0} max={1000000} defaultValue={0} style={{ width: 250 }} />
             </Form.Item>
             <Form.Item label="Finished Time(min)" name="finishedTime"
               rules={[
@@ -179,6 +215,7 @@ const AddDishScreen = () => {
                 // onChange={handleMenuSelect}
                 isSearchable={true}
                 isMulti
+                styles={style}
               />
             </Form.Item>
             <Form.Item label="Sub Category" name="subcategory"
@@ -195,20 +232,21 @@ const AddDishScreen = () => {
                 value={selectedOptions}
                 // onChange={handleSubCategorySelect}
                 isSearchable={true}
-
+                styles={style}
               />
             </Form.Item>
             <Form.Item label="Description" name="description"
               rules={[
                 {
                   required: true,
-                  message: 'Please select description!',
+                  message: 'Please input description!',
+                  whitespace: true
                 },
               ]}>
               <TextArea rows={4} maxLength={500} showCount />
             </Form.Item>
-            <Form.Item label="Image" name="dishimg" accept="image/png, image/gif, image/jpeg" >
-              <input type="file" onChange={ImageHandler} />
+            <Form.Item label="Image" name="dishimg" >
+              <input type="file" onChange={ImageHandler}  accept="image/png, image/gif, image/jpeg"/>
 
             </Form.Item>
             <Form.Item style={{ marginLeft: 160 }}>

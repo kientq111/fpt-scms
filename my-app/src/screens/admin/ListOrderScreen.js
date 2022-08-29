@@ -182,7 +182,7 @@ const ListOrderScreen = () => {
     });
 
     const showModal = (order) => {
-        getOrderDetailData(order.orderId)
+        getOrderDetailData(order.orderId, order.status)
         setOrderDetailModal(order);
         flag = false;
         setIsModalVisible(true);
@@ -226,7 +226,7 @@ const ListOrderScreen = () => {
                     createdBy: '',
                     orderId: '',
                     pageSize: 100,
-                    pageIndex: 0,
+                    pageIndex: 1,
                 },
                 headers: {
                     Authorization: `Bearer ${userInfo.accessToken}`,
@@ -238,7 +238,7 @@ const ListOrderScreen = () => {
         }
     }
 
-    const getOrderDetailData = async (id) => {
+    const getOrderDetailData = async (id, orderStatus) => {
         try {
             setLoading(true)
             const res = await axios.get(`/orderDetail/getListOrderDetailByOrderId`, {
@@ -247,7 +247,7 @@ const ListOrderScreen = () => {
                     fromDate: '',
                     toDate: '',
                     createdBy: '',
-                    pageIndex: 0,
+                    pageIndex: 1,
                     pageSize: 100,
                 },
                 headers: {
@@ -255,6 +255,12 @@ const ListOrderScreen = () => {
                 },
             })
             console.log(res.data?.data);
+            if (orderStatus === 1) {
+                if (res.data?.data?.every(item => item.status === 1)) {
+                    changeStatusAndReloadOrderDetail(id, 2)
+                }
+            }
+
             setListDish(res.data?.data)
             setLoading(false)
             return res.data?.data
@@ -276,29 +282,36 @@ const ListOrderScreen = () => {
 
     const refreshListOrder = () => {
         let currentDate = new Date();
+        let rawToday = new Date();
         let tomorrowDate = currentDate.setDate(currentDate.getDate() + 1);
-        let today = currentDate.setDate(currentDate.getDate() - 1);
-        // dispatch(listOrders(moment(today).format('YYYY-MM-DD'), moment(tomorrowDate).format('YYYY-MM-DD')));
-        getOrder(moment(today).format('YYYY-MM-DD'), moment(tomorrowDate).format('YYYY-MM-DD'))
+        let today = currentDate.setDate(rawToday.getDate() - 1);
+        console.log(moment(today).format('YYYY-MM-DD HH:mm:ss'))
+        console.log(moment(tomorrowDate).format('YYYY-MM-DD HH:mm:ss'))
+        getOrder(moment(today).format('YYYY-MM-DD HH:mm:ss'), moment(tomorrowDate).format('YYYY-MM-DD HH:mm:ss'))
     }
     const dateOnchangeHandle = (value) => {
         if (value === null) {
             return
         }
-        const startDate = moment(value[0]).format('YYYY-MM-DD');
-        const endDate = moment(value[1]).format('YYYY-MM-DD')
-        getOrder(moment(startDate).format('YYYY-MM-DD'), moment(endDate).format('YYYY-MM-DD'))
+        const startDate = moment(value[0]).format('YYYY-MM-DD hh:mm:ss');
+        const endDate = moment(value[1]).format('YYYY-MM-DD hh:mm:ss')
+        getOrder(startDate, endDate)
         // dispatch(listOrders(startDate, endDate));
     }
 
     const changeOrderStatusHandle = (id, prevStatus, status) => {
         // console.log({ status });
         if (prevStatus === 2) {
-            message.info('You are not permission to change this status')
+            message.info("Can't not change status of Order Done")
+            return
+        }
+
+        if (prevStatus === 4) {
+            message.info("Can't not change status of Order Cancel")
             return
         }
         dispatch(changeOrderStatus(id, status))
-        message.success(`Order change id: ${id} to status: ${status === 1 ? 'Pending' : status === 2 ? 'Success' : 'Cancel'}`)
+        message.success(`Change Status Successful!`)
     }
 
     const onDoneHandle = (dishId) => {
@@ -370,14 +383,15 @@ const ListOrderScreen = () => {
             dataIndex: 'dishTimeFinished',
             key: 'count',
             render: (text, record) => {
-                let countdown = 500000
+                let countdown = record.dishTimeFinished
                 // parseInt(moment(detail.createdDate).format('x')) + (detail.dishTimeFinished * 60 * 1000)
                 // if (doneDish === record.id) {
                 //     countdown = 0;
                 // }
                 return <Countdown
-                    date={parseInt(moment(countdown).format('x')) + (countdown * 60 * 1000) + 1} renderer={countdownRederer}
-                    onComplete={() => dishFinishHandle(orderDetailModal.orderId, orderDetailModal.status)} />; // just for decoration
+                    date={parseInt(moment().format('x')) + (parseInt(countdown) * 1000)} renderer={countdownRederer}
+                />;
+                // onComplete={() => dishFinishHandle(orderDetailModal.orderId, orderDetailModal.status)} />;  
             }
         },
 
@@ -386,7 +400,7 @@ const ListOrderScreen = () => {
 
     const countdownRederer = ({ hours, minutes, seconds, completed }) => {
         if (orderDetailModal.status === 2 || orderDetailModal.status === 4 || orderDetailModal.status === 32) {
-            return
+            return '0'
         }
 
         if (completed) {
@@ -406,7 +420,7 @@ const ListOrderScreen = () => {
         console.log({ status });
         if (countDish == listDish.length && status == 1 && flag === false) {
             openNotificationWithIcon('success');
-             changeStatusAndReloadOrderDetail(orderId, 2);
+            changeStatusAndReloadOrderDetail(orderId, 2);
         }
     }
 
@@ -457,9 +471,12 @@ const ListOrderScreen = () => {
     useEffect(() => {
 
         let currentDate = new Date();
+        let rawToday = new Date();
         let tomorrowDate = currentDate.setDate(currentDate.getDate() + 1);
-        let today = currentDate.setDate(currentDate.getDate() - 1);
-        getOrder(moment(today).format('YYYY-MM-DD'), moment(tomorrowDate).format('YYYY-MM-DD'))
+        let today = currentDate.setDate(rawToday.getDate() - 1);
+        console.log(moment(today).format('YYYY-MM-DD HH:mm:ss'))
+        console.log(moment(tomorrowDate).format('YYYY-MM-DD HH:mm:ss'))
+        getOrder(moment(today).format('YYYY-MM-DD HH:mm:ss'), moment(tomorrowDate).format('YYYY-MM-DD HH:mm:ss'))
         // getOrder()
 
     }, [success]);
@@ -554,25 +571,29 @@ const ListOrderScreen = () => {
                         title="Action"
                         key="action"
                         render={(_, record) => (
-                            <Space size="middle">
-                                <a ><EyeOutlined onClick={() => showModal(record)} /></a>
-                                <Popover content={<div>
-                                    <Space
-                                        direction="vertical"
-                                        size="small"
-                                        style={{
-                                            display: 'flex',
-                                        }}
-                                    >
-                                        <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 2) }}>Change to OrderSuccess</a>
-                                        <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 1) }}>Change to OrderPending</a>
-                                        <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 4) }}>Change to OrderCancel</a>
-                                    </Space>
-                                </div>} title="Change Status" trigger="click">
-                                    <a style={{ color: 'blue' }}>Change Status</a>
-                                </Popover>
-                            </Space>
-                        )}
+                            record.status === 1 ?
+                                <Space size="middle">
+                                    <a ><EyeOutlined onClick={() => showModal(record)} /></a>
+                                    <Popover content={<div>
+                                        <Space
+                                            direction="vertical"
+                                            size="small"
+                                            style={{
+                                                display: 'flex',
+                                            }}
+                                        >
+                                            <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 2) }}>Change to OrderSuccess</a>
+                                            <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 1) }}>Change to OrderPending</a>
+                                            <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 4) }}>Change to OrderCancel</a>
+                                        </Space>
+                                    </div>} title="Change Status" trigger="click">
+                                        <a style={{ color: 'blue' }}>Change Status</a>
+                                    </Popover>
+                                </Space>
+                                : 'No Action'
+                        )
+
+                        }
                     />
                 </StyledTable>
             </>
@@ -588,8 +609,26 @@ const ListOrderScreen = () => {
                         <Col span={6}>
                             {orderDetailModal.status === 1 &&
                                 <>
-                                    <Button type='primary' style={{ marginRight: 20 }} onClick={() => changeStatusAndReloadOrderDetail(orderDetailModal.orderId, 2)}>Done Order</Button>
-                                    <Button type='danger' onClick={() => changeStatusAndReloadOrderDetail(orderDetailModal.orderId, 4)} > Cancel Order</Button>
+
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeStatusAndReloadOrderDetail(orderDetailModal.orderId, 2)}
+                                        onCancel={() => console.log(orderDetailModal.orderId)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <Button type='primary' style={{ marginRight: 20 }} >Done Order</Button>
+                                    </Popconfirm>
+
+                                    <Popconfirm
+                                        title="Are you sure to change this status?"
+                                        onConfirm={() => changeStatusAndReloadOrderDetail(orderDetailModal.orderId, 4)}
+                                        onCancel={() => console.log(orderDetailModal.orderId)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <Button type='danger' > Cancel Order</Button>
+                                    </Popconfirm>
                                 </>
                             }
                         </Col>
