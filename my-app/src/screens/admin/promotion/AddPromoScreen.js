@@ -13,7 +13,7 @@ import moment from 'moment';
 import { listDishes } from '../../../actions/dishAction';
 import axios from 'axios';
 import { forEach } from 'lodash';
-
+import { base_url } from '../../../api/api';
 const { RangePicker } = DatePicker;
 const formItemLayout = {
     labelCol: {
@@ -97,7 +97,7 @@ const AddPromoScreen = () => {
             let updatedBy = userInfo.username;
             let status = 1;
             promotionType === 1 ? salePrice = null : promotionPercent = null
-            const res = await axios.post(`/promotion/addOrUpdatePromotion`, { promotionName, description, promotionPercent, salePrice, promotionStartDate, promotionEndDate, listDishId, createdBy, updatedBy, status, promotionType }, {
+            const res = await axios.post(`${base_url}/promotion/addOrUpdatePromotion`, { promotionName, description, promotionPercent, salePrice, promotionStartDate, promotionEndDate, listDishId, createdBy, updatedBy, status, promotionType }, {
                 params: {
                 },
                 headers: {

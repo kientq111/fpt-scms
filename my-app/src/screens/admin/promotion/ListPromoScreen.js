@@ -10,7 +10,9 @@ import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Highlighter from 'react-highlight-words';
+import { base_url } from '../../../api/api';
 const { Column, ColumnGroup } = Table;
+
 
 const StyledTable = styled((props) => <Table {...props} />)`
 && tbody > tr:hover > td {
@@ -139,7 +141,7 @@ const ListPromoScreen = () => {
 
         try {
             setLoading(true)
-            const res = await axios.get(`/promotion/getListPromotion`, {
+            const res = await axios.get(`${base_url}/promotion/getListPromotion`, {
                 params: {
                     promotionName: '',
                     promotionType: '',
@@ -165,7 +167,7 @@ const ListPromoScreen = () => {
     const changePromoStatus = async (id, status) => {
         try {
 
-            const res = await axios.put(`/promotion/changeStatusPromotion`, {}, {
+            const res = await axios.put(`${base_url}/promotion/changeStatusPromotion`, {}, {
                 params: {
                     status: status === 1 ? 0 : 1,
                     id: id,

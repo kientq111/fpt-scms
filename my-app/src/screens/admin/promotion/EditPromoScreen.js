@@ -15,6 +15,7 @@ import axios from 'axios';
 import { forEach } from 'lodash';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Loader from '../../../components/Loader'
+import { base_url } from '../../../api/api';
 const { RangePicker } = DatePicker;
 const formItemLayout = {
     labelCol: {
@@ -109,7 +110,7 @@ const EditPromoScreen = () => {
             let updatedBy = userInfo.username;
             let status = 1;
             promotionType === 1 ? salePrice = 0 : promotionPercent = 0
-            const res = await axios.post(`/promotion/addOrUpdatePromotion`, { id, promotionName, description, promotionPercent, salePrice, promotionStartDate, promotionEndDate, listDishId, createdBy, updatedBy, status, promotionType }, {
+            const res = await axios.post(`${base_url}/promotion/addOrUpdatePromotion`, { id, promotionName, description, promotionPercent, salePrice, promotionStartDate, promotionEndDate, listDishId, createdBy, updatedBy, status, promotionType }, {
                 params: {
                 },
                 headers: {
