@@ -117,13 +117,17 @@ const EditSubCategoryScreen = () => {
 
                     <Form.Item
                         name="subCategoryName"
-                        label="SubCategory Name"
+                        label="Subcategory Name"
                         rules={[
                             {
                                 required: true,
                                 message: 'Please input sub category name!',
                                 whitespace: true,
                             },
+                            {
+                                pattern: new RegExp('^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ \s\W|_]+$'),
+                                message: 'Subcategory do not have number and special word'
+                            }
                         ]}
                     >
                         <Input />

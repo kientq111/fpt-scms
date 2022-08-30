@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { dashboardAction, logout } from '../../actions/userActions';
 import { getListDashboard } from '../../actions/dashboardAction';
 import Loader from '../../components/Loader';
+import axios from 'axios';
+
 Chart.register(...registerables);
 
 
@@ -17,6 +19,8 @@ const openNotificationWithIcon = (type) => {
     });
 };
 
+
+
 const DashboardScreen = () => {
     const dispatch = useDispatch();
     let listDashboard;
@@ -24,6 +28,10 @@ const DashboardScreen = () => {
     const userCheckAccountSelector = useSelector((state) => state.userCheckAcc);
     const checkAccSuccess = userCheckAccountSelector.success;
     const { loading, error, success, dashboardInfo } = listDashboardSelector;
+    const userLoginInfo = useSelector((state) => state.userLogin);
+    const { userInfo } = userLoginInfo;
+    const [loadingStatistic, setLoadingStatistic] = useState()
+    const [statisticData, setStatisticData] = useState([])
     useEffect(() => {
         // if (checkAccSuccess === true) {
         //     openNotificationWithIcon('success');
@@ -37,6 +45,32 @@ const DashboardScreen = () => {
             }
         }
     }, [error]);
+
+
+
+    useEffect(() => {
+        getStatistic()
+    }, []);
+
+    const getStatistic = async () => {
+        try {
+            setLoadingStatistic(true)
+            const res = await axios.get(`/order/getListStatistic`, {
+                headers: {
+                    Authorization: `Bearer ${userInfo.accessToken}`,
+                },
+            })
+            setStatisticData(res?.data?.data)
+            setLoadingStatistic(false)
+            console.log(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // if (loadingStatistic === false) {
+
+    // }
 
     if (loading === false) {
         if (success === true) {
@@ -82,7 +116,7 @@ const DashboardScreen = () => {
                             <Col span={6}>
                                 <Card style={{ borderRadius: 10 }}>
                                     <Statistic
-                                        title="Total Revenue"
+                                        title="Total Revenue Last Month"
                                         value={listDashboard.totalRevenue}
                                         valueStyle={{
                                             color: '#cf1322',
@@ -124,36 +158,12 @@ const DashboardScreen = () => {
                     <div style={{ marginTop: 50 }}>
                         <Line
                             data={{
-                                labels: [1500, 1600, 1700, 1750, 1800, 1850, 1900, 1950, 1999, 2050],
+                                labels: statisticData?.map(e => e.dateTime),
                                 datasets: [
                                     {
-                                        data: [86, 114, 106, 106, 107, 111, 133, 221, 783, 2478],
-                                        label: "Africa",
+                                        data: statisticData?.map(e => e.totalRevenue),
+                                        label: "Total Revenue per day",
                                         borderColor: "#3e95cd",
-                                        fill: false
-                                    },
-                                    {
-                                        data: [282, 350, 411, 502, 635, 809, 947, 1402, 3700, 5267],
-                                        label: "Asia",
-                                        borderColor: "#8e5ea2",
-                                        fill: false
-                                    },
-                                    {
-                                        data: [168, 170, 178, 190, 203, 276, 408, 547, 675, 734],
-                                        label: "Europe",
-                                        borderColor: "#3cba9f",
-                                        fill: false
-                                    },
-                                    {
-                                        data: [40, 20, 10, 16, 24, 38, 74, 167, 508, 784],
-                                        label: "Latin America",
-                                        borderColor: "#e8c3b9",
-                                        fill: false
-                                    },
-                                    {
-                                        data: [6, 3, 2, 2, 7, 26, 82, 172, 312, 433],
-                                        label: "North America",
-                                        borderColor: "#c45850",
                                         fill: false
                                     }
                                 ]

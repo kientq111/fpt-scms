@@ -256,7 +256,6 @@ const EditUserScreen = () => {
                     >
                         <Input readOnly disabled />
                     </Form.Item>
-
                     <Form.Item
                         name="first_name"
                         label="First Name"
@@ -269,11 +268,9 @@ const EditUserScreen = () => {
                                 whitespace: true,
                             },
 
-
-
                             {
-                                pattern: new RegExp('^[a-zA-Z ]*$'),
-                                message: 'First Name do not have number'
+                                pattern: new RegExp('^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ \s\W|_]+$'),
+                                message: 'First Name do not have number and special word'
                             }
                         ]}
                     >
@@ -290,9 +287,10 @@ const EditUserScreen = () => {
                                 message: 'Please input your last name!',
                                 whitespace: true,
                             },
+
                             {
-                                pattern: new RegExp('^[a-zA-Z ]*$'),
-                                message: 'Last Name do not have number'
+                                pattern: new RegExp('^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ \s\W|_]+$'),
+                                message: 'Last Name do not have number and special word'
                             }
                         ]}
                     >

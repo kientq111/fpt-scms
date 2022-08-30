@@ -176,7 +176,6 @@ const AddStaffScreen = () => {
                     >
                         <Input />
                     </Form.Item>
-
                     <Form.Item
                         name="first_name"
                         label="First Name"
@@ -190,7 +189,7 @@ const AddStaffScreen = () => {
                             },
 
                             {
-                                pattern: new RegExp('^[a-zA-Z ]*$'),
+                                pattern: new RegExp('^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ \s\W|_]+$'),
                                 message: 'First Name do not have number and special word'
                             }
                         ]}
@@ -208,8 +207,9 @@ const AddStaffScreen = () => {
                                 message: 'Please input your last name!',
                                 whitespace: true,
                             },
+
                             {
-                                pattern: new RegExp('^[a-zA-Z ]*$'),
+                                pattern: new RegExp('^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ \s\W|_]+$'),
                                 message: 'Last Name do not have number and special word'
                             }
                         ]}

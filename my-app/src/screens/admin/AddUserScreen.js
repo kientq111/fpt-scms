@@ -197,9 +197,8 @@ const AddUserScreen = () => {
                                 whitespace: true,
                             },
 
-
                             {
-                                pattern: new RegExp('^[a-zA-Z ]*$'),
+                                pattern: new RegExp('^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ \s\W|_]+$'),
                                 message: 'First Name do not have number and special word'
                             }
                         ]}
@@ -217,8 +216,9 @@ const AddUserScreen = () => {
                                 message: 'Please input your last name!',
                                 whitespace: true,
                             },
+
                             {
-                                pattern: new RegExp('^[a-zA-Z ]*$'),
+                                pattern: new RegExp('^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ \s\W|_]+$'),
                                 message: 'Last Name do not have number and special word'
                             }
                         ]}
