@@ -142,7 +142,7 @@ const DishDetailScreen = () => {
                 style={{
                     marginRight: 32,
                 }}
-                suffix={'$'}
+                suffix={'vnd'}
             />
             <Statistic
                 title="Finished Time"

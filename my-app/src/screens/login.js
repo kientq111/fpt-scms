@@ -38,7 +38,7 @@ const LoginScreen = () => {
                     SetMessage("You are not permission");
                 } else if (userCheckAccountData.data.status !== "1") {
                     console.log(userCheckAccountData.data.status);
-                    SetMessage("This account is blocking")
+                    SetMessage("This account is blocking, please contact to admin to unlock your account")
                 } else if (userCheckAccountData.data.is_active !== true) {
                     SetMessage("This Account is not verify email")
                 }

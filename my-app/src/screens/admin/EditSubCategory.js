@@ -55,12 +55,8 @@ const style = {
 const EditSubCategoryScreen = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const categoryData = useSelector((state) => state.categoryList);
     const subCategoryEditSelector = useSelector((state) => state.subCategoryEdit);
     const dispatch = useDispatch()
-    let optionListSubCategoryMenu = [];
-    const [IsCategoryOptionChanged, setIsCategoryOptionChanged] = useState(false)
-    const { loading, categoryInfo } = categoryData;
     const editLoading = subCategoryEditSelector.loading;
     const editSuccess = subCategoryEditSelector.success;
     const subCategoryInfo = subCategoryEditSelector.subCategoryInfo;
@@ -68,20 +64,14 @@ const EditSubCategoryScreen = () => {
     const [form] = Form.useForm();
 
     //To show label of category before
-    let oldCategoryIndex;
 
 
     const onFinish = (values) => {
-        let category = location.state.category
-        if (IsCategoryOptionChanged === true) {
-            category = values.category;
-        }
-        dispatch(editSubCategory(location.state.id, values.subCategoryName, category, values.description, location.state.createdBy, location.state.createdTime, location.state.status));
+        dispatch(editSubCategory(location.state.id, values.subCategoryName, values.description, location.state.createdBy, location.state.createdTime, location.state.status));
     };
 
 
     useEffect(() => {
-        dispatch(listCategory(1))
         form.setFieldsValue({
             // menu: location.state.menuID,
             subCategoryName: location.state.subCategoryName,
@@ -101,14 +91,8 @@ const EditSubCategoryScreen = () => {
         }
     }, [editSuccess])
 
-    if (loading === false) {
-        optionListSubCategoryMenu = categoryInfo;
-        oldCategoryIndex = optionListSubCategoryMenu.findIndex(x => x.id === location.state.category.id);
-    }
 
-    const handleCategorySelect = () => {
-        setIsCategoryOptionChanged(true);
-    }
+
 
     return (
         <Row>
@@ -133,33 +117,22 @@ const EditSubCategoryScreen = () => {
 
                     <Form.Item
                         name="subCategoryName"
-                        label="SubCategory Name"
+                        label="Subcategory Name"
                         rules={[
                             {
                                 required: true,
                                 message: 'Please input sub category name!',
                                 whitespace: true,
                             },
+                            {
+                                pattern: new RegExp('^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ \s\W|_]+$'),
+                                message: 'Subcategory do not have number and special word'
+                            }
                         ]}
                     >
                         <Input />
                     </Form.Item>
 
-                    <Form.Item
-                        name="category"
-                        label="Category"
-                    >
-                        <Select
-                            options={optionListSubCategoryMenu}
-                            placeholder="Select category"
-                            getOptionLabel={option => option.categoryName}
-                            getOptionValue={option => option.id}
-                            onChange={handleCategorySelect}
-                            defaultValue={optionListSubCategoryMenu[oldCategoryIndex]}
-                            isSearchable={true}
-                            styles={style}
-                        />
-                    </Form.Item>
 
                     <Form.Item
                         name="description"
@@ -168,6 +141,7 @@ const EditSubCategoryScreen = () => {
                             {
                                 required: true,
                                 message: 'Please input description',
+                                whitespace: true
                             },
                         ]}
                     >
