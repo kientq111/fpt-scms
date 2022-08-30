@@ -575,61 +575,64 @@ const ListOrderScreen = () => {
                         title="Action"
                         key="action"
                         render={(_, record) => (
-                            record.status === 1 ?
-                                <Space size="middle">
-                                    <a ><EyeOutlined onClick={() => showModal(record)} /></a>
-                                    <Popover content={<div>
-                                        <Space
-                                            direction="vertical"
-                                            size="small"
-                                            style={{
-                                                display: 'flex',
-                                            }}
-                                        >
-                                            {record.status !== 2 &&
-                                                <Popconfirm
-                                                    title="Are you sure to change this status?"
-                                                    onConfirm={() => changeOrderStatusHandle(record.orderId, record.status, 2)}
-                                                    onCancel={() => console.log(record.id)}
-                                                    okText="Yes"
-                                                    cancelText="No"
-                                                >
-                                                    <a className='txtLink' >Done Order</a>
 
-                                                </Popconfirm>
-                                            }
-
-
-                                            {record.status !== 1 && <Popconfirm
+                            <Space size="middle">
+                                <a ><EyeOutlined onClick={() => showModal(record)} /></a>
+                                {record.status === 1 ? <Popover content={<div>
+                                    <Space
+                                        direction="vertical"
+                                        size="small"
+                                        style={{
+                                            display: 'flex',
+                                        }}
+                                    >
+                                        {record.status !== 2 &&
+                                            <Popconfirm
                                                 title="Are you sure to change this status?"
-                                                onConfirm={() => changeOrderStatusHandle(record.orderId, record.status, 1)}
+                                                onConfirm={() => changeOrderStatusHandle(record.orderId, record.status, 2)}
                                                 onCancel={() => console.log(record.id)}
                                                 okText="Yes"
                                                 cancelText="No"
                                             >
-                                                <a className='txtLink'>Order Pending</a>
+                                                <a className='txtLink' >Done Order</a>
 
                                             </Popconfirm>
-                                            }
-
-                                            {record.status !== 4 && <Popconfirm
-                                                title="Are you sure to change this status?"
-                                                onConfirm={() => changeOrderStatusHandle(record.orderId, record.status, 4)}
-                                                onCancel={() => console.log(record.id)}
-                                                okText="Yes"
-                                                cancelText="No"
-                                            >
-                                                <a className='txtLink'>Order Cancel</a>
-
-                                            </Popconfirm>}
+                                        }
 
 
-                                        </Space>
-                                    </div>} title="Change Status" trigger="click">
-                                        <a style={{ color: 'blue' }}>Change Status</a>
-                                    </Popover>
-                                </Space>
-                                : 'No Action'
+                                        {record.status !== 1 && <Popconfirm
+                                            title="Are you sure to change this status?"
+                                            onConfirm={() => changeOrderStatusHandle(record.orderId, record.status, 1)}
+                                            onCancel={() => console.log(record.id)}
+                                            okText="Yes"
+                                            cancelText="No"
+                                        >
+                                            <a className='txtLink'>Order Pending</a>
+
+                                        </Popconfirm>
+                                        }
+
+                                        {record.status !== 4 && <Popconfirm
+                                            title="Are you sure to change this status?"
+                                            onConfirm={() => changeOrderStatusHandle(record.orderId, record.status, 4)}
+                                            onCancel={() => console.log(record.id)}
+                                            okText="Yes"
+                                            cancelText="No"
+                                        >
+                                            <a className='txtLink'>Order Cancel</a>
+
+                                        </Popconfirm>}
+
+
+                                    </Space>
+                                </div>} title="Change Status" trigger="click">
+                                    <a style={{ color: 'blue' }}>Change Status</a>
+                                </Popover>
+                            : 'No Action'    
+                            }
+
+                            </Space>
+
                         )
 
                         }
