@@ -8,6 +8,7 @@ import { dashboardAction, logout } from '../../actions/userActions';
 import { getListDashboard } from '../../actions/dashboardAction';
 import Loader from '../../components/Loader';
 import axios from 'axios';
+import { base_url } from '../../api/api'
 
 Chart.register(...registerables);
 
@@ -55,7 +56,7 @@ const DashboardScreen = () => {
     const getStatistic = async () => {
         try {
             setLoadingStatistic(true)
-            const res = await axios.get(`/order/getListStatistic`, {
+            const res = await axios.get(`${base_url}/order/getListStatistic`, {
                 headers: {
                     Authorization: `Bearer ${userInfo.accessToken}`,
                 },

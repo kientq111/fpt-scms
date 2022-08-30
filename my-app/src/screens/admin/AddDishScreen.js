@@ -44,11 +44,11 @@ const AddDishScreen = () => {
   const { loading, menus } = selectMenuSelector;
   const [img, setImg] = useState('');
   useEffect(() => {
-    if (addDishSelector) {
-      dispatch({
-        type: dishConstants.DISH_ADD_RESET,
-      })
-    }
+
+    dispatch({
+      type: dishConstants.DISH_ADD_RESET,
+    })
+
     dispatch(listSubcategory(1));
     dispatch(listMenus());
   }, []);
