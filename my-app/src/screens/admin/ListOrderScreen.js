@@ -523,9 +523,13 @@ const ListOrderScreen = () => {
             <>
                 <div>
                     <Row>
-                        <Col span={8}></Col>
-                        <Col span={8}></Col>
-                        <Col span={8}> <RangePicker onChange={(value) => dateOnchangeHandle(value)} /></Col>
+                        <Col span={4}></Col>
+                        <Col span={4}></Col>
+                        <Col span={4}></Col>
+                        <Col style={{ marginBottom: 5 }} span={4}> <RangePicker onChange={(value) => dateOnchangeHandle(value)} /></Col>
+                        <Col span={4}></Col>
+                        <Col span={4}></Col>
+
                     </Row>
                 </div>
                 <StyledTable dataSource={listOrd || []} className="table-striped-rows">
@@ -571,26 +575,64 @@ const ListOrderScreen = () => {
                         title="Action"
                         key="action"
                         render={(_, record) => (
-                            record.status === 1 ?
-                                <Space size="middle">
-                                    <a ><EyeOutlined onClick={() => showModal(record)} /></a>
-                                    <Popover content={<div>
-                                        <Space
-                                            direction="vertical"
-                                            size="small"
-                                            style={{
-                                                display: 'flex',
-                                            }}
+
+                            <Space size="middle">
+                                <a ><EyeOutlined onClick={() => showModal(record)} /></a>
+                                {record.status === 1 ? <Popover content={<div>
+                                    <Space
+                                        direction="vertical"
+                                        size="small"
+                                        style={{
+                                            display: 'flex',
+                                        }}
+                                    >
+                                        {record.status !== 2 &&
+                                            <Popconfirm
+                                                title="Are you sure to change this status?"
+                                                onConfirm={() => changeOrderStatusHandle(record.orderId, record.status, 2)}
+                                                onCancel={() => console.log(record.id)}
+                                                okText="Yes"
+                                                cancelText="No"
+                                            >
+                                                <a className='txtLink' >Done Order</a>
+
+                                            </Popconfirm>
+                                        }
+
+
+                                        {record.status !== 1 && <Popconfirm
+                                            title="Are you sure to change this status?"
+                                            onConfirm={() => changeOrderStatusHandle(record.orderId, record.status, 1)}
+                                            onCancel={() => console.log(record.id)}
+                                            okText="Yes"
+                                            cancelText="No"
                                         >
-                                            <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 2) }}>Change to OrderSuccess</a>
-                                            <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 1) }}>Change to OrderPending</a>
-                                            <a className='txtLink' onClick={() => { changeOrderStatusHandle(record.orderId, record.status, 4) }}>Change to OrderCancel</a>
-                                        </Space>
-                                    </div>} title="Change Status" trigger="click">
-                                        <a style={{ color: 'blue' }}>Change Status</a>
-                                    </Popover>
-                                </Space>
-                                : 'No Action'
+                                            <a className='txtLink'>Order Pending</a>
+
+                                        </Popconfirm>
+                                        }
+
+                                        {record.status !== 4 && <Popconfirm
+                                            title="Are you sure to change this status?"
+                                            onConfirm={() => changeOrderStatusHandle(record.orderId, record.status, 4)}
+                                            onCancel={() => console.log(record.id)}
+                                            okText="Yes"
+                                            cancelText="No"
+                                        >
+                                            <a className='txtLink'>Order Cancel</a>
+
+                                        </Popconfirm>}
+
+
+                                    </Space>
+                                </div>} title="Change Status" trigger="click">
+                                    <a style={{ color: 'blue' }}>Change Status</a>
+                                </Popover>
+                            : 'No Action'    
+                            }
+
+                            </Space>
+
                         )
 
                         }

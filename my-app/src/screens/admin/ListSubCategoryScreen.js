@@ -41,7 +41,7 @@ const ListSubCategoryScreen = () => {
     const navigate = useNavigate();
     const subCategoryData = useSelector((state) => state.subcategoryList);
     const subCategoryEditSelector = useSelector((state) => state.subCategoryEdit);
-    const isSubCategoryEditSuccess = subCategoryEditSelector.success
+    const isSubCategoryEditSuccess = subCategoryEditSelector
     const changeSubCategoryStatusSelector = useSelector((state) => state.subCategoryChangeStatus);
     const { success } = changeSubCategoryStatusSelector;
     const { loading, subcategoryInfo } = subCategoryData;
@@ -167,7 +167,8 @@ const ListSubCategoryScreen = () => {
     //Called when when mounting
     const dispatch = useDispatch();
     useEffect(() => {
-        if (isSubCategoryEditSuccess === true) {
+        console.log(subCategoryEditSelector)
+        if (isSubCategoryEditSuccess?.subCategoryInfo?.success === true) {
             openNotificationWithIcon('success', 'SUBCATEGORY UPDATE SUCCESSFUL');
         }
         dispatch(listSubcategory());

@@ -265,7 +265,7 @@ const ListDishScreen = () => {
                                     }}
                                 >
 
-                                    <Popconfirm
+                                    {record.status !== 1 && <Popconfirm
                                         title="Are you sure to change this status?"
                                         onConfirm={() => changeStatusHandle(record.id, record.status, 1)}
                                         onCancel={() => console.log(record.id)}
@@ -274,18 +274,20 @@ const ListDishScreen = () => {
                                     >
                                         <a className='txtLink'>Active</a>
 
-                                    </Popconfirm>
-                                    <Popconfirm
-                                        title="Are you sure to change this status?"
-                                        onConfirm={() => changeStatusHandle(record.id, record.status, 2)}
-                                        onCancel={() => console.log(record.id)}
-                                        okText="Yes"
-                                        cancelText="No"
-                                    >
-                                        <a className='txtLink'>DeActive</a>
+                                    </Popconfirm>}
+                                    {record.status !== 2 &&
+                                        <Popconfirm
+                                            title="Are you sure to change this status?"
+                                            onConfirm={() => changeStatusHandle(record.id, record.status, 2)}
+                                            onCancel={() => console.log(record.id)}
+                                            okText="Yes"
+                                            cancelText="No"
+                                        >
+                                            <a className='txtLink'>DeActive</a>
 
-                                    </Popconfirm>
-                                    <Popconfirm
+                                        </Popconfirm>
+                                    }
+                                    {record.status !== 4 && <Popconfirm
                                         title="Are you sure to change this status?"
                                         onConfirm={() => changeStatusHandle(record.id, record.status, 4)}
                                         onCancel={() => console.log(record.id)}
@@ -293,7 +295,8 @@ const ListDishScreen = () => {
                                         cancelText="No"
                                     >
                                         <a className='txtLink' >Out Of Dish</a>
-                                    </Popconfirm>
+                                    </Popconfirm>}
+
                                 </Space>
 
                             </div>} title="Change Status" trigger="click">

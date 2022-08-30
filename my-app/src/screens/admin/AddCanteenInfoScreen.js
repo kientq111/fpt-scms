@@ -238,8 +238,8 @@ const AddCanteenInfoScreen = () => {
     const [form] = Form.useForm();
 
     const onFinish = (values) => {
-        const openTime = moment(values.openCloseTime[0]).format('HH:MM A')
-        const closedTime = moment(values.openCloseTime[1]).format('HH:MM A')
+        const openTime = moment(values.openCloseTime[0]).format('HH:mm A')
+        const closedTime = moment(values.openCloseTime[1]).format('HH:mm A')
         let provinceValue = canteenInfo.address.city
         let districtValue = canteenInfo.address.district
         let wardsValue = canteenInfo.address.wards
@@ -273,7 +273,8 @@ const AddCanteenInfoScreen = () => {
             country: "VIET NAM"
         }
 
-
+        console.log(values.openCloseTime)
+        console.log({closedTime})
         addCanteen(1, values.canteenName, values.phone, values.description, openTime, closedTime, openDayValue, closeDayValue, addressValue)
     };
 

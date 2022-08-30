@@ -203,7 +203,7 @@ const ListBlogScreen = () => {
                     <Col span={5}><LargeLoader /></Col>
                     <Col span={5}></Col>
                 </Row></>}
-            {loading === false && <StyledTable dataSource={blogs?.reverse() || []} className="table-striped-rows">
+            {loading === false && <StyledTable dataSource={blogs || []} className="table-striped-rows">
                 <Column title="Blog Name" dataIndex="name" key="name" {...getColumnSearchProps('dishName')} />
                 {/* <Column title="Content" dataIndex="content" key="content" width={'25%'} {...getColumnSearchProps('content')}
                     render={(_, record) => (<LinesEllipsis
@@ -227,7 +227,7 @@ const ListBlogScreen = () => {
                 <Column title="Created By" dataIndex="created_by" key="created_by" {...getColumnSearchProps('created_by')} />
                 <Column title="Updated Time" dataIndex="updated_time" key="updated_time" render={(_, record) => (moment(record.updated_time).format('DD/MM/YYYY'))} sorter={(a, b) => moment(a.updated_time).unix() - moment(b.updated_time).unix()} />
                 <Column title="Updated By" dataIndex="updated_by" key="updated_by" {...getColumnSearchProps('updated_by')} />
-
+                <Column title="View" dataIndex="visit_count" key="visit_count" sorter={(a, b) => (a.visit_count) - (b.visit_count)} />
                 <Column
                     title="Action"
                     key="action"
