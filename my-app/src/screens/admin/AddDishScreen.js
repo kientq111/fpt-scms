@@ -43,6 +43,8 @@ const AddDishScreen = () => {
   const loadingSubcategory = selectSubcategorySelector.loading;
   const { loading, menus } = selectMenuSelector;
   const [img, setImg] = useState('');
+
+  
   useEffect(() => {
 
     dispatch({

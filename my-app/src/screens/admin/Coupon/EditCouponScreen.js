@@ -14,7 +14,7 @@ import { listDishes } from '../../../actions/dishAction';
 import axios from 'axios';
 import { forEach, fromPairs } from 'lodash';
 import { useLocation } from 'react-router-dom';
-
+import { base_url } from '../../../api/api';
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const formItemLayout = {
@@ -107,7 +107,7 @@ const EditCouponScreen = () => {
             if (typeDiscount !== 1) {
                 maxDiscountMoney = null;
             }
-            const res = await axios.post(`/coupon/addOrUpdate`, {
+            const res = await axios.post(`${base_url}/coupon/addOrUpdate`, {
                 id, couponCode, description, percentDiscount, discountMoney, maxDiscountMoney, typeDiscount,
                 type, minValueOrder,
                 numberOfCoupon, numberOfCustomerUse, couponFromDate,
@@ -186,7 +186,7 @@ const EditCouponScreen = () => {
                             },
                         ]}
                     >
-                        <Input readOnly disabled style={{ width: '60%' }}/>
+                        <Input readOnly disabled style={{ width: '60%' }} />
                     </Form.Item>
                     <Form.Item
                         name="typeDiscount"

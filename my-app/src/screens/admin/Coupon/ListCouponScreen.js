@@ -10,6 +10,7 @@ import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Highlighter from 'react-highlight-words';
+import { base_url } from '../../../api/api';
 const { Column, ColumnGroup } = Table;
 
 const StyledTable = styled((props) => <Table {...props} />)`
@@ -140,7 +141,7 @@ const ListCouponScreen = () => {
 
         try {
             setLoading(true)
-            const res = await axios.get(`/coupon/getListCoupon`, {
+            const res = await axios.get(`${base_url}/coupon/getListCoupon`, {
                 params: {
                     type: '',
                     status: '',
@@ -165,7 +166,7 @@ const ListCouponScreen = () => {
     const changeCouponStatus = async (id, status) => {
         try {
 
-            const res = await axios.put(`/coupon/changeStatusCoupon`, {}, {
+            const res = await axios.put(`${base_url}/coupon/changeStatusCoupon`, {}, {
                 params: {
                     status: status === 1 ? 0 : 1,
                     id: id,

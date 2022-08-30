@@ -16,6 +16,7 @@ import isequal from "lodash.isequal"
 import axios from 'axios';
 import { isArray } from 'lodash';
 import Countdown from 'react-countdown'
+import { base_url } from '../../api/api';
 
 const { Column } = Table;
 
@@ -196,7 +197,7 @@ const ListOrderScreen = () => {
     const getOrderDetailById = async (orderId) => {
         try {
 
-            const res = await axios.get(`/order/getOrderDishById/${orderId}`, {
+            const res = await axios.get(`${base_url}/order/getOrderDishById/${orderId}`, {
                 params: {
                 },
                 headers: {
@@ -215,7 +216,7 @@ const ListOrderScreen = () => {
 
         try {
 
-            const res = await axios.get(`/order/getListOrderDish`, {
+            const res = await axios.get(`${base_url}/order/getListOrderDish`, {
                 params: {
                     orderNumber: '',
                     userId: '',
@@ -241,7 +242,7 @@ const ListOrderScreen = () => {
     const getOrderDetailData = async (id, orderStatus) => {
         try {
             setLoading(true)
-            const res = await axios.get(`/orderDetail/getListOrderDetailByOrderId`, {
+            const res = await axios.get(`${base_url}/orderDetail/getListOrderDetailByOrderId`, {
                 params: {
                     orderId: id,
                     fromDate: '',
@@ -628,8 +629,8 @@ const ListOrderScreen = () => {
                                 </div>} title="Change Status" trigger="click">
                                     <a style={{ color: 'blue' }}>Change Status</a>
                                 </Popover>
-                            : 'No Action'    
-                            }
+                                    : 'No Action'
+                                }
 
                             </Space>
 
